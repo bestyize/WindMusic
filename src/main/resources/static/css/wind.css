@@ -1,0 +1,142 @@
+.thewind_back_common{
+    background-color: white;
+    box-shadow: 0 5px 5px rgba(0,0,0,0.1);
+    border-radius: 10px;
+}
+.file_list_style {
+    background-color: white;
+    height: 4em;
+    margin: auto;
+    padding: 10px;
+    box-shadow: 0 5px 5px rgba(0,0,0,0.1);
+    border-radius: 10px;
+    cursor: pointer;
+}
+.file_icon_style{
+    height: 2em;
+    width: 2em;
+}
+.file_name_style{
+    margin-left: 1em;
+}
+.file_desc_style{
+    margin-left: 1em;
+    color: #666666;
+}
+.file_size_style{
+    margin-top: 2em;
+    margin-left: 1em;
+    margin-right: 1em;
+    float: right;
+    font-size: xx-large;
+}
+.file_time_style{
+    margin-left: 1em;
+    margin-right: 1em;
+    float: right;
+    font-size: medium;
+}
+
+.file_upload_style{
+    background-color: white;
+    box-shadow: 0 5px 5px rgba(0,0,0,0.1);
+    border-radius: 5px;
+}
+
+.wind_hand_style{
+    cursor: pointer;
+}
+
+.thewind_background{
+    /*#F5F5F5*/
+    background-color: #F0F0F0;
+}
+.thewind_nav_top{
+    border-radius: 5px;
+    background-color: #FFFFFF;
+    box-shadow:0 5px 5px rgba(0,0,0,0.1);
+}
+.thewind_nav_bottom{
+    border-radius: 5px;
+    background-color: white;
+    box-shadow:0px -5px 5px rgba(0,0,0,0.1);
+}
+.thewind_div_center_nav{
+    height: 30px;
+    margin: auto;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: white;
+}
+.thewind_banner_text{
+    height: 2em;
+    width: min-content;
+    font-size: x-large;
+    font-weight: bold;
+    float: left;
+    margin: 0;
+}
+
+.thewind_search_text_field{
+    background-color:#F6F6F6;
+    min-height: 2em;
+    border: none;
+}
+.thewind_search_button{
+    background-color:white;
+    border: rgba(0,0,0,0);
+}
+.thewind_top_self_area{
+    width: 6em;
+    height: 2em;
+    align-content: end;
+    float: left;
+}
+.thewind_article_background{
+    left: 0;
+    right: 0;
+    padding: 10px;
+    background-color: #FFFFFF;
+    box-shadow:0 5px 5px rgba(0,0,0,0.1);
+    margin: auto;
+    border-radius: 5px;
+}
+
+.thewind_pic_default_style{
+    margin-left: 200px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    max-height: 400px;
+    max-width: 300px;
+    box-shadow:1px 4px 3px rgba(0,0,0,0.4);
+}
+
+.thewind_comment_header_style{
+    height: 40px;
+}
+
+.thewind_avatar_small_style{
+    width: 40px;
+    height: 40px;
+    float: left;
+}
+.thewind_comment_body_style{
+    background-color: #F6F6F6;
+    padding: 10px;
+    margin-top: 10px;
+}
+.navbarr {
+    position: relative;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -ms-flex-align: center;
+    align-items: center;
+    -ms-flex-pack: justify;
+    justify-content: normal;
+    padding: 0.5rem 1rem;
+}
+

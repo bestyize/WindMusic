@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TheWind</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/wind.css" rel="stylesheet">
+    <script src="js/jquery-3.5.1.js"></script>
+    <script src="js/winpan.js"></script>
+    <script src="js/adopt.js"></script>
+    <script src="js/download.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+</head>
+<body style="background-color: #F0F0F0">
+
+<div id="div_header" class="navbar fixed-top thewind_nav_top m-auto justify-content-center" style="min-height:60px">
+    <div id="div_brand" class="wind_hand_style" style="font-weight: bold" onclick="backToDomain()">TheWind</div>
+    <div style="width: 2em"></div>
+    <input id="search_input" type="text" placeholder="输入音乐名" class="border-0" style="background-color: #F0F0F0">
+    <div style="width: 1em"></div>
+    <div id="div_search_music" class="wind_hand_style" onclick="refreshPage()">搜索</div>
+    <div style="width: 1em"></div>
+    <div id="div_user_login" class="wind_hand_style" data-toggle="modal" data-target="#loginModal">登录</div>
+    <div style="width: 1em"></div>
+    <div id="div_user_reg" class="wind_hand_style" data-toggle="modal" data-target="#regModal">注册</div>
+</div>
+
+<div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header justify-content-center m-auto">
+                <h4 class="modal-title" id="myModalLabel">登录</h4>
+            </div>
+            <div class="modal-body">
+                <div class="input-group mb-3">
+                    <input id="input_userid" type="text" class="form-control" placeholder="用户ID">
+                    <div class="input-group-append">
+                        <span class="input-group-text">用户ID</span>
+                    </div>
+                </div>
+                <div class="input-group mb-3">
+                    <input id="input_password" type="password" class="form-control" placeholder="密 码">
+                    <div class="input-group-append">
+                        <span class="input-group-text">密&nbsp&nbsp&nbsp&nbsp码</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" onclick="login()" data-dismiss="modal">登录</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+<div class="modal fade" id="regModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header justify-content-center m-auto">
+                <h4 class="modal-title" id="regModalLabel">注册</h4>
+            </div>
+            <div class="modal-body">
+                <div class="input-group mb-3">
+                    <input id="input_reg_userid" type="text" class="form-control" placeholder="用户ID">
+                    <div class="input-group-append">
+                        <span class="input-group-text">用户ID</span>
+                    </div>
+                </div>
+                <div class="input-group mb-3">
+                    <input id="input_reg_password" type="password" class="form-control" placeholder="6位以上的字符，以字母开头">
+                    <div class="input-group-append">
+                        <span class="input-group-text">密&nbsp&nbsp&nbsp&nbsp码</span>
+                    </div>
+                </div>
+                <div class="input-group mb-3">
+                    <input id="input_reg_dup_password" type="password" class="form-control" placeholder="6位以上的字符，以字母开头">
+                    <div class="input-group-append">
+                        <span class="input-group-text">再输一遍</span>
+                    </div>
+                </div>
+                <div class="input-group mb-3">
+                    <input id="input_reg_email" type="email" class="form-control" placeholder="邮 箱">
+                    <div class="input-group-append">
+                        <span class="input-group-text">邮&nbsp&nbsp&nbsp&nbsp箱</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" onclick="regAccount()" data-dismiss="modal">注册</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+<div id="div_top_sep"></div>
+
+<div id="div_music_search_area">
+</div>
+
+<div id="div_music_list"></div>
+
+<div id="div_bottom_player" class="navbar fixed-bottom navbar-fixed-bottom justify-content-center thewind_nav_bottom "  style="height: 80px;">
+    <img id="img_player_icon" src="img/person.png" style="width: 50px;height: 50px">
+    <span id="span_player_info">《十年》 陈奕迅</span>
+    <span style="width: 1em"></span>
+    <audio autoplay="autoplay" id="audio_player" src="http://other.player.ra01.sycdn.kuwo.cn/085c97eec74b4b412a1b2a6044cfa322/5fcb4a67/resource/n3/320/60/17/4090183052.mp3"
+           controls="controls"
+    ></audio>
+</div>
+
+<script>
+    let div_header=$('#div_header');
+    let div_brand=$('#div_brand');
+    let div_search_music=$('#div_search_music');
+    let div_top_sep=$('#div_top_sep');
+    let div_music_list=$('#div_music_list');
+    let search_input=$('#search_input');
+    let div_music_search_area=$('#div_music_search_area');
+    let div_user_login=$('#div_user_login');
+    let div_bottom_player=$('#div_bottom_player');
+    let img_player_icon=$('#img_player_icon');
+    let span_player_info=$('#span_player_info');
+    let audio_player=$('#audio_player');
+
+    let input_userid=$('#input_userid');
+    let input_password=$('#input_password');
+    let login_modal=$('#loginModal');
+
+    let input_reg_password=$('#input_reg_password');
+    let input_reg_userid=$('#input_reg_userid');
+
+    let input_reg_dup_password=$('#input_reg_dup_password');
+    let input_reg_email=$('#input_reg_email');
+
+</script>
+
+<script>
+
+    //绑定回车事件
+    search_input.on('keypress',function (e) {
+        if(e.keyCode===13){
+            refreshPage();
+        }
+    });
+
+    function downloadMusic(songId,songSrc,quality) {
+        let formData=new FormData();
+        formData.append('songid',songId);
+        formData.append('src',songSrc);
+        formData.append('quality',quality);
+        $.ajax({
+            url:'/api/download',
+            type: 'POST',
+            cache: false,
+            data: formData,
+            async:true,
+            processData: false,
+            contentType: false,
+            success:function (params) {
+                parseDownloadInfo(params,quality);
+            }
+        });
+    }
+    function playerMusic(songId,songSrc,quality,songName,albumName,avatar) {
+        let formData=new FormData();
+        formData.append('songid',songId);
+        formData.append('src',songSrc);
+        formData.append('quality',quality);
+        $.ajax({
+            url:'/api/download',
+            type: 'POST',
+            cache: false,
+            data: formData,
+            async:true,
+            processData: false,
+            contentType: false,
+            success:function (params) {
+                parsePlayerInfo(params,quality,songName,albumName,avatar);
+            }
+        });
+    }
+
+    function parsePlayerInfo(params,quality,songName,albumName,avatar) {
+        let downloadLink=params.downloadLinkMap[quality];
+        if(downloadLink!=null){
+            img_player_icon.attr('src',avatar);
+            span_player_info.html(songName+"&nbsp;&nbsp;&nbsp;&nbsp;"+albumName);
+            audio_player.attr('src',downloadLink);
+        }
+    }
+    function playMusic(songId,songSrc,songName,albumName,avatar) {
+        playerMusic(songId,songSrc,'PQ',songName,albumName,avatar);
+    }
+
+
+
+    function hiddenDownloadBtn(currQuality,maxQuality) {
+        if(maxQuality==='HQ'&&currQuality==='SQ'){
+            return 'hidden';
+        }else if(maxQuality==='PQ'&&(currQuality==='SQ'||currQuality==='HQ')){
+            return 'hidden';
+        }
+        return '';
+    }
+
+    function parseDownloadInfo(params,quality) {
+        let downloadLink=params.downloadLinkMap[quality];
+        if(downloadLink!=null){
+            location.href=downloadLink;
+        }
+    }
+
+    function refreshPage(){
+        let keyword=encodeURI(search_input.val());
+        location.href="?keyword="+keyword;
+    }
+
+    function searchMusic() {
+        let keyword=parseRealKey("keyword");
+        if(keyword==null){
+            return;
+        }
+        search_input.val(keyword);
+        let src='KW';
+        let num='20';
+        let formData=new FormData();
+        formData.append('src',src);
+        formData.append('keyword',keyword);
+        formData.append('num',num);
+        $.ajax({
+            url:'/api/search',
+            type: 'POST',
+            cache: false,
+            data: formData,
+            async:true,
+            processData: false,
+            contentType: false,
+            success:function (params) {
+                parseSearchInfo(params);
+            }
+        });
+    }
+
+    function parseSearchInfo(params){
+        //div_music_search_area.html('');
+        for (let i=0;i<params.length;i++){
+            let musicInfo=params[i];
+            let songSrc=musicInfo.songSrc;
+            let songId=musicInfo.songId;
+            let songName=musicInfo.songName;
+            let singersId=musicInfo.singersId;
+            let singersName=musicInfo.singersName;
+            let singerName=singersName[0];
+            let albumId=musicInfo.albumId;
+            let albumName=(musicInfo.albumName!=null&&musicInfo.albumName.length>1)?'《'+musicInfo.albumName+'》':'';
+            let picUrl=musicInfo.picUrl;
+            let lrcUrl=musicInfo.lrcUrl;
+            let mvUrl=musicInfo.mvUrl;
+            let quality=musicInfo.quality;
+
+            let div_music_item_html='    <div class="navbar thewind_nav_top col-11 col-lg-6 m-auto" style="min-height:'+getFileItemHeight()+'px">\n' +
+                '        <img class="file_icon_style float-left" src=\"'+picUrl+'\" alt="" style="width: '+getIconSize()+'px;height: '+getIconSize()+'px">\n' +
+                '        <div class="wind_hand_style" onclick="playMusic(\''+songId+'\',\''+songSrc+'\',\''+songName+'\',\''+albumName+'\',\''+picUrl+'\')">\n'+
+                '        <span style="font-size: '+getDescTextSize()+'px;margin-right: 1em;font-weight: bold" >'+songName+'</span>\n' +
+                '        <span style="font-size: '+getDescTextSize()+'px">'+albumName+'</span>\n' +
+                '        </div>\n'+
+                '        <div >\n' +
+                '            <span style="font-size: '+getDescTextSize()+'px">'+singerName+'</span>\n' +
+                '            <span style="font-size: '+getTextSize()+'px" class="wind_hand_style m-1 text-danger font-weight-bold" onclick="downloadMusic(\''+songId+'\',\''+songSrc+'\',\'SQ\')" '+hiddenDownloadBtn("SQ",quality)+'>SQ</span>\n' +
+                '            <span style="font-size: '+getTextSize()+'px" class="wind_hand_style m-1 text-info font-weight-bold" onclick="downloadMusic(\''+songId+'\',\''+songSrc+'\',\'HQ\')">HQ</span>\n' +
+                '            <span style="font-size: '+getTextSize()+'px" class="wind_hand_style m-1 text-primary font-weight-bold" onclick="downloadMusic(\''+songId+'\',\''+songSrc+'\',\'PQ\')">PQ</span>\n' +
+                '            <span style="font-size: '+getTextSize()+'px" class="wind_hand_style m-1 text-success font-weight-bold" onclick="downloadMusic(\''+songId+'\',\''+songSrc+'\',\'LQ\')">LQ</span>\n' +
+                '        </div>\n' +
+                '\n' +
+                '    </div>\n' +
+                '    <div style="height: 10px"></div>';
+            div_music_search_area.append(div_music_item_html);
+        }
+    }
+
+
+</script>
+
+<script>
+    function adoptSize(){
+        div_header.css('min-height',getHeaderHeight());
+        div_brand.css('font-size',getBrandTextSize());
+        div_search_music.css('font-size',getTextSize()*1.2);
+        div_user_login.css('font-size',getTextSize()*1.1);
+        div_top_sep.css('height',getFileItemHeight()+40);
+        div_music_list.css('height',getFileItemHeight());
+        search_input.css('min-height',getFileItemHeight()*0.5);
+        search_input.css('min-width',3*getFileItemHeight());
+        div_bottom_player.css('min-height',getFileItemHeight());
+        span_player_info.css('font-size',getDescTextSize());
+    }
+    adoptSize();
+    searchMusic();
+</script>
+
+<script>
+    function login() {
+        let userId=input_userid.val();
+        let password=input_password.val();
+        let formData=new FormData();
+        formData.append('userId',userId);
+        formData.append('password',password);
+        $.ajax({
+            url:'/api/login',
+            type: 'POST',
+            cache: false,
+            data: formData,
+            async:true,
+            processData: false,
+            contentType: false,
+            success:function (params) {
+                parseLoginInfo(params);
+            }
+        });
+    }
+
+    function parseLoginInfo(params) {
+        let data=params.code;
+        if(data===0){
+            alert("登陆成功");
+        }else {
+            alert("登陆失败");
+        }
+    }
+
+    function regAccount(){
+        let userId=input_reg_userid.val();
+        let password=input_reg_password.val();
+        let dupPassword=input_reg_dup_password.val();
+        let email=input_reg_email.val();
+        if(password!==dupPassword){
+            alert("输入密码不一致");
+        }else if(!validEmail(email)){
+            alert("邮箱格式错误，邮箱是找回密码的唯一方式");
+        }else if(!validUserId(userId)){
+            alert("用户ID为字母开头的字符串，且长度需要大于6");
+        }else {
+            regNewAccount(userId,password,email,function (params) {
+                if(params!=null&&params.code===0){
+                    alert("注册成功");
+                }else {
+                    alert(params.msg);
+                }
+            });
+        }
+    }
+</script>
+
+
+</body>
+</html>

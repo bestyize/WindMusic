@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TheWind</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/wind.css" rel="stylesheet">
+    <script src="js/jquery-3.5.1.js"></script>
+    <script src="js/winpan.js"></script>
+    <script src="js/adopt.js"></script>
+    <script src="js/download.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+</head>
+<body style="background-color: #F0F0F0">
+<h2>创建模态框（Modal）</h2>
+<!-- 按钮触发模态框 -->
+<button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#loginModal">登录</button>
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header justify-content-center m-auto">
+                <h4 class="modal-title" id="myModalLabel">登录</h4>
+            </div>
+            <div class="modal-body">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="用户名">
+                    <div class="input-group-append">
+                        <span class="input-group-text">用户名</span>
+                    </div>
+                </div>
+                <div class="input-group mb-3">
+                    <input type="password" class="form-control" placeholder="密 码">
+                    <div class="input-group-append">
+                        <span class="input-group-text">密&nbsp&nbsp&nbsp&nbsp码</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary">登录</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+</body>
+</html>
