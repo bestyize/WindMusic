@@ -380,6 +380,7 @@
     function restoreUserInfo() {
         let info= getCookie('info');
         if(info!=null){
+            // let base64Dec=JSON.parse($.base64.decode(info));
             let base64Dec=JSON.parse($.base64.decode(info));
             if(base64Dec!=null&&base64Dec.userName!=null){
                 parseUserInfo(base64Dec);

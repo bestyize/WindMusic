@@ -1,123 +1,175 @@
-/*!
- * jquery.base64.js 0.0.3 - https://github.com/yckart/jquery.base64.js
- * Makes Base64 en & -decoding simpler as it is.
- *
- * Based upon: https://gist.github.com/Yaffle/1284012
- *
- * Copyright (c) 2012 Yannick Albert (http://yckart.com)
- * Licensed under the MIT license (http://www.opensource.org/licenses/mit-license.php).
- * 2013/02/10
- **/
-;(function($) {
+/**
+ * Created by 69023 on 2019-01-02.
+ */
 
-    var b64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/",
-        a256 = '',
-        r64 = [256],
-        r256 = [256],
-        i = 0;
+jQuery.base64 = ( function( $ ) {
 
-    var UTF8 = {
+    var _PADCHAR = "=",
+        _ALPHA = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/",
+        _VERSION = "1.1";//Mr. Ruan fix to 1.1 to support asian char(utf8)
 
-        /**
-         * Encode multi-byte Unicode string into utf-8 multiple single-byte characters
-         * (BMP / basic multilingual plane only)
-         *
-         * Chars in range U+0080 - U+07FF are encoded in 2 chars, U+0800 - U+FFFF in 3 chars
-         *
-         * @param {String} strUni Unicode string to be encoded as UTF-8
-         * @returns {String} encoded string
-         */
-        encode: function(strUni) {
-            // use regular expressions & String.replace callback function for better efficiency
-            // than procedural approaches
-            var strUtf = strUni.replace(/[\u0080-\u07ff]/g, // U+0080 - U+07FF => 2 bytes 110yyyyy, 10zzzzzz
-                function(c) {
-                    var cc = c.charCodeAt(0);
-                    return String.fromCharCode(0xc0 | cc >> 6, 0x80 | cc & 0x3f);
-                })
-                .replace(/[\u0800-\uffff]/g, // U+0800 - U+FFFF => 3 bytes 1110xxxx, 10yyyyyy, 10zzzzzz
-                    function(c) {
-                        var cc = c.charCodeAt(0);
-                        return String.fromCharCode(0xe0 | cc >> 12, 0x80 | cc >> 6 & 0x3F, 0x80 | cc & 0x3f);
-                    });
-            return strUtf;
-        },
 
-        /**
-         * Decode utf-8 encoded string back into multi-byte Unicode characters
-         *
-         * @param {String} strUtf UTF-8 string to be decoded back to Unicode
-         * @returns {String} decoded string
-         */
-        decode: function(strUtf) {
-            // note: decode 3-byte chars first as decoded 2-byte strings could appear to be 3-byte char!
-            var strUni = strUtf.replace(/[\u00e0-\u00ef][\u0080-\u00bf][\u0080-\u00bf]/g, // 3-byte chars
-                function(c) { // (note parentheses for precence)
-                    var cc = ((c.charCodeAt(0) & 0x0f) << 12) | ((c.charCodeAt(1) & 0x3f) << 6) | (c.charCodeAt(2) & 0x3f);
-                    return String.fromCharCode(cc);
-                })
-                .replace(/[\u00c0-\u00df][\u0080-\u00bf]/g, // 2-byte chars
-                    function(c) { // (note parentheses for precence)
-                        var cc = (c.charCodeAt(0) & 0x1f) << 6 | c.charCodeAt(1) & 0x3f;
-                        return String.fromCharCode(cc);
-                    });
-            return strUni;
+    function _getbyte64( s, i ) {
+        // This is oddly fast, except on Chrome/V8.
+        // Minimal or no improvement in performance by using a
+        // object with properties mapping chars to value (eg. 'A': 0)
+
+        var idx = _ALPHA.indexOf( s.charAt( i ) );
+
+        if ( idx === -1 ) {
+            throw "Cannot decode base64";
         }
-    };
 
-    while(i < 256) {
-        var c = String.fromCharCode(i);
-        a256 += c;
-        r256[i] = i;
-        r64[i] = b64.indexOf(c);
-        ++i;
+        return idx;
     }
 
-    function code(s, discard, alpha, beta, w1, w2) {
-        s = String(s);
-        var buffer = 0,
-            i = 0,
-            length = s.length,
-            result = '',
-            bitsInBuffer = 0;
-
-        while(i < length) {
-            var c = s.charCodeAt(i);
-            c = c < 256 ? alpha[c] : -1;
-
-            buffer = (buffer << w1) + c;
-            bitsInBuffer += w1;
-
-            while(bitsInBuffer >= w2) {
-                bitsInBuffer -= w2;
-                var tmp = buffer >> bitsInBuffer;
-                result += beta.charAt(tmp);
-                buffer ^= tmp << bitsInBuffer;
+    function _decode_chars(y, x){
+        while(y.length > 0){
+            var ch = y[0];
+            if(ch < 0x80) {
+                y.shift();
+                x.push(String.fromCharCode(ch));
+            }else if((ch & 0x80) == 0xc0){
+                if(y.length < 2) break;
+                ch = y.shift();
+                var ch1 = y.shift();
+                x.push(String.fromCharCode( ((ch & 0x1f) << 6) + (ch1 & 0x3f)));
+            }else{
+                if(y.length < 3) break;
+                ch = y.shift();
+                var ch1 = y.shift();
+                var ch2 = y.shift();
+                x.push(String.fromCharCode(((ch & 0x0f) << 12) + ((ch1 & 0x3f) << 6) + (ch2 & 0x3f)));
             }
-            ++i;
         }
-        if(!discard && bitsInBuffer > 0) result += beta.charAt(buffer << (w2 - bitsInBuffer));
-        return result;
     }
 
-    var Plugin = $.base64 = function(dir, input, encode) {
-        return input ? Plugin[dir](input, encode) : dir ? null : this;
-    };
+    function _decode( s ) {
+        var pads = 0,
+            i,
+            b10,
+            imax = s.length,
+            x = [],
+            y = [];
 
-    Plugin.btoa = Plugin.encode = function(plain, utf8encode) {
-        plain = Plugin.raw === false || Plugin.utf8encode || utf8encode ? UTF8.encode(plain) : plain;
-        plain = code(plain, false, r256, b64, 8, 6);
-        return plain + '===='.slice((plain.length % 4) || 4);
-    };
+        s = String( s );
 
-    Plugin.atob = Plugin.decode = function(coded, utf8decode) {
-        coded = coded.replace(/[^A-Za-z0-9\+\/\=]/g, "");
-        coded = String(coded).split('=');
-        var i = coded.length;
-        do {--i;
-            coded[i] = code(coded[i], true, r64, a256, 6, 8);
-        } while (i > 0);
-        coded = coded.join('');
-        return Plugin.raw === false || Plugin.utf8decode || utf8decode ? UTF8.decode(coded) : coded;
+        if ( imax === 0 ) {
+            return s;
+        }
+
+        if ( imax % 4 !== 0 ) {
+            throw "Cannot decode base64";
+        }
+
+        if ( s.charAt( imax - 1 ) === _PADCHAR ) {
+            pads = 1;
+
+            if ( s.charAt( imax - 2 ) === _PADCHAR ) {
+                pads = 2;
+            }
+
+            // either way, we want to ignore this last block
+            imax -= 4;
+        }
+
+        for ( i = 0; i < imax; i += 4 ) {
+            var ch1 = _getbyte64( s, i );
+            var ch2 = _getbyte64( s, i + 1);
+            var ch3 = _getbyte64( s, i + 2);
+            var ch4 = _getbyte64( s, i + 3);
+
+            b10 = ( _getbyte64( s, i ) << 18 ) | ( _getbyte64( s, i + 1 ) << 12 ) | ( _getbyte64( s, i + 2 ) << 6 ) | _getbyte64( s, i + 3 );
+            y.push(b10 >> 16);
+            y.push((b10 >> 8) & 0xff);
+            y.push(b10 & 0xff);
+            _decode_chars(y, x);
+        }
+        switch ( pads ) {
+            case 1:
+                b10 = ( _getbyte64( s, i ) << 18 ) | ( _getbyte64( s, i + 1 ) << 12 ) | ( _getbyte64( s, i + 2 ) << 6 );
+                y.push(b10 >> 16);
+                y.push((b10 >> 8) & 0xff);
+                break;
+
+            case 2:
+                b10 = ( _getbyte64( s, i ) << 18) | ( _getbyte64( s, i + 1 ) << 12 );
+                y.push(b10 >> 16);
+                break;
+        }
+        _decode_chars(y, x);
+        if(y.length > 0) throw "Cannot decode base64";
+        return x.join( "" );
+    }
+
+
+    function _get_chars(ch, y){
+        if(ch < 0x80) y.push(ch);
+        else if(ch < 0x800){
+            y.push(0xc0 + ((ch >> 6) & 0x1f));
+            y.push(0x80 + (ch & 0x3f));
+        }else{
+            y.push(0xe0 + ((ch >> 12) & 0xf));
+            y.push(0x80 + ((ch >> 6) & 0x3f));
+            y.push(0x80 + (ch & 0x3f));
+        }
+    }
+
+
+
+    function _encode( s ) {
+        if ( arguments.length !== 1 ) {
+            throw "SyntaxError: exactly one argument required";
+        }
+
+        s = String( s );
+        if ( s.length === 0 ) {
+            return s;
+        }
+
+        //s = _encode_utf8(s);
+        var i,
+            b10,
+            y = [],
+            x = [],
+            len = s.length;
+        i = 0;
+        while(i < len){
+            _get_chars(s.charCodeAt(i), y);
+            while(y.length >= 3){
+                var ch1 = y.shift();
+                var ch2 = y.shift();
+                var ch3 = y.shift();
+                b10 = ( ch1 << 16 ) | ( ch2 << 8 ) | ch3;
+                x.push( _ALPHA.charAt( b10 >> 18 ) );
+                x.push( _ALPHA.charAt( ( b10 >> 12 ) & 0x3F ) );
+                x.push( _ALPHA.charAt( ( b10 >> 6 ) & 0x3f ) );
+                x.push( _ALPHA.charAt( b10 & 0x3f ) );
+            }
+            i++;
+        }
+
+
+        switch ( y.length ) {
+            case 1:
+                var ch = y.shift();
+                b10 = ch << 16;
+                x.push( _ALPHA.charAt( b10 >> 18 ) + _ALPHA.charAt( ( b10 >> 12 ) & 0x3F ) + _PADCHAR + _PADCHAR );
+                break;
+
+            case 2:
+                var ch1 = y.shift();
+                var ch2 = y.shift();
+                b10 = ( ch1 << 16 ) | ( ch2 << 8 );
+                x.push( _ALPHA.charAt( b10 >> 18 ) + _ALPHA.charAt( ( b10 >> 12 ) & 0x3F ) + _ALPHA.charAt( ( b10 >> 6 ) & 0x3f ) + _PADCHAR );
+                break;
+        }
+
+        return x.join( "" );
+    }
+    return {
+        decode: _decode,
+        encode: _encode,
+        VERSION: _VERSION
     };
-}(jQuery));
+}( jQuery ) );
