@@ -6,6 +6,8 @@
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/wind.css" rel="stylesheet">
     <script src="js/jquery-3.5.1.js"></script>
+    <script src="js/jquery.cookie.js"></script>
+    <script src="js/jquery.base64.js"></script>
     <script src="js/winpan.js"></script>
     <script src="js/adopt.js"></script>
     <script src="js/download.js"></script>
@@ -23,6 +25,7 @@
     <div id="div_user_login" class="wind_hand_style" data-toggle="modal" data-target="#loginModal">登录</div>
     <div style="width: 1em"></div>
     <div id="div_user_reg" class="wind_hand_style" data-toggle="modal" data-target="#regModal">注册</div>
+    <img id="img_user_avatar" class="wind_hand_style" src="/img/person.png" hidden alt="">
 </div>
 
 <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -61,19 +64,25 @@
             </div>
             <div class="modal-body">
                 <div class="input-group mb-3">
-                    <input id="input_reg_userid" type="text" class="form-control" placeholder="用户ID">
+                    <input id="input_reg_userid" type="text" class="form-control" placeholder="六位或以上字符，以字母开头">
                     <div class="input-group-append">
-                        <span class="input-group-text">用户ID</span>
+                        <span class="input-group-text">用户&nbsp&nbsp&nbsp&nbspID</span>
                     </div>
                 </div>
                 <div class="input-group mb-3">
-                    <input id="input_reg_password" type="password" class="form-control" placeholder="6位以上的字符，以字母开头">
+                    <input id="input_reg_username" type="text" class="form-control" placeholder="英文汉字均可">
                     <div class="input-group-append">
-                        <span class="input-group-text">密&nbsp&nbsp&nbsp&nbsp码</span>
+                        <span class="input-group-text">昵&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp称</span>
                     </div>
                 </div>
                 <div class="input-group mb-3">
-                    <input id="input_reg_dup_password" type="password" class="form-control" placeholder="6位以上的字符，以字母开头">
+                    <input id="input_reg_password" type="password" class="form-control" placeholder="6位或以上的字符，以字母开头">
+                    <div class="input-group-append">
+                        <span class="input-group-text">密&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp码</span>
+                    </div>
+                </div>
+                <div class="input-group mb-3">
+                    <input id="input_reg_dup_password" type="password" class="form-control" placeholder="6位或以上的字符，以字母开头">
                     <div class="input-group-append">
                         <span class="input-group-text">再输一遍</span>
                     </div>
@@ -81,7 +90,7 @@
                 <div class="input-group mb-3">
                     <input id="input_reg_email" type="email" class="form-control" placeholder="邮 箱">
                     <div class="input-group-append">
-                        <span class="input-group-text">邮&nbsp&nbsp&nbsp&nbsp箱</span>
+                        <span class="input-group-text">邮&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp箱</span>
                     </div>
                 </div>
             </div>
@@ -104,9 +113,7 @@
     <img id="img_player_icon" src="img/person.png" style="width: 50px;height: 50px">
     <span id="span_player_info">《十年》 陈奕迅</span>
     <span style="width: 1em"></span>
-    <audio autoplay="autoplay" id="audio_player" src="http://other.player.ra01.sycdn.kuwo.cn/085c97eec74b4b412a1b2a6044cfa322/5fcb4a67/resource/n3/320/60/17/4090183052.mp3"
-           controls="controls"
-    ></audio>
+    <audio autoplay="autoplay" id="audio_player" src="" controls="controls"></audio>
 </div>
 
 <script>
@@ -118,6 +125,8 @@
     let search_input=$('#search_input');
     let div_music_search_area=$('#div_music_search_area');
     let div_user_login=$('#div_user_login');
+    let div_user_reg=$('#div_user_reg');
+    let img_user_avatar=$('#img_user_avatar');
     let div_bottom_player=$('#div_bottom_player');
     let img_player_icon=$('#img_player_icon');
     let span_player_info=$('#span_player_info');
@@ -125,13 +134,14 @@
 
     let input_userid=$('#input_userid');
     let input_password=$('#input_password');
-    let login_modal=$('#loginModal');
 
     let input_reg_password=$('#input_reg_password');
     let input_reg_userid=$('#input_reg_userid');
 
     let input_reg_dup_password=$('#input_reg_dup_password');
     let input_reg_email=$('#input_reg_email');
+    let input_reg_username=$('#input_reg_username');
+
 
 </script>
 
@@ -294,6 +304,7 @@
         search_input.css('min-width',3*getFileItemHeight());
         div_bottom_player.css('min-height',getFileItemHeight());
         span_player_info.css('font-size',getDescTextSize());
+        img_user_avatar.css('width',getIconSize(),'height',getIconSize());
     }
     adoptSize();
     searchMusic();
@@ -323,10 +334,19 @@
     function parseLoginInfo(params) {
         let data=params.code;
         if(data===0){
-            alert("登陆成功");
+            parseUserInfo(params.obj);
         }else {
-            alert("登陆失败");
+            alert(params.msg);
         }
+    }
+
+    function parseUserInfo(user){
+
+        div_user_login.html(user.userName);
+        div_user_reg.hide();
+        img_user_avatar.removeAttr('hidden');
+        img_user_avatar.attr('src',user.avatar);
+
     }
 
     function regAccount(){
@@ -334,6 +354,7 @@
         let password=input_reg_password.val();
         let dupPassword=input_reg_dup_password.val();
         let email=input_reg_email.val();
+        let userName=input_reg_username.val();
         if(password!==dupPassword){
             alert("输入密码不一致");
         }else if(!validEmail(email)){
@@ -341,15 +362,32 @@
         }else if(!validUserId(userId)){
             alert("用户ID为字母开头的字符串，且长度需要大于6");
         }else {
-            regNewAccount(userId,password,email,function (params) {
+            regNewAccount(userId,password,email,userName,function (params) {
                 if(params!=null&&params.code===0){
                     alert("注册成功");
+                    parseUserInfo(params.obj);
                 }else {
                     alert(params.msg);
                 }
             });
         }
     }
+</script>
+
+<script>
+
+
+    function restoreUserInfo() {
+        let info= getCookie('info');
+        if(info!=null){
+            let base64Dec=JSON.parse($.base64.decode(info));
+            if(base64Dec!=null&&base64Dec.userName!=null){
+                parseUserInfo(base64Dec);
+            }
+
+        }
+    }
+    restoreUserInfo();
 </script>
 
 

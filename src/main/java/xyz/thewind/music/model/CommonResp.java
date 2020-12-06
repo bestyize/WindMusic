@@ -6,6 +6,7 @@ public class CommonResp {
     public Object obj;
 
     public CommonResp() {
+        this.code=-1;
     }
 
     public CommonResp(int code, String msg, Object obj) {

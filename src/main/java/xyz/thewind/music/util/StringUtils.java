@@ -66,6 +66,12 @@ public class StringUtils {
         }
         return false;
     }
+    public static boolean isCorrectUserName(String userName){
+        if(isNullOrEmpty(userName)){
+            return false;
+        }
+        return userName.length()<30;
+    }
 
     public static String toLower(String userId){
         if(isNullOrEmpty(userId)||userId.length()<6||userId.length()>36){

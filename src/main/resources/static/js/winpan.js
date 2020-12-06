@@ -170,11 +170,12 @@ function validUserId(id) {
     return true;
 }
 
-function regNewAccount(userId,password,email,fun){
+function regNewAccount(userId,password,email,userName,fun){
     let dat=new FormData();
     dat.append('userId',userId);
     dat.append('password',password);
     dat.append('email',email);
+    dat.append('userName',userName);
     $.ajax({
         url:"/api/reg",
         type: 'POST',
@@ -187,6 +188,31 @@ function regNewAccount(userId,password,email,fun){
             fun(params);
         }
     });
+}
+
+function getCookie(cookieName) {
+    let allCookies = document.cookie;
+    //索引长度，开始索引的位置
+    let cookie_pos = allCookies.indexOf(cookieName);
+
+    // 如果找到了索引，就代表cookie存在,否则不存在
+    if (cookie_pos !== -1) {
+        // 把cookie_pos放在值的开始，只要给值加1即可
+        //计算取cookie值得开始索引，加的1为“=”
+        cookie_pos = cookie_pos + cookieName.length + 1;
+        //计算取cookie值得结束索引
+        let cookie_end = allCookies.indexOf(";", cookie_pos);
+
+        if (cookie_end === -1) {
+            cookie_end = allCookies.length;
+        }
+        //得到想要的cookie的值
+        return unescape(allCookies.substring(cookie_pos, cookie_end));
+    }
+    return null;
+}
+function base64Decrypt(params) {
+    params.de
 }
 
 

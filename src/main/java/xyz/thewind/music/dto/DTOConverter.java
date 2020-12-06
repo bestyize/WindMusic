@@ -19,7 +19,7 @@ public class DTOConverter {
                 userDTO.getAvatar());
     }
 
-    public static UserDTO defaultUserDTO(String userId,String password,String email){
-        return new UserDTO(userId,password,userId,email,null,new Date(),1,1,"/img/person.png");
+    public static UserDTO defaultUserDTO(String userId,String password,String email,String userName){
+        return new UserDTO(userId,password,userName,email,null,new Date(),1,1,"/img/person.png");
     }
 }

@@ -1,0 +1,4 @@
+GET http://localhost:8080/api/mail?email=3011429848@qq.com
+Content-Type: application/text
+
+###
