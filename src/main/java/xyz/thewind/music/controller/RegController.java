@@ -11,8 +11,12 @@ import xyz.thewind.music.dto.DTOConverter;
 import xyz.thewind.music.model.CommonResp;
 import xyz.thewind.music.model.User;
 import xyz.thewind.music.service.UserService;
+import xyz.thewind.music.util.Base64Converter;
 import xyz.thewind.music.util.GsonConverter;
 import xyz.thewind.music.util.StringUtils;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 
 
 @RestController
@@ -20,7 +24,7 @@ public class RegController {
     @Autowired
     private UserService userService;
     @RequestMapping("/api/reg")
-    public ResponseEntity<CommonResp> regAccount(String userId,String password,String email,String userName){
+    public ResponseEntity<CommonResp> regAccount(String userId, String password, String email, String userName, HttpServletResponse response){
         CommonResp commonResp=new CommonResp();
         HttpHeaders headers=new HttpHeaders();
         if(!StringUtils.isCorrectUserId(userId)||!StringUtils.isCorrectPassword(password)||!StringUtils.isCorrectEmail(email)||!StringUtils.isCorrectUserName(userName)){
@@ -32,9 +36,8 @@ public class RegController {
         } else {
             try {
                 User user=userService.addUser(DTOConverter.defaultUserDTO(userId,password,email,userName));
-                headers.add("Set-Cookie",TokenHelper.generateToken(user.getUserId(),user.getPassword()));
                 user.setPassword("");
-                headers.add("Set-Cookie","info="+ GsonConverter.toJson(user));
+                TokenHelper.setCookie(response,user,userId,password);
                 commonResp.code(0).msg("注册成功").obj(user);
             }catch (Exception e){
                 commonResp.code(-1).msg("注册失败:"+e.toString());

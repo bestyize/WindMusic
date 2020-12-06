@@ -1,7 +1,12 @@
 package xyz.thewind.music.auth;
 
 import xyz.thewind.music.model.Token;
+import xyz.thewind.music.model.User;
 import xyz.thewind.music.util.Base64Converter;
+import xyz.thewind.music.util.GsonConverter;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 
 public class TokenHelper {
     public static String generateToken(String userId,String password){
@@ -34,5 +39,16 @@ public class TokenHelper {
             }
         }
         return token;
+    }
+
+    public static void setCookie(HttpServletResponse response, User user, String userId, String password){
+        Cookie inf=new Cookie("info", Base64Converter.encode(GsonConverter.toJson(user)));
+        inf.setPath("/");
+        inf.setMaxAge(86400);
+        Cookie tok=new Cookie("token",TokenHelper.generateToken(userId,password));
+        tok.setPath("/");
+        inf.setMaxAge(86400);
+        response.addCookie(inf);
+        response.addCookie(tok);
     }
 }

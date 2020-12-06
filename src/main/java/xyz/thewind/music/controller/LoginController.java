@@ -30,13 +30,9 @@ public class LoginController {
         HttpHeaders headers=new HttpHeaders();
         if(user!=null){
             user.setPassword("");
+            TokenHelper.setCookie(response,user,userId,password);
             commonResp.code(0).msg("登陆成功").obj(user);
-            Cookie inf=new Cookie("info", Base64Converter.encode(GsonConverter.toJson(user)));
-            inf.setPath("/");
-            Cookie tok=new Cookie("token",TokenHelper.generateToken(userId,password));
-            tok.setPath("/");
-            response.addCookie(inf);
-            response.addCookie(tok);
+
         }
         return new ResponseEntity<>(commonResp,headers, HttpStatus.OK);
     }
