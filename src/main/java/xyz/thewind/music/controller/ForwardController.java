@@ -13,4 +13,9 @@ public class ForwardController {
     public String login(){
         return "login";
     }
+
+    @RequestMapping("/play")
+    public String play(){
+        return "play";
+    }
 }
