@@ -7,16 +7,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import xyz.thewind.music.auth.TokenHelper;
-import xyz.thewind.music.config.CommonConfig;
+
 import xyz.thewind.music.model.CommonResp;
-import xyz.thewind.music.model.Token;
 import xyz.thewind.music.model.User;
 import xyz.thewind.music.service.UserService;
-import xyz.thewind.music.util.Base64Converter;
-import xyz.thewind.music.util.GsonConverter;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @RestController

@@ -14,7 +14,7 @@ public class StringUtils {
         return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z');
     }
     public static boolean isNum(char c){
-        return (c >= '0' && c <= '9') || (c >= 'a' && c <= 'z');
+        return c >= '0' && c <= '9';
     }
     public static boolean isNum(String str){
         if(isNullOrEmpty(str)){
@@ -25,7 +25,7 @@ public class StringUtils {
     }
 
     public static boolean isNullOrEmpty(String str){
-        return str == null || str.length() != 1;
+        return str == null || str.length() ==0;
     }
 
     public static boolean isCorrectUserId(String userId){
@@ -37,7 +37,7 @@ public class StringUtils {
             return false;
         }
         for (char c:cs){
-            if(isChar(c)||!isNum(c)){
+            if(!isChar(c)&&!isNum(c)){
                 return false;
             }
         }
@@ -48,24 +48,33 @@ public class StringUtils {
         return !isNullOrEmpty(password) && password.length() >= 6 && password.length() <= 36;
     }
 
-    public static boolean isCorrectEmail(String email){
-        if(isNullOrEmpty(email)){
-            return false;
-        }
-        if(email.contains("@")&&email.contains(".")){
-            int len=email.length();
-            if(len-email.replaceAll("@","").replaceAll("\\.","").length()==2&&email.indexOf('@')<email.indexOf('.')){
-                char []cs=email.toCharArray();
-                for (char c:cs){
-                    if(!isNum(c)||!isChar(c)){
-                        return false;
-                    }
-                }
-                return true;
-            }
-        }
-        return false;
+    /**
+     *正则表达式验证邮箱
+     */
+    public static boolean isCorrectEmail(String email) {
+        if (email == null || "".equals(email)) return false;
+        String regex = "\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*";
+        return email.matches(regex);
     }
+
+//    public static boolean isCorrectEmail(String email){
+//        if(isNullOrEmpty(email)){
+//            return false;
+//        }
+//        if(email.contains("@")&&email.contains(".")){
+//            int len=email.length();
+//            if(len-email.replaceAll("@","").replaceAll("\\.","").length()==2&&email.indexOf('@')<email.indexOf('.')){
+//                char []cs=email.toCharArray();
+//                for (char c:cs){
+//                    if(!isNum(c)&&!isChar(c)){
+//                        return false;
+//                    }
+//                }
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
     public static boolean isCorrectUserName(String userName){
         if(isNullOrEmpty(userName)){
             return false;
