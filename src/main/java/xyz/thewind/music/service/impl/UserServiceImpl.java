@@ -34,6 +34,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void updateUserStateById(String userId, int state) {
+        userRepository.updateStatusByUserId(state, userId);
+
+    }
+
+
+    @Override
     public User addUser(UserDTO userDTO) {
         User user= DTOConverter.convertUserDtoToUser(userDTO);
         return userRepository.save(user);

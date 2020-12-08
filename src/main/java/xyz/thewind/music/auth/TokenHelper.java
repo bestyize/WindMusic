@@ -13,29 +13,18 @@ public class TokenHelper {
         return Base64Converter.encode(userId+" "+password);
     }
     //userId=1234;password=123456
-    public static Token parseToken(String cookie){
-        cookie=Base64Converter.decode(cookie);
-        String userId="";
-        String password="";
-        Token token=new Token(userId,password);
-        if(cookie==null){
+    public static Token parseToken(Cookie[] cookies){
+        Token token=new Token("","");
+        if(cookies==null){
             return token;
         }
-        cookie=cookie.replaceAll(" ","");
-        String[] cookies=cookie.split(";");
-        if(cookies.length==0){
-            return token;
-        }
-        for (String cookieSplice:cookies){
-            String[] pair=cookieSplice.split("=");
-            if(cookies.length!=2){
-                return token;
-            }
-            if(pair[0].equals("userId")){
-                token.setUserId(pair[1]);
-            }
-            if(pair[0].equals("password")){
-                token.setPassword(pair[1]);
+        for (Cookie cookie:cookies){
+            if(cookie.getName().equals("token")){
+                String tokenStr=Base64Converter.decode(cookie.getValue());
+                String[] tok=tokenStr.split(" ");
+                if(tok.length==2){
+                    return new Token(tok[0],tok[1]);
+                }
             }
         }
         return token;
