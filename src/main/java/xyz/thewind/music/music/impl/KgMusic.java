@@ -163,8 +163,7 @@ public class KgMusic implements MusicHelper {
         headerMap.put("KG-THash","1509c84");
         headerMap.put("x-router","tracker.kugou.com");
         headerMap.put("Host","gateway.kugou.com");
-        String response= HttpRequestHelper.downloadWebSiteUseGet(downloadLinkBuilder(hash,true),headerMap);
-        return response;
+        return HttpRequestHelper.downloadWebSiteUseGet(downloadLinkBuilder(hash,true),headerMap);
     }
 
     public static String downloadLinkBuilder(String hash,boolean usePid){

@@ -6,21 +6,16 @@ import org.springframework.http.ResponseEntity;
 
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import xyz.thewind.music.auth.TokenHelper;
 import xyz.thewind.music.model.CommonResp;
 import xyz.thewind.music.model.Token;
 import xyz.thewind.music.service.RedisService;
 import xyz.thewind.music.service.UserService;
-import xyz.thewind.music.service.impl.RedisServiceImpl;
 import xyz.thewind.music.util.VerifyCode;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
 
 @RestController
 public class MailController {
@@ -35,7 +30,7 @@ public class MailController {
         String email=request.getParameter("email");
         String userId=request.getParameter("userId");
         CommonResp commonResp=new CommonResp();
-        if(!redisService.isRedisActive()){
+        if(redisService.isRedisActive()){
             commonResp.code(-1).msg("验证服务尚未开启,请稍后再试");
 
         }else {
@@ -56,7 +51,7 @@ public class MailController {
     public ResponseEntity<CommonResp> verifyCode(HttpServletRequest request){
         Token token= TokenHelper.parseToken(request.getCookies());
         CommonResp commonResp=new CommonResp();
-        if(!redisService.isRedisActive()){
+        if(redisService.isRedisActive()){
             commonResp.code(-1).msg("验证服务尚未开启,请稍后再试");
         }else {
             String email=request.getParameter("email");

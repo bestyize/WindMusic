@@ -4,9 +4,6 @@ public class Token {
     public String userId;
     public String password;
 
-    public Token() {
-    }
-
     public Token(String userId, String password) {
         this.userId = userId;
         this.password = password;
@@ -27,6 +24,5 @@ public class Token {
     public void setPassword(String password) {
         this.password = password;
     }
-
 
 }

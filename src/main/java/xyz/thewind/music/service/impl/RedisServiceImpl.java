@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import xyz.thewind.music.service.RedisService;
-import xyz.thewind.music.util.Base64Converter;
 
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -47,7 +46,7 @@ public class RedisServiceImpl implements RedisService {
         }catch (Exception e){
             connectState=false;
         }
-        return connectState;
+        return !connectState;
     }
 
 

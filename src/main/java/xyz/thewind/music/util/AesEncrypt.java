@@ -44,7 +44,7 @@ public class AesEncrypt {
             cipher.init(Cipher.ENCRYPT_MODE, key, new IvParameterSpec(ivParameter.getBytes()));
             byte[] encryptedText = cipher.doFinal(content.getBytes());
             return new String(new Base64().encode(encryptedText)).replaceAll("\r\n", "");
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
         return null;
@@ -58,16 +58,16 @@ public class AesEncrypt {
      */
     public static String AESDecode(String encodeRules, String content, String ivParameter) throws Exception {
         try {
-            // 判断Key是否正确  
+            // 判断Key是否正确
             if (encodeRules == null) {
 
                 return null;
             }
-            // 判断Key是否为16位  
+            // 判断Key是否为16位
             if (encodeRules.length() != 16) {
                 return null;
             }
-            byte[] raw = encodeRules.getBytes("UTF-8");
+            byte[] raw = encodeRules.getBytes(StandardCharsets.UTF_8);
             Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
             SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS7Padding","BC");
@@ -76,8 +76,7 @@ public class AesEncrypt {
             try {
                 byte[] encrypted1 = new Base64().decode(content);//先用base64解密  
                 byte[] original = cipher.doFinal(encrypted1);
-                String originalString = new String(original);
-                return originalString;
+                return new String(original);
             } catch (Exception e) {
 
                 return null;

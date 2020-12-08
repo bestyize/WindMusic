@@ -53,8 +53,8 @@ public class XmMusic implements MusicHelper {
      *         this.picUrl = picUrl;
      *         this.lrcUrl = lrcUrl;
      *         this.mvUrl = mvUrl;
-     * @param response
-     * @return
+     * @param response 请求结果
+     * @return 解析的值
      */
     private List<SongBean> xmSongSearchRespProcess(String response){
 
@@ -119,8 +119,7 @@ public class XmMusic implements MusicHelper {
             headerMap.put("Cookie",cookie);
             headerMap.put("Cache-Control","no-cache");
             headerMap.put("Accept","/*");
-            String response=downloadWebSiteUseGet(website,headerMap);
-            return response;
+            return downloadWebSiteUseGet(website,headerMap);
         } catch (Exception e) {
             return null;
         }
@@ -128,15 +127,6 @@ public class XmMusic implements MusicHelper {
 
     private static String xmToken = "";
     private static String xmCookie = "";
-
-    private String getDownloadLinkById(String songid, String quality) {
-        if (quality == null || quality.length() != 2) {
-            return "";
-        }
-        return "";
-
-
-    }
 
     private void updateXmToken() {
         //cna="mwGIFQabwA8CAdvoIVtV7N8b"; uidXM=14345449; _m_h5_tk=b9ee042ad4b616035d7864a2d41b8842_1560358851910; _m_h5_tk_enc=281d3d8188785edaf1b45e3f0f9fb19a
@@ -151,12 +141,12 @@ public class XmMusic implements MusicHelper {
         }
         cookie = cookie.replaceAll("\\[", "").replaceAll("\\]", "");
         String[] cookies = cookie.split(";");
-        String tempCookie = "";
+        StringBuilder tempCookie = new StringBuilder();
         for (String c : cookies) {
             if (c.contains("_m_h5_tk=")) {
                 xmToken = c.substring(c.indexOf("_m_h5_tk=") + "_m_h5_tk=".length(), c.lastIndexOf("_"));
             }
-            tempCookie += (c + ";");
+            tempCookie.append(c).append(";");
         }
 
         String cnaCookie = getXiaMiCookie("http://log.mmstat.com/eg.js");
@@ -172,7 +162,7 @@ public class XmMusic implements MusicHelper {
                 cna = c.replaceAll("cna=", "");
             }
         }
-        xmCookie = tempCookie.replaceAll("Path=/", "");
+        xmCookie = tempCookie.toString().replaceAll("Path=/", "");
         //_xmCookie = "cna=\"" + cna + "\";uidXM=yize_uid;" + _xmCookie;
         xmCookie = "cna=" + cna + ";uidXM=yize_uid;" + xmCookie;
     }
@@ -185,9 +175,8 @@ public class XmMusic implements MusicHelper {
         String signData = xmToken + "&" + time + "&23649156&" + data;
         String sign = convertToMd5(signData);
         try {
-            String url = "https://acs.m.xiami.com/h5/" + method + "/1.0/?jsv=2.4.0&appKey=23649156&t=" + time + "&sign=" + sign + "&v=1.0&AntiCreep=true&AntiFlood=true&type=originaljson&dataType=originaljsonp&api=" + method + "&data=" + URLEncoder.encode(data, "utf-8");
-            return url;
-        } catch (Exception e) {
+            return "https://acs.m.xiami.com/h5/" + method + "/1.0/?jsv=2.4.0&appKey=23649156&t=" + time + "&sign=" + sign + "&v=1.0&AntiCreep=true&AntiFlood=true&type=originaljson&dataType=originaljsonp&api=" + method + "&data=" + URLEncoder.encode(data, "utf-8");
+        } catch (Exception ignored) {
         }
         return "";
     }
@@ -210,7 +199,7 @@ public class XmMusic implements MusicHelper {
             conn.disconnect();
             return cookie.get("Set-Cookie").toString();
         } catch (Exception e) {
-            System.out.println(e.getCause());
+            System.out.println(e.getCause().toString());
             return "";
         }
     }
@@ -220,7 +209,7 @@ public class XmMusic implements MusicHelper {
         return String.valueOf(6000000 + ran.nextInt(6000000));
     }
 
-    private class SearchResponseBean{
+    private static class SearchResponseBean{
         String api;
         Data1 data;
 

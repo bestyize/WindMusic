@@ -161,7 +161,7 @@ public class WyMusic implements MusicHelper {
 
     }
 
-    private class SearchResponseBean{
+    private static class SearchResponseBean{
         boolean needLogin;
         Data result;
         int code;

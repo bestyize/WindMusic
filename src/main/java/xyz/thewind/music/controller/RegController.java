@@ -11,11 +11,7 @@ import xyz.thewind.music.dto.DTOConverter;
 import xyz.thewind.music.model.CommonResp;
 import xyz.thewind.music.model.User;
 import xyz.thewind.music.service.UserService;
-import xyz.thewind.music.util.Base64Converter;
-import xyz.thewind.music.util.GsonConverter;
 import xyz.thewind.music.util.StringUtils;
-
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 

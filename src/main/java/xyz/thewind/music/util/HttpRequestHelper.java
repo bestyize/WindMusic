@@ -37,8 +37,8 @@ public class HttpRequestHelper {
      * 做POST请求
      * @param link 请求地址
      * @param params 请求体，类似于keyword=十年&num=100这样的格式
-     * @param headerMap
-     * @return
+     * @param headerMap 请求头
+     * @return 请求结果
      */
     public static String downloadWebSiteUsePost(String link,String params, Map<String,String> headerMap){
         String response=null;
