@@ -240,7 +240,7 @@ public class XmMusic implements MusicHelper {
                 this.data = data;
             }
 
-            class Data{
+            static class Data{
                 @SerializedName("songs")
                 List<SongDetail> songDetailList;
 
@@ -252,7 +252,7 @@ public class XmMusic implements MusicHelper {
                     this.songDetailList = songDetailList;
                 }
 
-                class SongDetail{
+                static class SongDetail{
                     String songId;
                     String songName;
                     long albumId;
@@ -269,7 +269,7 @@ public class XmMusic implements MusicHelper {
                     String mvId;
                     @SerializedName("singerVOs")
                     List<SingerVOs> singerList;
-                    class SingerVOs{
+                    static class SingerVOs{
                         @SerializedName("artistStringId")
                         String singerId;
                         @SerializedName("artistLogo")
@@ -311,7 +311,7 @@ public class XmMusic implements MusicHelper {
                         }
                     }
 
-                    class ListenFiles{
+                    static class ListenFiles{
 
                         long fileSize;
                         String format;
@@ -466,7 +466,7 @@ public class XmMusic implements MusicHelper {
                         this.singerList = singerList;
                     }
 
-                    class LyricInfo{
+                    static class LyricInfo{
                         @SerializedName("lyricFile")
                         String lyricUrl;
                         String lyricId;

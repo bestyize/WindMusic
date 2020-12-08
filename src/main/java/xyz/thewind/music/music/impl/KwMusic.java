@@ -461,7 +461,7 @@ public class KwMusic implements MusicHelper {
             this.data = data;
         }
 
-        class Data{
+        static class Data{
             private String total;
             private List<SongDetail> list;
 
@@ -481,7 +481,7 @@ public class KwMusic implements MusicHelper {
                 this.list = list;
             }
 
-            class SongDetail{
+            static class SongDetail{
                 @SerializedName("rid")
                 private String songId;
                 @SerializedName("name")

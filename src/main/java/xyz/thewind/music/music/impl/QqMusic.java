@@ -222,7 +222,7 @@ public class QqMusic implements MusicHelper {
             this.data = data;
         }
 
-        class Data{
+        static class Data{
             String keyword;
             Song song;
 
@@ -415,7 +415,7 @@ public class QqMusic implements MusicHelper {
         }
     }
 
-    private class DownloadBean{
+    private static class DownloadBean{
         int code;
         @SerializedName("queryvkey")
         Data1 data;
@@ -427,7 +427,7 @@ public class QqMusic implements MusicHelper {
         public void setCode(int code) {
             this.code = code;
         }
-        class Data1{
+        static class Data1{
             int code;
             Data data;
             public int getCode() {
@@ -446,7 +446,7 @@ public class QqMusic implements MusicHelper {
                 this.data = data;
             }
 
-            class Data{
+            static class Data{
                 long expiration;
                 @SerializedName("midurlinfo")
                 List<SongDetail> songDetailList;

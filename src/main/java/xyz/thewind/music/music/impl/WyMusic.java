@@ -190,7 +190,7 @@ public class WyMusic implements MusicHelper {
             this.code = code;
         }
 
-        class Data{
+        static class Data{
             @SerializedName("songs")
             List<SongDetail> songList;
             int songCount;
@@ -211,7 +211,7 @@ public class WyMusic implements MusicHelper {
                 this.songCount = songCount;
             }
 
-            class SongDetail{
+            static class SongDetail{
                 @SerializedName("id")
                 long songId;
                 @SerializedName("name")
@@ -312,7 +312,7 @@ public class WyMusic implements MusicHelper {
                     this.privilege = privilege;
                 }
 
-                class Singer{
+                static class Singer{
                     @SerializedName("id")
                     long singerId;
                     @SerializedName("name")
@@ -334,7 +334,7 @@ public class WyMusic implements MusicHelper {
                         this.singerName = singerName;
                     }
                 }
-                class Album{
+                static class Album{
                     long albumId;
                     String albumName;
                     String albumPicUrl;
@@ -363,7 +363,7 @@ public class WyMusic implements MusicHelper {
                         this.albumPicUrl = albumPicUrl;
                     }
                 }
-                class Quality{
+                static class Quality{
                     @SerializedName("br")
                     String bitRate;
                     @SerializedName("size")
@@ -385,7 +385,7 @@ public class WyMusic implements MusicHelper {
                         this.fileSize = fileSize;
                     }
                 }
-                class Privilege{
+                static class Privilege{
                     int maxbr;
 
                     public int getMaxbr() {

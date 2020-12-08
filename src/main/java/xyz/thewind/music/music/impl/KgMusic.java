@@ -180,19 +180,19 @@ public class KgMusic implements MusicHelper {
 
         StringBuilder sb=new StringBuilder();
         sb.append("pid=2&cmd=26&area_code=1&behavior=play&module=&ptype=0&mtype=0&album_id=39027869&version=10259&album_audio_id=272185068&with_res_tag=1");
-        sb.append("&mid="+mid);
-        sb.append("&vipType="+vipType);
-        sb.append("&hash="+hash);
-        sb.append("&dfid="+dfid);
-        sb.append("&token="+token);
-        sb.append("&appid="+appid);
-        sb.append("&userid="+uid);
+        sb.append("&mid=").append(mid);
+        sb.append("&vipType=").append(vipType);
+        sb.append("&hash=").append(hash);
+        sb.append("&dfid=").append(dfid);
+        sb.append("&token=").append(token);
+        sb.append("&appid=").append(appid);
+        sb.append("&userid=").append(uid);
         if(usePid){
-            sb.append("&pidversion="+pidVersion);
+            sb.append("&pidversion=").append(pidVersion);
             String key= Md5Encrypt.convertToMd5(hash+pidVersionSecret+appid+mid+uid);
-            sb.append("&key="+key);
+            sb.append("&key=").append(key);
         }else {
-            sb.append("&key="+Md5Encrypt.convertToMd5(hash+"kgcloudv2"+appid+mid+uid));
+            sb.append("&key=").append(Md5Encrypt.convertToMd5(hash + "kgcloudv2" + appid + mid + uid));
         }
         return baseLink+sb.toString();
     }
@@ -226,7 +226,7 @@ public class KgMusic implements MusicHelper {
             this.data = data;
         }
 
-        class Data{
+        static class Data{
             @SerializedName("info")
             List<SongDetail> songDetailList;
 
@@ -238,7 +238,7 @@ public class KgMusic implements MusicHelper {
                 this.songDetailList = songDetailList;
             }
 
-            class SongDetail{
+            static class SongDetail{
                 int price;
                 @SerializedName("singername")
                 String singers;
@@ -392,7 +392,7 @@ public class KgMusic implements MusicHelper {
     }
 
 
-    private class DownloadResponseBean{
+    private static class DownloadResponseBean{
         int status;
         long fileSize;
         List<String> url;
