@@ -1,4 +1,10 @@
-GET https://localhost/api/mail?email=3011429848@qq.com
+GET https://localhost/api/mail?email=3011429848@qq.com&userId=bestyize
 Content-Type: application/text
+
+###
+
+GET https://localhost/api/verifycode?email=3011429848@qq.com&userId=bestyize&code=6568
+Content-Type: application/text
+Cookie: token=YmVzdHlpemUgenIyMDE0
 
 ###
