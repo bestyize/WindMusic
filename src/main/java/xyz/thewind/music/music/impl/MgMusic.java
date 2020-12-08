@@ -47,8 +47,10 @@ public class MgMusic implements MusicHelper {
     private String mgHttpSearchRequest(String keyword, int num){
         String response="";
         try {
-            String link = "https://m.music.migu.cn/migu/remoting/scr_search_tag?rows=" + num + "&type=2&keyword=" + URLEncoder.encode(keyword, "utf-8") + "&pgc=1";
+            String key=URLEncoder.encode(keyword, "utf-8");
+            String link = "https://m.music.migu.cn/migu/remoting/scr_search_tag?rows=" + num + "&type=2&keyword=" + key + "&pgc=1";
             Map<String,String> headerMap=new HashMap<>();
+            headerMap.put("Referer","https://m.music.migu.cn/v3/search?keyword="+key);
             response = downloadWebSiteUseGet(link,headerMap);
 
         } catch (UnsupportedEncodingException e) {
@@ -255,7 +257,7 @@ public class MgMusic implements MusicHelper {
         return songBean;
     }
 
-    private class MgDownloadBean{
+    private static class MgDownloadBean{
         String code;
         String info;
         List<MgMusicDetail> resource;
@@ -284,7 +286,7 @@ public class MgMusic implements MusicHelper {
             this.resource = resource;
         }
 
-        class MgMusicDetail{
+        static class MgMusicDetail{
             String lrcUrl;
             List<RateFormats> rateFormats;
 
@@ -304,8 +306,9 @@ public class MgMusic implements MusicHelper {
                 this.rateFormats = rateFormats;
             }
 
-            class RateFormats{
+            static class RateFormats{
                 String formatType;
+                @SerializedName(value = "url",alternate = "androidUrl")
                 String url;
                 String size;
 

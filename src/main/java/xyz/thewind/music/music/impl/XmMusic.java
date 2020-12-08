@@ -150,7 +150,7 @@ public class XmMusic implements MusicHelper {
         }
 
         String cnaCookie = getXiaMiCookie("http://log.mmstat.com/eg.js");
-        if (cnaCookie == null || cnaCookie == "") {
+        if (cnaCookie == null || cnaCookie.equals("")) {
             return;
         }
         cnaCookie = cnaCookie.replaceAll("\\[", "").replaceAll("\\]", "");
@@ -229,7 +229,7 @@ public class XmMusic implements MusicHelper {
             this.data = data;
         }
 
-        class Data1{
+        static class Data1{
             Data data;
 
             public Data getData() {
