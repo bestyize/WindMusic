@@ -19,7 +19,9 @@
 
 ## 1.2 使用方式
 
-### 1.2.1 Cookie配置
+### 1.2.1 配置工作模式
+
+#### 1.2.1.1 Cookie配置
 
 不需要经过Cookie配置也可获取普通音质的下载链接，所有接口都支持下载非VIP的各种音质音乐。
 
@@ -63,12 +65,37 @@ cXFtdXNpY191aW49MTIzNDU2Nzg7cXFtdXNpY19rZXk9MTIzNDU2Nzg7a2dfdWlkPTEyMzQ1Njc4O2tn
 https://www.thewind.xyz/api/updateconfig?params=cXFtdXNpY191aW49MTIzNDU2Nzg7cXFtdXNpY19rZXk9MTIzNDU2Nzg7a2dfdWlkPTEyMzQ1Njc4O2tnX3Rva2VuPTEyMzQ1Njc4O2tnX3BpZF9zZWNyZXQ9MTIzNDU2Nzg7d3lfbXVzaWNfdT0xMjM0NTY3OA==
 ```
 
+#### 1.2.1.2 音乐源配置
+
+如果配置了服务端音乐源，那么普通请求的音乐源将不会生效，而是采用服务端的音乐源。与上述配置采用一个接口
+
+|名称|内容|备注|是否必须|
+|---|---|---|---|
+|api|https://www.thewind.xyz/api/configupdate|请求地址|√|
+|params|配置的音乐源|请求参数|√|
+
+实际上，上面可选的一共有六种,分别是
+
+|可选参数|xm|kw|wy|mg|qq|kg|
+|---|---|---|---|---|---|---|
+|源码|songSrc=XM|songSrc=KW|songSrc=WY|songSrc=MG|songSrc=QQ|songSrc=KG|
+|base64编码后|c29uZ1NyYz1YTQ==|c29uZ1NyYz1LVw==|c29uZ1NyYz1XWQ==|c29uZ1NyYz1NRw==|c29uZ1NyYz1RUQ==|c29uZ1NyYz1LRw==|
+
+一个完整的请求示例
+
+```html
+<!--请求将音乐源改成WY-->
+https://www.thewind.xyz/api/updateconfig?params=c29uZ1NyYz1XWQ==
+```
+
+
+
 
 ### 1.2.2 搜索API介绍
 
 |名称|内容|备注|是否必须|
 |---|---|---|---|
-|api|http://www.thewind.xyz/api/search|请求地址|√|
+|api|https://www.thewind.xyz/api/search|请求地址|√|
 |src|XM、KW、WY、MG、QQ、KG|请求平台|√|
 |num|整数即可，默认20个|最大请求数量|√|
 |keyword|关键词|搜索的关键词|√|
