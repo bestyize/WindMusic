@@ -4,8 +4,10 @@ import com.google.gson.annotations.SerializedName;
 import xyz.thewind.music.model.SongBean;
 import xyz.thewind.music.music.MusicHelper;
 import xyz.thewind.music.util.GsonConverter;
+import xyz.thewind.music.util.HttpRequestHelper;
 
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.*;
 
@@ -15,9 +17,9 @@ import static xyz.thewind.music.util.SongUtil.*;
 
 
 public class WyMusic implements MusicHelper {
-    public static final String wyCookie = "MUSIC_U=8149f85dbe6e500d647b36e8504fce3bd243a48a699bc26e7531174de4cd486e26296e43872d0f6956a6c2c5be5fc4fd0d8f0d281b3ffd12; __remember_me=true; __csrf=26ae61aeed306bf69e4d2ea5edd00c9b;";
     private static final HashMap<String, String> qualityMap;
-
+    private static final String userCookie="MUSIC_U=ba0a04e302da6a12399d1817fe4eae9dd7c6b7f4865bf4fd9b986b5c8c07893333a649814e309366;";
+    private static final Map<String,String> configMap=new HashMap<>();
     static {
         qualityMap=new HashMap<>();
         qualityMap.put(QUALITY_SQ,"999000");
@@ -26,11 +28,19 @@ public class WyMusic implements MusicHelper {
         qualityMap.put(QUALITY_LQ,"128000");
     }
     @Override
+    public void setConfigMap(Map<String, String> configMaps) {
+        configMap.putAll(configMaps);
+    }
+    @Override
     public List<SongBean> searchMusic(String keyword, int num) {
-
         int page=1;
-        String text = "{\"s\":\"" + keyword + "\",\"type\":1,\"offset\":" + (page - 1) * num + ",\"limit\":" + num + ",\"total\":true}";
-        String response = wyHttpRequest("http://music.163.com/weapi/cloudsearch/get/web?csrf_token=", text);
+        String searchLink= null;
+        try {
+            searchLink = "http://music.163.com/api/cloudsearch/get/web?s="+ URLEncoder.encode(keyword,"UTF-8")+"&type=1&offset="+(page-1)*num+"&limit="+num+"&total=true";
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        String response = HttpRequestHelper.downloadWebSiteUseGet(searchLink, null);
         return wySongSearchRespProcess(response);
     }
     //目前仅仅支持网易普通格式
@@ -59,15 +69,6 @@ public class WyMusic implements MusicHelper {
     }
 
     /**
-     *        this.songSrc = songSrc;
-     *         this.songId = songId;
-     *         this.songName = songName;
-     *         this.singersName = singersName;
-     *         this.albumName = albumName;
-     *         this.quality=quality;
-     *         this.picUrl = picUrl;
-     *         this.lrcUrl = lrcUrl;
-     *         this.mvUrl = mvUrl;
      * @param response
      * @return
      */
@@ -114,51 +115,41 @@ public class WyMusic implements MusicHelper {
         return singerIdList;
     }
 
-    private String wyHttpRequest(String url,String params){
-        String encParams=requestParamsEncrypt(params);
-        String response="";
-        try {
-
-            Map<String,String> headerMap=new HashMap<>();
-            headerMap.put("User-Agent","Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36");
-            headerMap.put("Host","music.163.com");
-            headerMap.put("Connection","Keep-Alive");
-            headerMap.put("Content-Type","application/x-www-form-urlencoded");
-            headerMap.put("Cookie",wyCookie);
-            headerMap.put("Accept","text/html, application/xhtml+xml, application/xml; q=0.9, image/webp, */*; q=0.8");
-            response=downloadWebSiteUsePost(url,encParams,headerMap);
-        } catch (Exception ignored) {
-        }
-        return response;
-    }
-
-
     private String getPlayUrl(String id, String quality){
-        String text = "{\"ids\":[\"" + id + "\"],\"br\":" + quality + ",\"csrf_token\":\"\"}";
-        String html = wyHttpRequest("http://music.163.com/weapi/song/enhance/player/url?csrf_token=", text);
-        String url=html.substring(html.indexOf("\"url\":")+"\"url\":".length()+1);
-        url=url.substring(0,url.indexOf(",")-1);
-        return url;
+        List<String> ids=new ArrayList<>();
+        ids.add(id);
+        return getPlayUrl(ids,quality);
     }
 
-    private String requestParamsEncrypt(String params){
-        String encKey="0CoJUm6Qyw8W8jud";
-        String secKey = "a44e542eaac91dce";
-        int pad = 16 - params.length() % 16;
-        for (int i = 0; i < pad; i++)
-        {
-            params = params + (char)pad;
-        }
-        String aiv = "0102030405060708";
+    private String getPlayUrl(List<String> ids,String quality){
+        String url= null;
         try {
-            String aesEncData=AESEncode(AESEncode(params,encKey,aiv),secKey,aiv);
-            String encSecKey = "411571dca16717d9af5ef1ac97a8d21cb740329890560688b1b624de43f49fdd7702493835141b06ae45f1326e264c98c24ce87199c1a776315e5f25c11056b02dd92791fcc012bff8dd4fc86e37888d5ccc060f7837b836607dbb28bddc703308a0ba67c24c6420dd08eec2b8111067486c907b6e53c027ae1e56c188bc568e";
-            return "params="+ URLEncoder.encode(aesEncData,"utf-8") +"&encSecKey="+encSecKey;
-        } catch (Exception e) {
+            url = "http://music.163.com/api/song/enhance/player/url?ids="+ URLEncoder.encode(ids.toString(),"UTF-8")+"&br="+quality;
+        } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
+        Map<String,String> headerMap=new HashMap<>();
+        headerMap.put("Cookie",configMap.getOrDefault("wy_music_u",userCookie));
+        String response=HttpRequestHelper.downloadWebSiteUseGet(url,headerMap);
+        DownloadResponseBean responseBean=GsonConverter.fromJson(response,DownloadResponseBean.class);
+        if(responseBean!=null&&responseBean.getData()!=null){
+            DownloadResponseBean.Data data=responseBean.getData().get(0);
+            if(data!=null){
+                return data.getUrl();
+            }
+        }
         return null;
+    }
 
+    @Override
+    public String searchMvUrl(String mvId) {
+        //https://music.163.com/api/song/enhance/play/mv/url?id=303140&r=1080;
+        String response=HttpRequestHelper.downloadWebSiteUseGet("https://music.163.com/api/song/enhance/play/mv/url?id="+mvId+"&r=1080",null);
+        MvDownloadBean bean=GsonConverter.fromJson(response,MvDownloadBean.class);
+        if(bean!=null){
+            return bean.getData().getUrl();
+        }
+        return "";
     }
 
     private static class SearchResponseBean{
@@ -335,8 +326,11 @@ public class WyMusic implements MusicHelper {
                     }
                 }
                 static class Album{
+                    @SerializedName("id")
                     long albumId;
+                    @SerializedName("name")
                     String albumName;
+                    @SerializedName("picUrl")
                     String albumPicUrl;
 
                     public long getAlbumId() {
@@ -397,6 +391,117 @@ public class WyMusic implements MusicHelper {
                     }
                 }
 
+            }
+        }
+    }
+
+    private static class DownloadResponseBean{
+        int code;
+        List<Data> data=new ArrayList<>();
+
+        public int getCode() {
+            return code;
+        }
+
+        public void setCode(int code) {
+            this.code = code;
+        }
+
+        public List<Data> getData() {
+            return data;
+        }
+
+        public void setData(List<Data> data) {
+            this.data = data;
+        }
+
+        static class Data{
+            long id;
+            String url;
+            int br;
+            long size;
+            String type;
+
+            public long getId() {
+                return id;
+            }
+
+            public void setId(long id) {
+                this.id = id;
+            }
+
+            public String getUrl() {
+                return url;
+            }
+
+            public void setUrl(String url) {
+                this.url = url;
+            }
+
+            public int getBr() {
+                return br;
+            }
+
+            public void setBr(int br) {
+                this.br = br;
+            }
+
+            public long getSize() {
+                return size;
+            }
+
+            public void setSize(long size) {
+                this.size = size;
+            }
+
+            public String getType() {
+                return type;
+            }
+
+            public void setType(String type) {
+                this.type = type;
+            }
+        }
+    }
+
+    private static class MvDownloadBean{
+        int code;
+        Data data=new Data();
+
+        public int getCode() {
+            return code;
+        }
+
+        public void setCode(int code) {
+            this.code = code;
+        }
+
+        public Data getData() {
+            return data;
+        }
+
+        public void setData(Data data) {
+            this.data = data;
+        }
+
+        static class Data{
+            int id;
+            String url;
+
+            public int getId() {
+                return id;
+            }
+
+            public void setId(int id) {
+                this.id = id;
+            }
+
+            public String getUrl() {
+                return url;
+            }
+
+            public void setUrl(String url) {
+                this.url = url;
             }
         }
     }

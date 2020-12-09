@@ -9,7 +9,6 @@ import xyz.thewind.music.music.MusicHelper;
 import xyz.thewind.music.util.GsonConverter;
 import xyz.thewind.music.util.HttpRequestHelper;
 import xyz.thewind.music.util.Md5Encrypt;
-import xyz.thewind.music.util.PropertyReader;
 
 
 import java.io.UnsupportedEncodingException;
@@ -23,6 +22,8 @@ public class KgMusic implements MusicHelper {
     private static final Logger logger= LogManager.getLogger(KgMusic.class);
     private static final HashMap<Integer, String> qualityMap;
 
+    private static final Map<String,String> configMap=new HashMap<>();
+
     static {
         qualityMap=new HashMap<>();
         qualityMap.put(999000,QUALITY_SQ);
@@ -31,7 +32,10 @@ public class KgMusic implements MusicHelper {
         qualityMap.put(128000,QUALITY_LQ);
     }
 
-
+    @Override
+    public void setConfigMap(Map<String, String> configMaps) {
+        configMap.putAll(configMaps);
+    }
 
     @Override
     public List<SongBean> searchMusic(String keyword, int num) {
@@ -43,13 +47,13 @@ public class KgMusic implements MusicHelper {
     public SongBean searchDownloadLink(SongBean songBean, String quality) {
         String songId=songBean.getSongId();
         if(songId!=null){
-            String[] hashs=songId.split("-");
-            if(hashs.length==1||quality.equals(QUALITY_LQ)){
-                downloadResponseProcess(songBean,downloadRequest(hashs[0]));
+            String[] hash=songId.split("-");
+            if(hash.length==1||quality.equals(QUALITY_LQ)){
+                songBean=downloadResponseProcess(songBean,downloadRequest(hash[0]));
             }else if(quality.equals(QUALITY_SQ)){
-                downloadResponseProcess(songBean,downloadRequest(hashs[2]));
+                songBean=downloadResponseProcess(songBean,downloadRequest(hash[2]));
             }else if(quality.equals(QUALITY_HQ)){
-                downloadResponseProcess(songBean,downloadRequest(hashs[1]));
+                songBean=downloadResponseProcess(songBean,downloadRequest(hash[1]));
             }
         }
         return songBean;
@@ -136,12 +140,13 @@ public class KgMusic implements MusicHelper {
 
 
 
-    public SongBean downloadResponseProcess(SongBean songBean,String response){
+    public SongBean downloadResponseProcess(SongBean songBean, String response){
         try {
             response=response.replace("<!--KG_TAG_RES_START-->","").replace("<!--KG_TAG_RES_END-->","");
             DownloadResponseBean responseBean= GsonConverter.fromJson(response,DownloadResponseBean.class);
+            Map<String,String> map=songBean.getDownloadLinkMap();
+            songBean.setDownloadLinkMap(map);
             if(responseBean.status==1){
-                Map<String,String> map=songBean.getDownloadLinkMap();
                 map.put(responseBean.getQuality(),responseBean.getUrl().get(1).replaceAll("\\\\",""));
                 songBean.setQuality(responseBean.getQuality());
             }else {
@@ -150,14 +155,14 @@ public class KgMusic implements MusicHelper {
         }catch (Exception e){
             logger.error("failed");
         }
-        return songBean;
 
+        return songBean;
     }
 
     public static String downloadRequest(String hash){
         Map<String,String> headerMap=new HashMap<>();
         headerMap.put("User-Agent","Android511-AndroidPhone-10259-14-0-NetMusic-wifi");
-        headerMap.put("KG-FAKE","1117884702");
+        headerMap.put("KG-FAKE",configMap.getOrDefault("kg_uid","0"));
         headerMap.put("KG-RC","1");
         headerMap.put("KG-RF","00877b56");
         headerMap.put("KG-THash","1509c84");
@@ -167,9 +172,10 @@ public class KgMusic implements MusicHelper {
     }
 
     public static String downloadLinkBuilder(String hash,boolean usePid){
-        String pidVersionSecret= PropertyReader.loadConfig("kg_pid_secret");
-        String uid=PropertyReader.loadConfig("kg_uid");
-        String token=PropertyReader.loadConfig("kg_token");
+
+        String pidVersionSecret= configMap.getOrDefault("kg_pid_secret","57ae12eb6890223e355ccfcb74edf70d");
+        String uid=configMap.getOrDefault("kg_uid","0");
+        String token=configMap.getOrDefault("kg_token","0");
 
         String pidVersion="3001";
         String appid="1005";//1005是安卓手机版kg音乐
@@ -452,7 +458,17 @@ public class KgMusic implements MusicHelper {
         }
         //kg音乐部分音乐源bitRate不正确，这时候要用扩展名区分（扩展名和音乐也不完全对应）
         public String getQuality() {
-            return getExtName().equals("flac")?QUALITY_SQ:qualityMap.get(getBitRate());
+            int bitRate=getBitRate();
+            if(bitRate>320000){
+                bitRate=999000;
+            }else if(bitRate>192000){
+                bitRate=320000;
+            }else if(bitRate>128000){
+                bitRate=192000;
+            }else {
+                bitRate=128000;
+            }
+            return getExtName().equals("flac")?QUALITY_SQ:qualityMap.get(bitRate);
         }
 
         public void setQuality(String quality) {

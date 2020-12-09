@@ -5,6 +5,7 @@ import xyz.thewind.music.model.SongBean;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public interface MusicHelper {
     /**
@@ -35,6 +36,14 @@ public interface MusicHelper {
 
     default List<SongBean> searchWithDownload(String keyword, int num){
         return new LinkedList<>();
+    }
+
+    default String searchMvUrl(String mvId){
+        return "";
+    }
+
+    default void setConfigMap(Map<String,String> configMap){
+
     }
 
 }

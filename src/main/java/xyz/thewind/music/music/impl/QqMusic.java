@@ -23,12 +23,19 @@ public class QqMusic implements MusicHelper {
     private static final HashMap<String, String> qualityMap;
     private static final String baseDownloadServer="http://ws.stream.qqmusic.qq.com/";
 
+    private static final Map<String,String> configMap=new HashMap<>();
+
     static {
         qualityMap=new HashMap<>();
         qualityMap.put(QUALITY_SQ,"F000songid.flac");
         qualityMap.put(QUALITY_HQ,"M800songid.mp3");
         qualityMap.put(QUALITY_PQ,"M500songid.mp3");
         qualityMap.put(QUALITY_LQ,"C400songid.m4a");
+    }
+
+    @Override
+    public void setConfigMap(Map<String, String> configMaps) {
+        configMap.putAll(configMaps);
     }
 
     @Override
@@ -63,7 +70,7 @@ public class QqMusic implements MusicHelper {
     }
 
     private static String downloadLinkRequestParamsBuilder(List<SongBean> downloadInfoList) {
-        String qqUin= PropertyReader.loadConfig("qq_uin");
+        String qqUin= configMap.getOrDefault("qqmusic_uin","0");
         DownloadRequestBean requestBean=new DownloadRequestBean();
         requestBean.queryvkey.param.setUin(qqUin);
         List<String> filenames=new LinkedList<>();
@@ -190,8 +197,8 @@ public class QqMusic implements MusicHelper {
     }
 
     private static String downloadRequest(String params){
-        String qqUin=PropertyReader.loadConfig("qq_uin");
-        String qqKey=PropertyReader.loadConfig("qq_key");
+        String qqUin=configMap.getOrDefault("qqmusic_uin","0");
+        String qqKey=configMap.getOrDefault("qqmusic_key","0");
         String qqCookie="qqmusic_key="+qqKey+"qqmusic_uin="+qqUin;
         Map<String,String> headerMap=new HashMap<>();
         headerMap.put("User-Agent","Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)");

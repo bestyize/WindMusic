@@ -1,9 +1,9 @@
-GET https://localhost/api/mail?email=3011429848@qq.com&userId=bestyize
+GET https://thwind.xyz/api/mail?email=3011429848@qq.com&userId=bestyize
 Content-Type: application/text
 
 ###
 
-GET https://localhost/api/verifycode?email=3011429848@qq.com&userId=bestyize&code=6568
+GET https://thwind.xyz/api/verifycode?email=3011429848@qq.com&userId=bestyize&code=5832
 Content-Type: application/text
 Cookie: token=YmVzdHlpemUgenIyMDE0
 

@@ -7,6 +7,7 @@ import xyz.thewind.music.model.SongBean;
 import xyz.thewind.music.music.impl.*;
 import xyz.thewind.music.util.Base64Converter;
 
+import javax.servlet.http.Cookie;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,6 +17,7 @@ import static xyz.thewind.music.util.SongUtil.*;
 
 public class MusicDispatcher {
     private static final Map<String, MusicHelper> srcMap;
+    private Map<String,String> configMap;
     static {
         srcMap=new HashMap<>();
         srcMap.put(SRC_QQ,new QqMusic());
@@ -25,6 +27,15 @@ public class MusicDispatcher {
         srcMap.put(SRC_KG,new KgMusic());
         srcMap.put(SRC_XM,new XmMusic());
     }
+
+    public Map<String, String> getConfigMap() {
+        return configMap;
+    }
+
+    public void setConfigMap(Map<String, String> configMap) {
+        this.configMap = configMap;
+    }
+
     //关键词搜索
     public List<SongBean> searchDispatcher(String songSrc, String keyword, int num){
         List<SongBean> songList=new LinkedList<>();
@@ -32,6 +43,7 @@ public class MusicDispatcher {
             return songList;
         }
         MusicHelper musicHelper=srcMap.get(songSrc);
+        musicHelper.setConfigMap(getConfigMap());
         songList=musicHelper.searchMusic(keyword,num);
         return songList;
     }
@@ -43,6 +55,7 @@ public class MusicDispatcher {
             return songBean;
         }
         MusicHelper musicHelper=srcMap.get(songSrc);
+        musicHelper.setConfigMap(getConfigMap());
         return musicHelper.searchDownloadLink(songBean,quality);
     }
 
@@ -68,6 +81,7 @@ public class MusicDispatcher {
             return songList;
         }
         MusicHelper musicHelper=srcMap.get(songSrc);
+        musicHelper.setConfigMap(getConfigMap());
         songList=musicHelper.searchWithDownload(keyword,num);
         return songList;
     }

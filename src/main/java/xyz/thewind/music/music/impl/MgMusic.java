@@ -90,7 +90,7 @@ public class MgMusic implements MusicHelper {
                                 parseSingers(detail.singerName),
                                 detail.getAlbumId(),
                                 detail.albumName,
-                                detail.quality==null?null:detail.quality.equals("1")?QUALITY_SQ:QUALITY_HQ,
+                                detail.quality==null?"HQ":detail.quality.equals("1")?QUALITY_SQ:QUALITY_HQ,
                                 detail.picUrl,
                                 detail.lyricUrl,
                                 detail.mvId);
@@ -119,7 +119,7 @@ public class MgMusic implements MusicHelper {
     private static class SearchResponseBean{
         @SerializedName("musics")
         List<SongDetail> songDetailList;
-        class SongDetail{
+        static class SongDetail{
             @SerializedName("copyrightId")
             String songId;
             @SerializedName("title")
@@ -213,7 +213,7 @@ public class MgMusic implements MusicHelper {
             }
 
             public String getQuality() {
-                return quality;
+                return quality==null?"HQ":quality;
             }
 
             public void setQuality(String quality) {
