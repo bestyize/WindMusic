@@ -85,7 +85,7 @@ https://www.thewind.xyz/api/updateconfig?params=cXFtdXNpY191aW49MTIzNDU2Nzg7cXFt
 
 ```html
 <!--请求将音乐源改成WY-->
-https://www.thewind.xyz/api/updateconfig?params=c29uZ1NyYz1XWQ==
+https://www.thewind.xyz/api/configupdate?params=c29uZ1NyYz1XWQ==
 ```
 
 
