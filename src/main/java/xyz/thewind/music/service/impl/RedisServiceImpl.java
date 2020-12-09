@@ -46,7 +46,7 @@ public class RedisServiceImpl implements RedisService {
         }catch (Exception e){
             connectState=false;
         }
-        return !connectState;
+        return connectState;
     }
 
 

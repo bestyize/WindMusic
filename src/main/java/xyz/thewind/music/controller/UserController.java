@@ -71,7 +71,7 @@ public class UserController {
         String email=request.getParameter("email");
         String userId=request.getParameter("userId");
         CommonResp commonResp=new CommonResp();
-        if(redisService.isRedisActive()){
+        if(!redisService.isRedisActive()){
             commonResp.code(-1).msg("验证服务尚未开启,请稍后再试");
 
         }else {
@@ -92,7 +92,7 @@ public class UserController {
     public ResponseEntity<CommonResp> verifyCode(HttpServletRequest request){
         Token token= TokenHelper.parseToken(request.getCookies());
         CommonResp commonResp=new CommonResp();
-        if(redisService.isRedisActive()){
+        if(!redisService.isRedisActive()){
             commonResp.code(-1).msg("验证服务尚未开启,请稍后再试");
         }else {
             String email=request.getParameter("email");

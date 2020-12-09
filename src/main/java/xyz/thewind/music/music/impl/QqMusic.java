@@ -70,7 +70,10 @@ public class QqMusic implements MusicHelper {
     }
 
     private static String downloadLinkRequestParamsBuilder(List<SongBean> downloadInfoList) {
-        String qqUin= configMap.getOrDefault("qqmusic_uin","0");
+        String qqUin= configMap.get("qqmusic_uin");
+        if(qqUin==null){
+            qqUin="0";
+        }
         DownloadRequestBean requestBean=new DownloadRequestBean();
         requestBean.queryvkey.param.setUin(qqUin);
         List<String> filenames=new LinkedList<>();
@@ -197,8 +200,14 @@ public class QqMusic implements MusicHelper {
     }
 
     private static String downloadRequest(String params){
-        String qqUin=configMap.getOrDefault("qqmusic_uin","0");
-        String qqKey=configMap.getOrDefault("qqmusic_key","0");
+        String qqUin=configMap.get("qqmusic_uin");
+        String qqKey=configMap.get("qqmusic_key");
+        if(qqUin==null){
+            qqUin="0";
+        }
+        if(qqKey==null){
+            qqKey="0";
+        }
         String qqCookie="qqmusic_key="+qqKey+"qqmusic_uin="+qqUin;
         Map<String,String> headerMap=new HashMap<>();
         headerMap.put("User-Agent","Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)");

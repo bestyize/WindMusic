@@ -129,7 +129,8 @@ public class WyMusic implements MusicHelper {
             e.printStackTrace();
         }
         Map<String,String> headerMap=new HashMap<>();
-        headerMap.put("Cookie",configMap.getOrDefault("wy_music_u",userCookie));
+        String cookie=configMap.get("wy_music_u");
+        headerMap.put("Cookie",cookie==null?userCookie:cookie);
         String response=HttpRequestHelper.downloadWebSiteUseGet(url,headerMap);
         DownloadResponseBean responseBean=GsonConverter.fromJson(response,DownloadResponseBean.class);
         if(responseBean!=null&&responseBean.getData()!=null){

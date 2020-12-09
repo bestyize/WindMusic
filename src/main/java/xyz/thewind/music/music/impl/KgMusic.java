@@ -173,10 +173,15 @@ public class KgMusic implements MusicHelper {
 
     public static String downloadLinkBuilder(String hash,boolean usePid){
 
-        String pidVersionSecret= configMap.getOrDefault("kg_pid_secret","57ae12eb6890223e355ccfcb74edf70d");
-        String uid=configMap.getOrDefault("kg_uid","0");
-        String token=configMap.getOrDefault("kg_token","0");
-
+        String pidVersionSecret= "57ae12eb6890223e355ccfcb74edf70d";
+        String uid=configMap.get("kg_uid");
+        if(uid==null){
+            uid="0";
+        }
+        String token=configMap.get("kg_token");
+        if(token==null){
+            token="0";
+        }
         String pidVersion="3001";
         String appid="1005";//1005是安卓手机版kg音乐
         String mid="0";

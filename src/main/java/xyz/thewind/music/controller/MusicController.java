@@ -30,6 +30,10 @@ public class MusicController {
         String response;
         HttpHeaders headers=new HttpHeaders();
         headers.add("Content-Type","application/json");
+        String songSrc=loadConfig().get("songSrc");
+        if(songSrc!=null&&songSrc.length()>0){
+            src=songSrc;
+        }
         musicDispatcher.setConfigMap(loadConfig());
         if(batch==null){
             SongBean songBean=musicDispatcher.downloadDispatcher(src,songid,quality);
@@ -42,12 +46,20 @@ public class MusicController {
     }
     @RequestMapping("/api/search")
     public ResponseEntity<List<SongBean>> search(String keyword,String num,String src){
+        String songSrc=loadConfig().get("songSrc");
+        if(songSrc!=null&&songSrc.length()>0){
+            src=songSrc;
+        }
         musicDispatcher.setConfigMap(loadConfig());
         return new ResponseEntity<>(musicDispatcher.searchDispatcher(src,keyword, NumberHelper.parseNumber(num,10)),HttpStatus.OK);
     }
 
     @RequestMapping("/api/searchdown")
     public ResponseEntity<List<SongBean>> searchDown1(String keyword,String num,String src){
+        String songSrc=loadConfig().get("songSrc");
+        if(songSrc!=null&&songSrc.length()>0){
+            src=songSrc;
+        }
         musicDispatcher.setConfigMap(loadConfig());
         List<SongBean> songBeanList=musicDispatcher.searchDownDispatcher(src,keyword,NumberHelper.parseNumber(num,10));
         return new ResponseEntity<>(songBeanList,HttpStatus.OK);
@@ -95,6 +107,7 @@ public class MusicController {
             configItemList.add("kg_token");
             configItemList.add("kg_pid_secret");
             configItemList.add("wy_music_u");
+            configItemList.add("songSrc");
         }
         Map<String,String> configMap=new HashMap<>();
         if(!redisService.isRedisActive()){
@@ -102,7 +115,7 @@ public class MusicController {
         }
         for (String key:configItemList){
             String val=redisService.get(key);
-            configMap.put(key,val==null?"":val);
+            configMap.put(key,val);
         }
         return configMap;
     }
