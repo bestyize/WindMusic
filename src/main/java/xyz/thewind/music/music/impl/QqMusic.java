@@ -35,7 +35,10 @@ public class QqMusic implements MusicHelper {
 
     @Override
     public void setConfigMap(Map<String, String> configMaps) {
-        configMap.putAll(configMaps);
+        if(configMaps!=null){
+            configMap.putAll(configMaps);
+        }
+
     }
 
     @Override
@@ -200,15 +203,10 @@ public class QqMusic implements MusicHelper {
     }
 
     private static String downloadRequest(String params){
-        String qqUin=configMap.get("qqmusic_uin");
-        String qqKey=configMap.get("qqmusic_key");
-        if(qqUin==null){
-            qqUin="0";
-        }
-        if(qqKey==null){
-            qqKey="0";
-        }
-        String qqCookie="qqmusic_key="+qqKey+"qqmusic_uin="+qqUin;
+        String qqUin=configMap.get("qqmusic_uin")==null?"0":configMap.get("qqmusic_uin");
+        String qqKey=configMap.get("qqmusic_key")==null?"0":configMap.get("qqmusic_key");
+        //qqmusic_key=Q_H_L_2upCI-50ee22y3KWLlZ2odnazfqjWuAyEynHQnNCJv-oUTh4wXl0kzk1vO1PVG1;uin=3011429848
+        String qqCookie="qqmusic_key="+qqKey+";uin="+qqUin;
         Map<String,String> headerMap=new HashMap<>();
         headerMap.put("User-Agent","Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)");
         headerMap.put("Host","u.y.qq.com");
