@@ -11,8 +11,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.*;
 
-import static xyz.thewind.music.util.AesEncrypt.AESEncode;
-import static xyz.thewind.music.util.HttpRequestHelper.downloadWebSiteUsePost;
 import static xyz.thewind.music.util.SongUtil.*;
 
 
