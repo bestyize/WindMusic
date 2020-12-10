@@ -62,7 +62,7 @@ cXFtdXNpY191aW49MTIzNDU2Nzg7cXFtdXNpY19rZXk9MTIzNDU2Nzg7a2dfdWlkPTEyMzQ1Njc4O2tn
 一个完整的请求示例
 
 ```html
-https://www.thewind.xyz/api/updateconfig?params=cXFtdXNpY191aW49MTIzNDU2Nzg7cXFtdXNpY19rZXk9MTIzNDU2Nzg7a2dfdWlkPTEyMzQ1Njc4O2tnX3Rva2VuPTEyMzQ1Njc4O2tnX3BpZF9zZWNyZXQ9MTIzNDU2Nzg7d3lfbXVzaWNfdT0xMjM0NTY3OA==
+https://www.thewind.xyz/api/configupdate?params=cXFtdXNpY191aW49MTIzNDU2Nzg7cXFtdXNpY19rZXk9MTIzNDU2Nzg7a2dfdWlkPTEyMzQ1Njc4O2tnX3Rva2VuPTEyMzQ1Njc4O2tnX3BpZF9zZWNyZXQ9MTIzNDU2Nzg7d3lfbXVzaWNfdT0xMjM0NTY3OA==
 ```
 
 #### 1.2.1.2 音乐源配置
