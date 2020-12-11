@@ -19,14 +19,20 @@
 <div id="div_header" class="navbar fixed-top thewind_nav_top m-auto justify-content-center" style="min-height:60px">
     <div id="div_brand" class="wind_hand_style" style="font-weight: bold" onclick="backToDomain()">TheWind</div>
     <div style="width: 2em"></div>
-    <input id="search_input" type="text" placeholder="输入音乐名" class="border-0" style="background-color: #F0F0F0">
-    <div style="width: 1em"></div>
-    <div id="div_search_music" class="wind_hand_style" onclick="refreshPage()">搜索</div>
+    <div class="input-group input-group-lg col-lg-3 col-10" >
+        <input id="search_input" type="text" class="form-control">
+    </div>
+    <span id="span_search_music" class="btn-lg btn-primary" onclick="refreshPage()">搜索</span>
+<!--    <input id="search_input" type="text" placeholder="输入音乐名" class="border-0" style="background-color: #F0F0F0">-->
+<!--    <div style="width: 1em"></div>-->
+<!--    <div id="div_search_music" class="wind_hand_style" onclick="refreshPage()">搜索</div>-->
     <div style="width: 1em"></div>
     <div id="div_user_login" class="wind_hand_style" data-toggle="modal" data-target="#loginModal">登录</div>
     <div style="width: 1em"></div>
     <div id="div_user_reg" class="wind_hand_style" data-toggle="modal" data-target="#regModal">注册</div>
     <img id="img_user_avatar" class="wind_hand_style" src="/img/person.png" hidden alt="">
+    <div style="width: 1em"></div>
+    <div id="div_user_wx" class="wind_hand_style font-weight-bold" data-toggle="modal" data-target="#wxModal">公众号</div>
 </div>
 
 <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -103,6 +109,22 @@
     </div><!-- /.modal -->
 </div>
 
+<div class="modal fade" id="wxModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header justify-content-center m-auto">
+                <h4 class="modal-title" id="myWx">关注微信公众号</h4>
+            </div>
+            <div class="modal-body">
+               <img src="img/wechatpublic.jpg" class="col-12" alt="">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">确定</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
 <div id="div_top_sep"></div>
 
 <div id="div_music_search_area">
@@ -118,9 +140,10 @@
 </div>
 
 <script>
+
     let div_header=$('#div_header');
     let div_brand=$('#div_brand');
-    let div_search_music=$('#div_search_music');
+    let span_search_music=$('#span_search_music');
     let div_top_sep=$('#div_top_sep');
     let div_music_list=$('#div_music_list');
     let search_input=$('#search_input');
@@ -142,6 +165,8 @@
     let input_reg_dup_password=$('#input_reg_dup_password');
     let input_reg_email=$('#input_reg_email');
     let input_reg_username=$('#input_reg_username');
+
+    let div_user_wx=$('#div_user_wx');
 
 
 </script>
@@ -270,6 +295,10 @@
             let mvUrl=musicInfo.mvUrl;
             let quality=musicInfo.quality;
 
+            if(picUrl==null||picUrl.toString().length===0){
+                picUrl="img/wind-icon-256.png";
+            }
+
             let div_music_item_html='    <div class="navbar thewind_nav_top col-11 col-lg-6 m-auto" style="min-height:'+getFileItemHeight()+'px">\n' +
                 '        <img class="file_icon_style float-left" src=\"'+picUrl+'\" alt="" style="width: '+getIconSize()+'px;height: '+getIconSize()+'px">\n' +
                 '        <div class="wind_hand_style" onclick="playMusic(\''+songId+'\',\''+songSrc+'\',\''+songName+'\',\''+albumName+'\',\''+picUrl+'\')">\n'+
@@ -296,12 +325,15 @@
     function adoptSize(){
         div_header.css('min-height',getHeaderHeight());
         div_brand.css('font-size',getBrandTextSize());
-        div_search_music.css('font-size',getTextSize()*1.2);
+        span_search_music.css('font-size',getTextSize()*1.1);
         div_user_login.css('font-size',getTextSize()*1.1);
+        div_user_wx.css('font-size',getTextSize()*1.1);
+        div_user_reg.css('font-size',getTextSize()*1.1);
         div_top_sep.css('height',getFileItemHeight()+40);
         div_music_list.css('height',getFileItemHeight());
         search_input.css('min-height',getFileItemHeight()*0.5);
         search_input.css('min-width',3*getFileItemHeight());
+        search_input.css('font-size',getTextSize()*1.1);
         div_bottom_player.css('min-height',getFileItemHeight());
         span_player_info.css('font-size',getDescTextSize());
         img_user_avatar.css('width',getIconSize(),'height',getIconSize());
