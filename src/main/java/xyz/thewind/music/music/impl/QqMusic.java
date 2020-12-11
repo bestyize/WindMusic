@@ -73,10 +73,7 @@ public class QqMusic implements MusicHelper {
     }
 
     private static String downloadLinkRequestParamsBuilder(List<SongBean> downloadInfoList) {
-        String qqUin= configMap.get("qqmusic_uin");
-        if(qqUin==null){
-            qqUin="0";
-        }
+        String qqUin=configMap.get("qqmusic_uin")==null?"0":configMap.get("qqmusic_uin");
         DownloadRequestBean requestBean=new DownloadRequestBean();
         requestBean.queryvkey.param.setUin(qqUin);
         List<String> filenames=new LinkedList<>();
@@ -206,13 +203,15 @@ public class QqMusic implements MusicHelper {
         String qqUin=configMap.get("qqmusic_uin")==null?"0":configMap.get("qqmusic_uin");
         String qqKey=configMap.get("qqmusic_key")==null?"0":configMap.get("qqmusic_key");
         //qqmusic_key=Q_H_L_2upCI-50ee22y3KWLlZ2odnazfqjWuAyEynHQnNCJv-oUTh4wXl0kzk1vO1PVG1;uin=3011429848
-        String qqCookie="qqmusic_key="+qqKey+";uin="+qqUin;
+        String qqCookie="qqmusic_key="+qqKey+";qqmusic_uin="+qqUin;
+        //String qqCookie="qqmusic_key=Q_H_L_2CntI-50eSSxCL7uzvUr7dtyRlorofXpLJLFQ-AjNyuJdo_ugx9mK9SIgT2ifs6; qqmusic_miniversion=91; qqmusic_uin=3011429848;";
         Map<String,String> headerMap=new HashMap<>();
-        headerMap.put("User-Agent","Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)");
+        headerMap.put("User-Agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.27 Safari/537.36 Edg/88.0.705.18");
         headerMap.put("Host","u.y.qq.com");
         headerMap.put("Connection","Keep-Alive");
         headerMap.put("Cookie",qqCookie);
-        return downloadWebSiteUsePost("https://u.y.qq.com/cgi-bin/musicu.fcg",params,headerMap);
+        headerMap.put("Accept","application/json");
+        return downloadWebSiteUsePost("https://u.y.qq.com/cgi-bin/musicu.fcg?pcachetime=1607655349",params,headerMap);
     }
 
 
