@@ -15,6 +15,14 @@ function getFileItemHeight(){
     return isMobile()?160:60;
 }
 
+function getMarginTopHeight(){
+    if(isMobile()){
+        return 260;
+    }else {
+        return 100;
+    }
+}
+
 function getTextSize(){
     return isMobile()?35:16;
 }
