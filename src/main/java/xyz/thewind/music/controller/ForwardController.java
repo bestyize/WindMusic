@@ -18,4 +18,9 @@ public class ForwardController {
     public String play(){
         return "play";
     }
+
+    @RequestMapping("/manager")
+    public String manage(){
+        return "manager";
+    }
 }

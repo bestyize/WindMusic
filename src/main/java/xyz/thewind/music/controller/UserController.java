@@ -20,6 +20,8 @@ import xyz.thewind.music.util.VerifyCode;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 public class UserController {
@@ -112,6 +114,17 @@ public class UserController {
             }
         }
         return new ResponseEntity<>(commonResp,HttpStatus.OK);
+    }
+
+    @RequestMapping("/api/queryalluser")
+    public ResponseEntity<List<User>> findAllUser(HttpServletRequest request){
+        Token token=TokenHelper.parseToken(request.getCookies());
+        User user=userService.findUserByUserIdAndPassword(token.userId, token.password);
+        List<User> userList=new ArrayList<>();
+        if(user!=null&&user.getLevel()>=7){
+            userList= userService.findAllUser();
+        }
+        return new ResponseEntity<>(userList,HttpStatus.OK);
     }
 
     public boolean sendEmail(String subject,String content,String to){

@@ -10,6 +10,7 @@ import xyz.thewind.music.model.User;
 import xyz.thewind.music.repository.UserRepository;
 import xyz.thewind.music.service.UserService;
 
+import java.util.List;
 
 
 @Service
@@ -35,8 +36,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateUserStateById(String userId, int state) {
-        userRepository.updateStatusByUserId(state, userId);
-
+        int status=userRepository.updateStatusByUserId(state, userId);
     }
 
 
@@ -44,5 +44,10 @@ public class UserServiceImpl implements UserService {
     public User addUser(UserDTO userDTO) {
         User user= DTOConverter.convertUserDtoToUser(userDTO);
         return userRepository.save(user);
+    }
+
+    @Override
+    public List<User> findAllUser() {
+        return userRepository.findAll();
     }
 }

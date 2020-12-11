@@ -27,7 +27,10 @@ public class WyMusic implements MusicHelper {
     }
     @Override
     public void setConfigMap(Map<String, String> configMaps) {
-        configMap.putAll(configMaps);
+        if(configMaps!=null){
+            configMap.clear();
+            configMap.putAll(configMaps);
+        }
     }
     @Override
     public List<SongBean> searchMusic(String keyword, int num) {
@@ -127,8 +130,8 @@ public class WyMusic implements MusicHelper {
             e.printStackTrace();
         }
         Map<String,String> headerMap=new HashMap<>();
-        String cookie=configMap.get("wy_music_u");
-        headerMap.put("Cookie",cookie==null?userCookie:cookie);
+        String cookie="MUSIC_U="+configMap.get("wy_music_u");
+        headerMap.put("Cookie",cookie.length()==8?userCookie:cookie);
         String response=HttpRequestHelper.downloadWebSiteUseGet(url,headerMap);
         DownloadResponseBean responseBean=GsonConverter.fromJson(response,DownloadResponseBean.class);
         if(responseBean!=null&&responseBean.getData()!=null){

@@ -75,6 +75,12 @@ public class MusicController {
         }
         return new ResponseEntity<>(commonResp,HttpStatus.OK);
     }
+    @RequestMapping("/api/getconfig")
+    public ResponseEntity<CommonResp> getConfig(){
+        HttpHeaders headers=new HttpHeaders();
+        headers.add("Content-Type","application/json");
+        return new ResponseEntity<>(new CommonResp().code(0).msg("拉取成功").obj(loadConfig()),headers,HttpStatus.OK);
+    }
 
     //qqmusic_uin=3011429848;qqmusic_key=EDKSKDJFAO10919WFKJKQF;kg_uid=12345;kg_token=1234;kg_pid_secret=123456;wy_music_u=ba0a04e302da6a12399d1817fe4eae9dd7c6b7f4865bf4fd9b986b5c8c07893333a649814e309366
     public boolean updateConfig(String params){
@@ -105,7 +111,6 @@ public class MusicController {
             configItemList.add("qqmusic_key");
             configItemList.add("kg_uid");
             configItemList.add("kg_token");
-            configItemList.add("kg_pid_secret");
             configItemList.add("wy_music_u");
             configItemList.add("songSrc");
         }

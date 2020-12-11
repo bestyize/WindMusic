@@ -36,6 +36,7 @@ public class QqMusic implements MusicHelper {
     @Override
     public void setConfigMap(Map<String, String> configMaps) {
         if(configMaps!=null){
+            configMap.clear();
             configMap.putAll(configMaps);
         }
 

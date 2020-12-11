@@ -34,7 +34,10 @@ public class KgMusic implements MusicHelper {
 
     @Override
     public void setConfigMap(Map<String, String> configMaps) {
-        configMap.putAll(configMaps);
+        if(configMaps!=null){
+            configMap.clear();
+            configMap.putAll(configMaps);
+        }
     }
 
     @Override

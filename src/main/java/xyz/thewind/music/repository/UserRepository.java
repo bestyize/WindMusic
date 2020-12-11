@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import xyz.thewind.music.model.User;
 
+import java.util.List;
+
 public interface UserRepository extends JpaRepository<User,Long>, JpaSpecificationExecutor<User> {
     User findTopByUserId(String userId);
     User findTopByEmail(String email);
@@ -14,4 +16,5 @@ public interface UserRepository extends JpaRepository<User,Long>, JpaSpecificati
     @Modifying
     @Query("update User set status= :status where userId = :userId")
     int updateStatusByUserId(@Param("status")int status,@Param("userId") String userId);
+    List<User> findAll();
 }
