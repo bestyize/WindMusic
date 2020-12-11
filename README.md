@@ -65,13 +65,19 @@ cXFtdXNpY191aW49MTIzNDU2Nzg7cXFtdXNpY19rZXk9MTIzNDU2Nzg7a2dfdWlkPTEyMzQ1Njc4O2tn
 https://www.thewind.xyz/api/configupdate?params=cXFtdXNpY191aW49MTIzNDU2Nzg7cXFtdXNpY19rZXk9MTIzNDU2Nzg7a2dfdWlkPTEyMzQ1Njc4O2tnX3Rva2VuPTEyMzQ1Njc4O2tnX3BpZF9zZWNyZXQ9MTIzNDU2Nzg7d3lfbXVzaWNfdT0xMjM0NTY3OA==
 ```
 
-#### 1.2.1.2 音乐源配置
+#### 1.2.1.2 获取现有配置
+
+|名称|内容|备注|是否必须|
+|---|---|---|---|
+|api|/api/getconfig|请求地址|√|
+
+#### 1.2.1.3 音乐源配置
 
 如果配置了服务端音乐源，那么普通请求的音乐源将不会生效，而是采用服务端的音乐源。与上述配置采用一个接口
 
 |名称|内容|备注|是否必须|
 |---|---|---|---|
-|api|https://www.thewind.xyz/api/configupdate|请求地址|√|
+|api|/api/configupdate|请求地址|√|
 |params|配置的音乐源|请求参数|√|
 
 实际上，上面可选的一共有六种,分别是
@@ -348,5 +354,13 @@ http://thewind.xyz/api/download?src=QQ&batch=W3sic29uZ1NyYyI6IlFRIiwic29uZ0lkIjo
 |userId|长度>=6、以字母开头的，且所有字符为字母和数字组合(大小写不敏感)|用户ID|√|
 |email|符合邮箱格式|邮件地址|√|
 |code|收到的验证码|验证码|√|
+
+### 2.2.4 查询所有用户
+
+后台管理需要。使用时附带Cookie,用户的等级要>=7
+
+|名称|内容|备注|是否必须|
+|---|---|---|---|
+|api|/api/queryalluser|请求地址|√|
 
 
