@@ -25,7 +25,7 @@ public class MusicSourceTest {
     }
     @Test
     public void cloudMusicTest(){
-        List<SongBean> songBean=dispatcher.searchDownDispatcher("QQ","陈奕迅",5);
+        List<SongBean> songBean=dispatcher.searchDownDispatcher("WY","陈奕迅",5);
         System.out.println(GsonConverter.toJson(songBean));
     }
 
@@ -57,6 +57,8 @@ public class MusicSourceTest {
         System.out.println(helper4.getLyric("80488731"));
         MusicHelper helper5=new KgMusic();
         System.out.println(helper5.getLyric("1978DAF7ED27A7A53660D940F1D02378"));
+        MusicHelper helper6=new XmMusic();
+        System.out.println(helper6.getLyric("65766"));
     }
     @Test
     public void convertTimeTest(){
@@ -77,6 +79,16 @@ public class MusicSourceTest {
         lyric=lyric.replaceAll("\\[","\n[");
         lyric=lyric.substring(2);
         System.out.println(lyric.substring(2));
+
+    }
+    @Test
+    public void downloadTest(){
+        String songSrc="WY";
+        String songId="65766";
+        SongBean songBean=new SongBean(songSrc,songId);
+        SongBean bean=dispatcher.downloadDispatcher(songSrc,songId,"PQ");
+        System.out.println(GsonConverter.toJson(bean));
+
 
     }
 

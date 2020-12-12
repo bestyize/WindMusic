@@ -7,11 +7,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import xyz.thewind.music.model.CommonResp;
+import xyz.thewind.music.model.PlayerBean;
 import xyz.thewind.music.model.SongBean;
 import xyz.thewind.music.music.MusicDispatcher;
 import xyz.thewind.music.service.RedisService;
 import xyz.thewind.music.util.Base64Converter;
 import xyz.thewind.music.util.GsonConverter;
+import xyz.thewind.music.util.LyricHelper;
 import xyz.thewind.music.util.NumberHelper;
 
 import javax.servlet.http.HttpServletResponse;
@@ -71,6 +73,43 @@ public class MusicController {
             src=songSrc;
         }
         return new ResponseEntity<>(musicDispatcher.searchLyricDispatcher(src,songid),HttpStatus.OK);
+    }
+    @RequestMapping("/api/player")
+    public ResponseEntity<List<PlayerBean>> player(String shareId){
+        List<PlayerBean> playerBeanList=new ArrayList<>();
+        if(shareId!=null){
+            String[] pair =shareId.split("_");
+            if(pair.length==2){
+                String songSrc=pair[0];
+                String songId=pair[1];
+                musicDispatcher.setConfigMap(loadConfig());
+                SongBean bean=musicDispatcher.downloadDispatcher(songSrc,songId,"PQ");
+                if(bean!=null){
+                    String pic=bean.getPicUrl();
+                    if(pic==null||pic.length()<10){
+                        pic="img/wind-icon-256.png";
+                    }
+                    String url=bean.getDownloadLinkMap().get("PQ");
+                    if(url==null){
+                        url="";
+                    }
+                    String author="";
+                    if(bean.getSingersName()!=null){
+                        int size=bean.getSingersName().size();
+                        if(size==1){
+                            author=bean.getSingersName().get(0);
+                        }else if(size>=2){
+                            author=bean.getSingersName().get(0)+"&"+bean.getSingersName().get(1);
+                        }
+                    }
+                    String lyric=musicDispatcher.searchLyricDispatcher(songSrc,songId);
+                    PlayerBean playerBean=new PlayerBean(LyricHelper.getSongName(songSrc,lyric) , LyricHelper.getSingerName(songSrc,lyric),pic,url,lyric);
+                    playerBeanList.add(playerBean);
+                }
+
+            }
+        }
+        return new ResponseEntity<>(playerBeanList,HttpStatus.OK);
     }
 
 

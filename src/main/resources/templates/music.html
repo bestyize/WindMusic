@@ -252,6 +252,10 @@
         location.href="?keyword="+keyword;
     }
 
+    function goToPlayer(shareId){
+        location.href="player?shareId="+shareId;
+    }
+
     function searchMusic() {
         let keyword=parseRealKey("keyword");
         if(keyword==null){
@@ -294,13 +298,14 @@
             let lrcUrl=musicInfo.lrcUrl;
             let mvUrl=musicInfo.mvUrl;
             let quality=musicInfo.quality;
+            let shareId=songSrc+"_"+songId;
 
             if(picUrl==null||picUrl.toString().length===0){
                 picUrl="img/wind-icon-256.png";
             }
 
             let div_music_item_html='    <div class="navbar thewind_nav_top col-11 col-lg-6 m-auto" style="min-height:'+getFileItemHeight()+'px">\n' +
-                '        <img class="file_icon_style float-left" src=\"'+picUrl+'\" alt="" style="width: '+getIconSize()+'px;height: '+getIconSize()+'px">\n' +
+                '        <img class="file_icon_style float-left wind_hand_style" src=\"'+picUrl+'\" alt="" style="width: '+getIconSize()+'px;height: '+getIconSize()+'px" onclick="goToPlayer(\''+shareId+'\')">\n' +
                 '        <div class="wind_hand_style" onclick="playMusic(\''+songId+'\',\''+songSrc+'\',\''+songName+'\',\''+albumName+'\',\''+picUrl+'\')">\n'+
                 '        <span style="font-size: '+getDescTextSize()+'px;margin-right: 1em;font-weight: bold" >'+songName+'</span>\n' +
                 '        <span style="font-size: '+getDescTextSize()+'px">'+albumName+'</span>\n' +

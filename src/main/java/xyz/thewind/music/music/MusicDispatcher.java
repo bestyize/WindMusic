@@ -91,7 +91,7 @@ public class MusicDispatcher {
             return "";
         }
         MusicHelper musicHelper=srcMap.get(songSrc);
-        return musicHelper.getLyric(songSrc);
+        return musicHelper.getLyric(songId);
     }
 
 
