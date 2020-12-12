@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import xyz.thewind.music.model.SongBean;
 import xyz.thewind.music.music.MusicHelper;
 import xyz.thewind.music.util.GsonConverter;
+import xyz.thewind.music.util.HttpRequestHelper;
 
 
 import java.io.UnsupportedEncodingException;
@@ -104,6 +105,23 @@ public class MgMusic implements MusicHelper {
         }
 
         return list;
+    }
+
+    @Override
+    public String getLyric(String lyricId) {
+        String url="https://m.music.migu.cn/migu/remoting/cms_detail_tag?cpid="+lyricId;
+        Map<String,String> headerMap=new HashMap<>();
+        headerMap.put("Referer","https://m.music.migu.cn/v3/music/song/"+lyricId);
+        String response= HttpRequestHelper.downloadWebSiteUseGet(url,headerMap);
+        try {
+            LyricResponseBean bean=GsonConverter.fromJson(response,LyricResponseBean.class);
+            if(bean.getData().getLyricLrc()!=null){
+                return bean.getData().getLyricLrc();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return "";
     }
 
     private List<String> parseSingers(String singers){
@@ -342,6 +360,30 @@ public class MgMusic implements MusicHelper {
 
         }
 
+    }
+
+    private static class LyricResponseBean{
+        Data data=new Data();
+
+        public Data getData() {
+            return data;
+        }
+
+        public void setData(Data data) {
+            this.data = data;
+        }
+
+        static class Data{
+            String lyricLrc;
+
+            public String getLyricLrc() {
+                return lyricLrc;
+            }
+
+            public void setLyricLrc(String lyricLrc) {
+                this.lyricLrc = lyricLrc;
+            }
+        }
     }
 
 

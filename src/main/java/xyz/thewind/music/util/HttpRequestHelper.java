@@ -9,6 +9,9 @@ import java.util.Map;
 
 public class HttpRequestHelper {
     public static String downloadWebSiteUseGet(String link, Map<String,String> headerMap){
+        if(link==null||!link.startsWith("http")){
+            return "";
+        }
         StringBuilder sb=new StringBuilder();
         try {
             URL url=new URL(link);
@@ -41,6 +44,9 @@ public class HttpRequestHelper {
      * @return 请求结果
      */
     public static String downloadWebSiteUsePost(String link,String params, Map<String,String> headerMap){
+        if(link==null||!link.startsWith("http")){
+            return "";
+        }
         String response=null;
         try {
             URL url=new URL(link);

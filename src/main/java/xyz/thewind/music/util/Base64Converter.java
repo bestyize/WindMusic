@@ -13,11 +13,20 @@ public class Base64Converter {
     final static Base64.Decoder decoder = Base64.getDecoder();
 
     public static String encode(String clearText) {
+        if(clearText==null||clearText.length()==0){
+            return "";
+        }
         byte[] b = clearText.getBytes(StandardCharsets.UTF_8);
         return encoder.encodeToString(b);
     }
 
     public static String decode(String encodedText) {
-        return new String(decoder.decode(encodedText), StandardCharsets.UTF_8);
+        String decodeStr=null;
+        try {
+            decodeStr=new String(decoder.decode(encodedText), StandardCharsets.UTF_8);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return decodeStr==null?"":decodeStr;
     }
 }

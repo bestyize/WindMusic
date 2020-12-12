@@ -154,6 +154,21 @@ public class WyMusic implements MusicHelper {
         return "";
     }
 
+    @Override
+    public String getLyric(String lyricId) {
+        String baseUrl="https://music.163.com/api/song/lyric?lv=0&kv=0&tv=0&id="+lyricId;
+        String response=HttpRequestHelper.downloadWebSiteUseGet(baseUrl,null);
+        try {
+            LyricResponse bean=GsonConverter.fromJson(response,LyricResponse.class);
+            if(bean!=null&&bean.getLrc().get("lyric")!=null){
+                return bean.getLrc().get("lyric").toString();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return "";
+    }
+
     private static class SearchResponseBean{
         boolean needLogin;
         Data result;
@@ -505,6 +520,27 @@ public class WyMusic implements MusicHelper {
             public void setUrl(String url) {
                 this.url = url;
             }
+        }
+    }
+
+    private static class LyricResponse{
+        int code;
+        Map<String,Object> lrc;
+
+        public int getCode() {
+            return code;
+        }
+
+        public void setCode(int code) {
+            this.code = code;
+        }
+
+        public Map<String, Object> getLrc() {
+            return lrc;
+        }
+
+        public void setLrc(Map<String, Object> lrc) {
+            this.lrc = lrc;
         }
     }
 }

@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 import xyz.thewind.music.model.SongBean;
 import xyz.thewind.music.music.MusicHelper;
 import xyz.thewind.music.util.GsonConverter;
+import xyz.thewind.music.util.HttpRequestHelper;
 
 
 import java.io.UnsupportedEncodingException;
@@ -117,9 +118,14 @@ public class KwMusic implements MusicHelper {
     }
 
     private List<String> parseSingersId(String singerId){
-        return new LinkedList<>(Arrays.asList(singerId));//kw音乐只返回第一个歌手id
+        return new LinkedList<>(Collections.singletonList(singerId));//kw音乐只返回第一个歌手id
     }
 
+    /**
+     * 还有另外的接口，支持VIP歌曲，除了flac都可以下载
+     * http://www.kuwo.cn/url?format=mp3&rid=228908&response=url&type=convert_url3&br=320&from=web&t=1584003980221&reqId=xxxxxxxxxxxxxxxxxx
+     * http://antiserver.kuwo.cn/anti.s?type=convert_url3&rid=228908&format=mp3&response=url&br=320
+     */
 
     private String getDownloadLinkById(String songid, String quality) {
         String downloadLink=null;
@@ -134,6 +140,69 @@ public class KwMusic implements MusicHelper {
             e.printStackTrace();
         }
         return downloadLink;
+    }
+
+    /**
+     * http://m.kuwo.cn/newh5/singles/songinfoandlrc?musicId=80488731
+     * @param lyricId
+     * @return
+     */
+    @Override
+    public String getLyric(String lyricId) {
+        StringBuilder sb=new StringBuilder();
+        try {
+            String link="http://m.kuwo.cn/newh5/singles/songinfoandlrc?musicId="+lyricId;
+            LyricResponseBean bean=GsonConverter.fromJson(HttpRequestHelper.downloadWebSiteUseGet(link,null),LyricResponseBean.class);
+
+            if(bean!=null){
+                List<LyricResponseBean.Data.Pair> pairList=bean.getData().getLrclist();
+                if(pairList!=null){
+                    for (LyricResponseBean.Data.Pair pair:pairList){
+                        String lyric=pair.getLineLyric();
+                        String time=convertToLyricTime(pair.getTime());
+                        String line="["+time+"]"+lyric+"\n";
+                        sb.append(line);
+                    }
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return sb.toString();
+    }
+    public String convertToLyricTime(String time){
+        if(time==null||time.length()<4||!time.contains(".")){
+            return "";
+        }
+        int len=time.length();
+
+        String subSecond=time.substring(len-2,len);
+        String secondStr=time.substring(0,len-3);
+        int timeInSecond=Integer.parseInt(secondStr);
+        StringBuilder sb=new StringBuilder();
+        int second=timeInSecond%60;
+        int minute=timeInSecond/60;
+        if(minute<10){
+            sb.append("0");
+        }
+        sb.append(minute).append(":");
+        if(second<10){
+            sb.append("0");
+        }
+        sb.append(second).append(".").append(subSecond);
+        return sb.toString();
+    }
+
+    /**
+     * http://www.kuwo.cn/url?rid=80488731&response=url&format=mp4&type=convert_url
+     * @param mvId
+     * @return
+     */
+    @Override
+    public String searchMvUrl(String mvId) {
+        String link="http://www.kuwo.cn/url?response=url&format=mp4&type=convert_url&rid="+mvId;
+        String url=downloadWebSiteUseGet(link,null);
+        return (!url.startsWith("http"))?"":url;
     }
 
     /**
@@ -621,6 +690,51 @@ public class KwMusic implements MusicHelper {
         }
 
 
+    }
+
+    private static class LyricResponseBean{
+        Data data=new Data();
+
+        public Data getData() {
+            return data;
+        }
+
+        public void setData(Data data) {
+            this.data = data;
+        }
+
+        static class Data{
+            List<Pair> lrclist;
+
+            public List<Pair> getLrclist() {
+                return lrclist;
+            }
+
+            public void setLrclist(List<Pair> lrclist) {
+                this.lrclist = lrclist;
+            }
+
+            static class Pair{
+                String lineLyric;
+                String time;
+
+                public String getLineLyric() {
+                    return lineLyric;
+                }
+
+                public void setLineLyric(String lineLyric) {
+                    this.lineLyric = lineLyric;
+                }
+
+                public String getTime() {
+                    return time;
+                }
+
+                public void setTime(String time) {
+                    this.time = time;
+                }
+            }
+        }
     }
 
 

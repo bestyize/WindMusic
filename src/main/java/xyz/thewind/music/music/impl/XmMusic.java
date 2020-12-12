@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 import xyz.thewind.music.model.SongBean;
 import xyz.thewind.music.music.MusicHelper;
 import xyz.thewind.music.util.GsonConverter;
+import xyz.thewind.music.util.HttpRequestHelper;
 
 
 import java.net.HttpURLConnection;
@@ -31,8 +32,9 @@ public class XmMusic implements MusicHelper {
         String model = "\\\"model\\\":{\\\"songIds\\\":[" + songBean.getSongId() + "]}";
         String response = xmHttpRequest(getXmUrl(method, model));
         List<SongBean> songBeanList=xmSongSearchRespProcess(response);
-        if(songBeanList!=null&&songBeanList.size()>0){
-            songBean.setDownloadLinkMap(songBeanList.get(0).getDownloadLinkMap());
+        if(songBeanList.size()>0){
+            return songBeanList.get(0);
+            //songBean.setDownloadLinkMap(songBeanList.get(0).getDownloadLinkMap());
         }
         return songBean;
     }
@@ -41,6 +43,19 @@ public class XmMusic implements MusicHelper {
     @Override
     public List<SongBean> searchWithDownload(String keyword, int num) {
         return searchMusic(keyword,num);
+    }
+
+    @Override
+    public String getLyric(String lyricId) {
+        SongBean songBean=new SongBean("XM",lyricId);
+        songBean=searchDownloadLink(songBean,"PQ");
+        String lyric= HttpRequestHelper.downloadWebSiteUseGet(songBean.getLrcUrl(),null);
+        if(lyric.length()>2){
+            lyric=lyric.replaceAll("<[\\d]+>","");
+            lyric=lyric.replaceAll("\\[","\n[");
+            lyric=lyric.substring(2);
+        }
+        return lyric;
     }
 
     /**

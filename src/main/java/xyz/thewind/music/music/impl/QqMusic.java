@@ -7,7 +7,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xyz.thewind.music.model.SongBean;
 import xyz.thewind.music.music.MusicHelper;
+import xyz.thewind.music.util.Base64Converter;
 import xyz.thewind.music.util.GsonConverter;
+import xyz.thewind.music.util.HttpRequestHelper;
 import xyz.thewind.music.util.PropertyReader;
 
 import java.net.URLEncoder;
@@ -215,6 +217,20 @@ public class QqMusic implements MusicHelper {
         return downloadWebSiteUsePost("https://u.y.qq.com/cgi-bin/musicu.fcg?pcachetime=1607655349",params,headerMap);
     }
 
+    @Override
+    public String getLyric(String lyricId) {
+        String baseLink="https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_new.fcg?g_tk=5381&format=json&songmid="+lyricId;
+        Map<String,String> headerMap=new HashMap<>();
+        headerMap.put("Referer","https://y.qq.com/portal/player.html");
+        String encodeLyric=HttpRequestHelper.downloadWebSiteUseGet(baseLink,headerMap);
+        try {
+            LyricResponseBean bean=GsonConverter.fromJson(encodeLyric,LyricResponseBean.class);
+            return Base64Converter.decode(bean.getLyric());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return "";
+    }
 
     private static class SearchResponseBean{
         int code;
@@ -256,7 +272,7 @@ public class QqMusic implements MusicHelper {
                 this.song = song;
             }
 
-            class Song{
+            static class Song{
                 @SerializedName("curnum")
                 int curNum;
                 @SerializedName("curpage")
@@ -288,7 +304,7 @@ public class QqMusic implements MusicHelper {
                     this.songDetailList = songDetailList;
                 }
 
-                class SongDetail{
+                static class SongDetail{
                     @SerializedName("songmid")
                     String songId;
                     @SerializedName("songname")
@@ -481,7 +497,7 @@ public class QqMusic implements MusicHelper {
                     this.songDetailList = songDetailList;
                 }
 
-                class SongDetail{
+                static class SongDetail{
                     @SerializedName("filename")
                     String fileName;
                     @SerializedName("purl")
@@ -524,7 +540,7 @@ public class QqMusic implements MusicHelper {
             this.queryvkey = queryvkey;
         }
 
-        class Queryvkey{
+        static class Queryvkey{
             String method="CgiGetVkey";
             String module="vkey.GetVkeyServer";
             Param param=new Param();
@@ -544,7 +560,7 @@ public class QqMusic implements MusicHelper {
             public void setModule(String module) {
                 this.module = module;
             }
-            class Param{
+            static class Param{
                 int checklimit=0;
                 int ctx=1;
                 int downloadfrom=0;
@@ -654,6 +670,26 @@ public class QqMusic implements MusicHelper {
                     this.uin = uin;
                 }
             }
+        }
+    }
+    static class LyricResponseBean{
+        String lyric;
+        String trans;
+
+        public String getLyric() {
+            return lyric;
+        }
+
+        public void setLyric(String lyric) {
+            this.lyric = lyric;
+        }
+
+        public String getTrans() {
+            return trans;
+        }
+
+        public void setTrans(String trans) {
+            this.trans = trans;
         }
     }
 }

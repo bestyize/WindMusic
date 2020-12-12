@@ -55,7 +55,7 @@ public class MusicController {
     }
 
     @RequestMapping("/api/searchdown")
-    public ResponseEntity<List<SongBean>> searchDown1(String keyword,String num,String src){
+    public ResponseEntity<List<SongBean>> searchDown(String keyword,String num,String src){
         String songSrc=loadConfig().get("songSrc");
         if(songSrc!=null&&songSrc.length()>0){
             src=songSrc;
@@ -64,6 +64,15 @@ public class MusicController {
         List<SongBean> songBeanList=musicDispatcher.searchDownDispatcher(src,keyword,NumberHelper.parseNumber(num,10));
         return new ResponseEntity<>(songBeanList,HttpStatus.OK);
     }
+    @RequestMapping("/api/getlyric")
+    public ResponseEntity<String> searchLyric(String songid,String src){
+        String songSrc=loadConfig().get("songSrc");
+        if(songSrc!=null&&songSrc.length()>0){
+            src=songSrc;
+        }
+        return new ResponseEntity<>(musicDispatcher.searchLyricDispatcher(src,songid),HttpStatus.OK);
+    }
+
 
     @RequestMapping("/api/configupdate")
     public ResponseEntity<CommonResp> configUpdate(String params){

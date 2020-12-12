@@ -6,6 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xyz.thewind.music.model.SongBean;
 import xyz.thewind.music.music.MusicHelper;
+import xyz.thewind.music.util.Base64Converter;
 import xyz.thewind.music.util.GsonConverter;
 import xyz.thewind.music.util.HttpRequestHelper;
 import xyz.thewind.music.util.Md5Encrypt;
@@ -209,6 +210,35 @@ public class KgMusic implements MusicHelper {
             sb.append("&key=").append(Md5Encrypt.convertToMd5(hash + "kgcloudv2" + appid + mid + uid));
         }
         return baseLink+sb.toString();
+    }
+
+
+    @Override
+    public String getLyric(String lyricId) {
+        if(lyricId==null||lyricId.length()<32){
+            return "";
+        }
+        if(lyricId.contains("-")){
+            lyricId=lyricId.substring(0,lyricId.indexOf("-"));
+        }
+
+        String searchLink="http://krcs.kugou.com/search?ver=1&hash="+lyricId;
+        String searchResponse=HttpRequestHelper.downloadWebSiteUseGet(searchLink,null);
+        try {
+                LyricSearchResponseBean bean=GsonConverter.fromJson(searchResponse,LyricSearchResponseBean.class);
+                if(bean!=null&&bean.getCandidates()!=null&&bean.getCandidates().size()>0){
+                    LyricSearchResponseBean.Lyric lyric=bean.getCandidates().get(0);
+                    String requestUrl="http://lyrics.kugou.com/download?&fmt=lrc&ver=1&id="+lyric.getId()+"&accesskey="+lyric.getAccesskey();
+                    LyricData lyricData=GsonConverter.fromJson(HttpRequestHelper.downloadWebSiteUseGet(requestUrl,null),LyricData.class);
+                    if(lyricData!=null){
+                        return Base64Converter.decode(lyricData.getContent());
+                    }
+
+                }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return "";
     }
 
     private static class SearchResponseBean{
@@ -481,6 +511,59 @@ public class KgMusic implements MusicHelper {
 
         public void setQuality(String quality) {
             this.quality = quality;
+        }
+    }
+
+    private static class LyricSearchResponseBean{
+        int errcode;
+        List<Lyric> candidates;
+
+        public int getErrcode() {
+            return errcode;
+        }
+
+        public void setErrcode(int errcode) {
+            this.errcode = errcode;
+        }
+
+        public List<Lyric> getCandidates() {
+            return candidates;
+        }
+
+        public void setCandidates(List<Lyric> candidates) {
+            this.candidates = candidates;
+        }
+
+        static class Lyric{
+            String id;
+            String accesskey;
+
+            public String getId() {
+                return id;
+            }
+
+            public void setId(String id) {
+                this.id = id;
+            }
+
+            public String getAccesskey() {
+                return accesskey;
+            }
+
+            public void setAccesskey(String accesskey) {
+                this.accesskey = accesskey;
+            }
+        }
+    }
+    private static class LyricData{
+        String content;
+
+        public String getContent() {
+            return content;
+        }
+
+        public void setContent(String content) {
+            this.content = content;
         }
     }
 }

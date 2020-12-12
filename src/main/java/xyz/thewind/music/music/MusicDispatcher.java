@@ -86,5 +86,13 @@ public class MusicDispatcher {
         return songList;
     }
 
+    public String searchLyricDispatcher(String songSrc,String songId){
+        if(!srcMap.containsKey(songSrc)){
+            return "";
+        }
+        MusicHelper musicHelper=srcMap.get(songSrc);
+        return musicHelper.getLyric(songSrc);
+    }
+
 
 }

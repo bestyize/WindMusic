@@ -34,13 +34,13 @@ public interface MusicHelper {
         return new LinkedList<>();
     }
 
-    default List<SongBean> searchWithDownload(String keyword, int num){
-        return new LinkedList<>();
-    }
+    List<SongBean> searchWithDownload(String keyword, int num);
 
     default String searchMvUrl(String mvId){
         return "";
     }
+
+    String getLyric(String lyricId);
 
     default void setConfigMap(Map<String,String> configMap){
 
