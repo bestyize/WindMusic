@@ -101,7 +101,7 @@ https://www.thewind.xyz/api/configupdate?params=c29uZ1NyYz1XWQ==
 
 |名称|内容|备注|是否必须|
 |---|---|---|---|
-|api|https://www.thewind.xyz/api/search|请求地址|√|
+|api|/api/search|请求地址|√|
 |src|XM、KW、WY、MG、QQ、KG|请求平台|√|
 |num|整数即可，默认20个|最大请求数量|√|
 |keyword|关键词|搜索的关键词|√|
@@ -160,10 +160,10 @@ https://www.thewind.xyz/api/search?src=MG&num=3&keyword=%E8%AF%B4%E5%A5%BD%E4%B8
 
 |名称|内容|备注|是否必须|
 |---|---|---|---|
-|api|https://www.thewind.xyz/api/download|请求地址|√|
+|api|/api/download|请求地址|√|
 |src|XM、KW、WY、MG、QQ、KG|请求平台|√|
-|songid|音乐ID|音乐ID| |
-|quality|SQ、HQ、PQ、LQ|音乐质量| |
+|songid|音乐ID|音乐ID|√|
+|quality|SQ、HQ、PQ、LQ|音乐质量|√|
 |batch|一段json代码|json| |
 
 batch格式如下,注意没有空格,作为参数前还需要经过BASE64编码(base64编码后不容易出错)
@@ -302,7 +302,22 @@ http://thewind.xyz/api/download?src=QQ&batch=W3sic29uZ1NyYyI6IlFRIiwic29uZ0lkIjo
 ]
 ```
 
+### 1.2.4 歌词搜索能力
 
+|名称|内容|备注|是否必须|
+|---|---|---|---|
+|api|https://www.thewind.xyz/api/getlyric|请求地址|√|
+|src|XM、KW、WY、MG、QQ、KG|请求平台|√|
+|songid|音乐ID|音乐ID|√|
+
+### 1.2.5 播放支持
+
+|名称|内容|备注|是否必须|
+|---|---|---|---|
+|api|https://www.thewind.xyz/api/player|请求地址|√|
+|shareId|分享ID|格式为平台 "ID_歌曲ID" |√|
+
+shareId由平台和songid组成。例如：WY_65766
 
 # 2 用户管理模块
 
