@@ -5,6 +5,7 @@ import xyz.thewind.music.model.SongBean;
 import xyz.thewind.music.music.MusicHelper;
 import xyz.thewind.music.util.GsonConverter;
 import xyz.thewind.music.util.HttpRequestHelper;
+import xyz.thewind.music.util.IpHelper;
 
 
 import java.io.UnsupportedEncodingException;
@@ -41,7 +42,9 @@ public class WyMusic implements MusicHelper {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        String response = HttpRequestHelper.downloadWebSiteUseGet(searchLink, null);
+        Map<String,String> headerMap=new HashMap<>();
+        headerMap.put("X-Real-IP", IpHelper.getRandomIp());
+        String response = HttpRequestHelper.downloadWebSiteUseGet(searchLink, headerMap);
         return wySongSearchRespProcess(response);
     }
     //目前仅仅支持网易普通格式
@@ -131,6 +134,7 @@ public class WyMusic implements MusicHelper {
         }
         Map<String,String> headerMap=new HashMap<>();
         String cookie="MUSIC_U="+configMap.get("wy_music_u");
+        headerMap.put("X-Real-IP",IpHelper.getRandomIp());
         headerMap.put("Cookie",cookie.length()==8?userCookie:cookie);
         String response=HttpRequestHelper.downloadWebSiteUseGet(url,headerMap);
         DownloadResponseBean responseBean=GsonConverter.fromJson(response,DownloadResponseBean.class);
@@ -146,7 +150,9 @@ public class WyMusic implements MusicHelper {
     @Override
     public String searchMvUrl(String mvId) {
         //https://music.163.com/api/song/enhance/play/mv/url?id=303140&r=1080;
-        String response=HttpRequestHelper.downloadWebSiteUseGet("https://music.163.com/api/song/enhance/play/mv/url?id="+mvId+"&r=1080",null);
+        Map<String,String> headerMap=new HashMap<>();
+        headerMap.put("X-Real-IP",IpHelper.getRandomIp());
+        String response=HttpRequestHelper.downloadWebSiteUseGet("https://music.163.com/api/song/enhance/play/mv/url?id="+mvId+"&r=1080",headerMap);
         MvDownloadBean bean=GsonConverter.fromJson(response,MvDownloadBean.class);
         if(bean!=null){
             return bean.getData().getUrl();
@@ -156,8 +162,10 @@ public class WyMusic implements MusicHelper {
 
     @Override
     public String getLyric(String lyricId) {
+        Map<String,String> headerMap=new HashMap<>();
+        headerMap.put("X-Real-IP",IpHelper.getRandomIp());
         String baseUrl="https://music.163.com/api/song/lyric?lv=0&kv=0&tv=0&id="+lyricId;
-        String response=HttpRequestHelper.downloadWebSiteUseGet(baseUrl,null);
+        String response=HttpRequestHelper.downloadWebSiteUseGet(baseUrl,headerMap);
         try {
             LyricResponse bean=GsonConverter.fromJson(response,LyricResponse.class);
             if(bean!=null&&bean.getLrc().get("lyric")!=null){
