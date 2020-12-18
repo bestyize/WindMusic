@@ -1,6 +1,7 @@
 package xyz.thewind.music;
 
 import org.junit.Test;
+import org.springframework.data.relational.core.sql.In;
 import xyz.thewind.music.model.SongBean;
 import xyz.thewind.music.music.MusicDispatcher;
 import xyz.thewind.music.music.MusicHelper;
@@ -14,6 +15,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static xyz.thewind.music.util.HttpRequestHelper.downloadWebSiteUseGet;
 
 public class MusicSourceTest {
     MusicDispatcher dispatcher=new MusicDispatcher();
@@ -91,7 +94,30 @@ public class MusicSourceTest {
 
 
     }
+    @Test
+    public void testKwInfo(){
+        String songId="157578224";
+        String requestLink = "http://www.kuwo.cn/api/www/music/musicInfo?mid=" +songId;
+        Map<String,String> headerMap=new HashMap<>();
+        headerMap.put("Cookie","kw_token=62COOIBCS34");
+        headerMap.put("csrf","62COOIBCS34");
+        //headerMap.put("Referer","https://kuwo.cn/search/list?key="+key);
+        headerMap.put("Keep-Alive","close");
+        String response = downloadWebSiteUseGet(requestLink,headerMap);
+        System.out.printf(response);
+    }
 
+    @Test
+    public void testQQ() throws UnsupportedEncodingException {
+//002J4UUk29y8BY
+//        String data="{\"detail\":{\"module\":\"music.pf_song_detail_svr\",\"method\":\"get_song_detail\",\"param\":{\"song_id\":102636799}}}";
+        String songId="0002u6ZH3GSQPl";
+        String data="{\"songinfo\":{\"module\":\"music.pf_song_detail_svr\",\"method\":\"get_song_detail\",\"param\":{\"song_mid\":\""+songId+"\"}}}";
+        String encode=URLEncoder.encode(data,"UTF-8");
+        String api="https://u.y.qq.com/cgi-bin/musicu.fcg";
+        String response=HttpRequestHelper.downloadWebSiteUseGet(api+"?data="+encode,null);
+        System.out.println(response);
+    }
 
 
 }

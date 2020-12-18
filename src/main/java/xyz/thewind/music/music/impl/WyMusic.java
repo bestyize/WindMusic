@@ -8,6 +8,7 @@ import xyz.thewind.music.util.HttpRequestHelper;
 import xyz.thewind.music.util.IpHelper;
 
 
+import java.awt.font.FontRenderContext;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.*;
@@ -175,6 +176,42 @@ public class WyMusic implements MusicHelper {
             e.printStackTrace();
         }
         return "";
+    }
+
+    @Override
+    public SongBean searchSongDetail(String songId) {
+        String api="https://music.163.com/api/song/detail?ids=%5b"+songId+"%5d";
+        Map<String,String> headerMap=new HashMap<>();
+        headerMap.put("X-Real-IP",IpHelper.getRandomIp());
+        String response=HttpRequestHelper.downloadWebSiteUseGet(api,headerMap);
+        try {
+            SongDetail songDetail=GsonConverter.fromJson(response, SongDetail.class);
+            SongBean songBean=new SongBean("WY",songId);
+            if(songDetail.getSongs().size()>0&&songDetail.getSongs().get(0).getArtists().size()>0){
+                SongDetail.Song song=songDetail.getSongs().get(0);
+                List<SongDetail.Song.Artist> artists=song.getArtists();
+                SongDetail.Song.Album album=song.getAlbum();
+                songBean.setSongName(song.getName());
+                if(album!=null){
+                    songBean.setPicUrl(album.getPicUrl());
+                    songBean.setAlbumId(album.getId()+"");
+                    songBean.setAlbumName(album.getName());
+                }
+                List<String> singerNames=new ArrayList<>();
+                List<String> singerIds=new ArrayList<>();
+                for (SongDetail.Song.Artist artist:artists){
+                    singerIds.add(artist.getId()+"");
+                    singerNames.add(artist.getName());
+                }
+                songBean.setSingersId(singerIds);
+                songBean.setSingersName(singerNames);
+                return songBean;
+
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private static class SearchResponseBean{
@@ -549,6 +586,144 @@ public class WyMusic implements MusicHelper {
 
         public void setLrc(Map<String, Object> lrc) {
             this.lrc = lrc;
+        }
+    }
+
+    private static class SongDetail{
+        int code;
+        List<Song> songs=new ArrayList<>();
+
+        public int getCode() {
+            return code;
+        }
+
+        public void setCode(int code) {
+            this.code = code;
+        }
+
+        public List<Song> getSongs() {
+            return songs;
+        }
+
+        public void setSongs(List<Song> songs) {
+            this.songs = songs;
+        }
+
+        static class Song{
+            String name;
+            long id;
+            int duration;
+            List<Artist> artists=new ArrayList<>();
+            Album album;
+
+            public String getName() {
+                return name;
+            }
+
+            public void setName(String name) {
+                this.name = name;
+            }
+
+            public long getId() {
+                return id;
+            }
+
+            public void setId(long id) {
+                this.id = id;
+            }
+
+            public int getDuration() {
+                return duration;
+            }
+
+            public void setDuration(int duration) {
+                this.duration = duration;
+            }
+
+            public List<Artist> getArtists() {
+                return artists;
+            }
+
+            public void setArtists(List<Artist> artists) {
+                this.artists = artists;
+            }
+
+            public Album getAlbum() {
+                return album;
+            }
+
+            public void setAlbum(Album album) {
+                this.album = album;
+            }
+
+            static class Artist{
+                String name;
+                long id;
+                String picUrl;
+
+                public String getName() {
+                    return name;
+                }
+
+                public void setName(String name) {
+                    this.name = name;
+                }
+
+                public long getId() {
+                    return id;
+                }
+
+                public void setId(long id) {
+                    this.id = id;
+                }
+
+                public String getPicUrl() {
+                    return picUrl;
+                }
+
+                public void setPicUrl(String picUrl) {
+                    this.picUrl = picUrl;
+                }
+            }
+
+            static class Album{
+                String name;
+                long id;
+                String picUrl;
+                long publishTime;
+
+                public String getName() {
+                    return name;
+                }
+
+                public void setName(String name) {
+                    this.name = name;
+                }
+
+                public long getId() {
+                    return id;
+                }
+
+                public void setId(long id) {
+                    this.id = id;
+                }
+
+                public String getPicUrl() {
+                    return picUrl;
+                }
+
+                public void setPicUrl(String picUrl) {
+                    this.picUrl = picUrl;
+                }
+
+                public long getPublishTime() {
+                    return publishTime;
+                }
+
+                public void setPublishTime(long publishTime) {
+                    this.publishTime = publishTime;
+                }
+            }
         }
     }
 }

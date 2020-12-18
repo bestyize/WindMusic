@@ -12,6 +12,7 @@ import xyz.thewind.music.util.HttpRequestHelper;
 import xyz.thewind.music.util.Md5Encrypt;
 
 
+import javax.xml.ws.spi.WebServiceFeatureAnnotation;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.*;
@@ -213,6 +214,14 @@ public class KgMusic implements MusicHelper {
     }
 
 
+    /**
+     * 也可以先：https://wwwapi.kugou.com/yy/index.php?r=play/getdata&hash=0CCA78AF607DC52400D31C18BF036277&mid=12345
+     * 获取album_id
+     * 然后：https://wwwapi.kugou.com/yy/index.php?r=play/getdata&hash=0CCA78AF607DC52400D31C18BF036277&mid=12345&album_id=40602950
+     * 获取歌词
+     * @param lyricId
+     * @return
+     */
     @Override
     public String getLyric(String lyricId) {
         if(lyricId==null||lyricId.length()<32){
@@ -239,6 +248,42 @@ public class KgMusic implements MusicHelper {
             e.printStackTrace();
         }
         return "";
+    }
+
+    @Override
+    public SongBean searchSongDetail(String songId) {
+        String sid=songId;
+        if(songId.length()<20){
+            return null;
+        }
+        if(songId.contains("-")){
+            songId=songId.substring(0,songId.indexOf("-"));
+        }
+        String url="https://wwwapi.kugou.com/yy/index.php?r=play/getdata&hash="+songId.toUpperCase(Locale.ROOT)+"&mid=12345";
+        try {
+            String response=HttpRequestHelper.downloadWebSiteUseGet(url,null);
+            SongDetail.Data data=GsonConverter.fromJson(response,SongDetail.class).data;
+            if(data!=null){
+                SongBean bean=new SongBean("KG",sid);
+                bean.setSongName(data.songName);
+                bean.setPicUrl(data.picUrl);
+                List<SongDetail.Data.Authors> authors= data.authors;
+                List<String> singersName=new ArrayList<>();
+                List<String> singerIds=new ArrayList<>();
+                for (SongDetail.Data.Authors author:authors){
+                    singerIds.add(author.singerId);
+                    singersName.add(author.singerName);
+                }
+                bean.setSingersId(singerIds);
+                bean.setSingersName(singersName);
+                bean.setAlbumName(data.albumName);
+                bean.setAlbumId(data.albumId);
+                return bean;
+            }
+        }catch (Exception r){
+            r.printStackTrace();
+        }
+        return null;
     }
 
     private static class SearchResponseBean{
@@ -564,6 +609,142 @@ public class KgMusic implements MusicHelper {
 
         public void setContent(String content) {
             this.content = content;
+        }
+    }
+
+    private static class SongDetail{
+        int status;
+        Data data=new Data();
+
+        public int getStatus() {
+            return status;
+        }
+
+        public void setStatus(int status) {
+            this.status = status;
+        }
+
+        public Data getData() {
+            return data;
+        }
+
+        public void setData(Data data) {
+            this.data = data;
+        }
+
+        static class Data{
+            @SerializedName("hash")
+            String songId;
+            @SerializedName("timelength")
+            int duration;
+            @SerializedName("audio_name")
+            String songName;
+            @SerializedName("author_name")
+            String singerName;
+            @SerializedName("author_id")
+            String singerId;
+            @SerializedName("img")
+            String picUrl;
+            @SerializedName("album_name")
+            String albumName;
+            @SerializedName("album_id")
+            String albumId;
+            List<Authors> authors;
+
+            public List<Authors> getAuthors() {
+                return authors;
+            }
+
+            public void setAuthors(List<Authors> authors) {
+                this.authors = authors;
+            }
+
+            public String getAlbumName() {
+                return albumName;
+            }
+
+            public void setAlbumName(String albumName) {
+                this.albumName = albumName;
+            }
+
+            public String getAlbumId() {
+                return albumId;
+            }
+
+            public void setAlbumId(String albumId) {
+                this.albumId = albumId;
+            }
+
+            public String getSongId() {
+                return songId;
+            }
+
+            public void setSongId(String songId) {
+                this.songId = songId;
+            }
+
+            public int getDuration() {
+                return duration;
+            }
+
+            public void setDuration(int duration) {
+                this.duration = duration;
+            }
+
+            public String getSongName() {
+                return songName;
+            }
+
+            public void setSongName(String songName) {
+                this.songName = songName;
+            }
+
+            public String getSingerName() {
+                return singerName;
+            }
+
+            public void setSingerName(String singerName) {
+                this.singerName = singerName;
+            }
+
+            public String getSingerId() {
+                return singerId;
+            }
+
+            public void setSingerId(String singerId) {
+                this.singerId = singerId;
+            }
+
+            public String getPicUrl() {
+                return picUrl;
+            }
+
+            public void setPicUrl(String picUrl) {
+                this.picUrl = picUrl;
+            }
+
+            static class Authors{
+                @SerializedName("author_id")
+                String singerId;
+                @SerializedName("author_name")
+                String singerName;
+
+                public String getSingerId() {
+                    return singerId;
+                }
+
+                public void setSingerId(String singerId) {
+                    this.singerId = singerId;
+                }
+
+                public String getSingerName() {
+                    return singerName;
+                }
+
+                public void setSingerName(String singerName) {
+                    this.singerName = singerName;
+                }
+            }
         }
     }
 }

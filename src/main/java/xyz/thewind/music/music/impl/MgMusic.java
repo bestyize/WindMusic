@@ -134,6 +134,11 @@ public class MgMusic implements MusicHelper {
         return new LinkedList<>(Arrays.asList(singerIdArr));//kw音乐只返回第一个歌手id
     }
 
+    @Override
+    public SongBean searchSongDetail(String songId) {
+        return getDownloadLinkById(songId,"");
+    }
+
     private static class SearchResponseBean{
         @SerializedName("musics")
         List<SongDetail> songDetailList;
@@ -260,7 +265,8 @@ public class MgMusic implements MusicHelper {
             MgDownloadBean mgDownloadBean=new Gson().fromJson(response,MgDownloadBean.class);
 
             if(mgDownloadBean!=null&&mgDownloadBean.resource!=null&& mgDownloadBean.resource.size()>0){
-                List<MgDownloadBean.MgMusicDetail.RateFormats> rateFormatList= mgDownloadBean.resource.get(0).getRateFormats();
+                MgDownloadBean.MgMusicDetail musicDetail= mgDownloadBean.resource.get(0);
+                List<MgDownloadBean.MgMusicDetail.RateFormats> rateFormatList= musicDetail.getRateFormats();
                 songBean.setLrcUrl(mgDownloadBean.resource.get(0).getLrcUrl());
                 if(rateFormatList!=null){
                     Map<String,String> map=songBean.getDownloadLinkMap();
@@ -268,6 +274,14 @@ public class MgMusic implements MusicHelper {
                         map.put(formats.formatType,formats.getUrl());
                     }
                 }
+                songBean.setSongName(musicDetail.getSongName());
+                songBean.setAlbumName(musicDetail.getAlbumName());
+                songBean.setSingersName(Arrays.asList(musicDetail.getSingerName()));
+                songBean.setSingersId(Arrays.asList(musicDetail.getSingerId()));
+                if(musicDetail.getAlbumImgs().size()>0){
+                    songBean.setPicUrl(musicDetail.getAlbumImgs().get(0).getImg());
+                }
+
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -275,10 +289,12 @@ public class MgMusic implements MusicHelper {
         return songBean;
     }
 
+
+
     private static class MgDownloadBean{
         String code;
         String info;
-        List<MgMusicDetail> resource;
+        List<MgMusicDetail> resource=new ArrayList<>();
 
         public String getCode() {
             return code;
@@ -305,8 +321,64 @@ public class MgMusic implements MusicHelper {
         }
 
         static class MgMusicDetail{
+            String songName;
+            String singerId;
+            @SerializedName("singer")
+            String singerName;
+            @SerializedName("album")
+            String albumName;
+            String albumId;
+            List<Imgs> albumImgs=new ArrayList<>();
             String lrcUrl;
             List<RateFormats> rateFormats;
+
+            public String getSongName() {
+                return songName;
+            }
+
+            public void setSongName(String songName) {
+                this.songName = songName;
+            }
+
+            public String getSingerId() {
+                return singerId;
+            }
+
+            public void setSingerId(String singerId) {
+                this.singerId = singerId;
+            }
+
+            public String getSingerName() {
+                return singerName;
+            }
+
+            public void setSingerName(String singerName) {
+                this.singerName = singerName;
+            }
+
+            public String getAlbumName() {
+                return albumName;
+            }
+
+            public void setAlbumName(String albumName) {
+                this.albumName = albumName;
+            }
+
+            public String getAlbumId() {
+                return albumId;
+            }
+
+            public void setAlbumId(String albumId) {
+                this.albumId = albumId;
+            }
+
+            public List<Imgs> getAlbumImgs() {
+                return albumImgs;
+            }
+
+            public void setAlbumImgs(List<Imgs> albumImgs) {
+                this.albumImgs = albumImgs;
+            }
 
             public String getLrcUrl() {
                 return lrcUrl;
@@ -355,6 +427,26 @@ public class MgMusic implements MusicHelper {
 
                 public void setSize(String size) {
                     this.size = size;
+                }
+            }
+            static class Imgs{
+                String imgSizeType;
+                String img;
+
+                public String getImgSizeType() {
+                    return imgSizeType;
+                }
+
+                public void setImgSizeType(String imgSizeType) {
+                    this.imgSizeType = imgSizeType;
+                }
+
+                public String getImg() {
+                    return img;
+                }
+
+                public void setImg(String img) {
+                    this.img = img;
                 }
             }
 

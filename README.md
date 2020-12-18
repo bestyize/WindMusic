@@ -314,10 +314,17 @@ http://thewind.xyz/api/download?src=QQ&batch=W3sic29uZ1NyYyI6IlFRIiwic29uZ0lkIjo
 
 |名称|内容|备注|是否必须|
 |---|---|---|---|
-|api|https://www.thewind.xyz/api/player|请求地址|√|
+|api|/api/player|请求地址|√|
 |shareId|分享ID|格式为平台 "ID_歌曲ID" |√|
 
 shareId由平台和songid组成。例如：WY_65766
+
+### 1.2.6 歌曲详情
+|名称|内容|备注|是否必须|
+|---|---|---|---|
+|api|/api/songdetail|请求地址|√|
+|src|KW、KG、QQ、WY、MG、XM|平台ID |√|
+|songid|歌曲ID|歌曲ID |√|
 
 # 2 用户管理模块
 

@@ -39,6 +39,15 @@ public class XmMusic implements MusicHelper {
         return songBean;
     }
 
+    @Override
+    public SongBean searchSongDetail(String songId) {
+        SongBean songBean=new SongBean("XM",songId);
+        songBean=searchDownloadLink(songBean,"PQ");
+        if(songBean.getSongName()!=null){
+            return songBean;
+        }
+        return null;
+    }
 
     @Override
     public List<SongBean> searchWithDownload(String keyword, int num) {

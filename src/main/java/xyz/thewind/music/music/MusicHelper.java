@@ -42,8 +42,10 @@ public interface MusicHelper {
 
     String getLyric(String lyricId);
 
-    default void setConfigMap(Map<String,String> configMap){
+    default void setConfigMap(Map<String,String> configMap){ }
 
-    }
+    default SongBean searchSongDetail(String songId){
+        return null;
+    };
 
 }

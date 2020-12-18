@@ -206,6 +206,35 @@ public class KwMusic implements MusicHelper {
         return (!url.startsWith("http"))?"":url;
     }
 
+    @Override
+    public SongBean searchSongDetail(String songId) {
+        String requestLink = "http://www.kuwo.cn/api/www/music/musicInfo?mid=" +songId;
+        Map<String,String> headerMap=new HashMap<>();
+        headerMap.put("Cookie","kw_token=62COOIBCS34");
+        headerMap.put("csrf","62COOIBCS34");
+        //headerMap.put("Referer","https://kuwo.cn/search/list?key="+key);
+        headerMap.put("Keep-Alive","close");
+        String response = downloadWebSiteUseGet(requestLink,headerMap);
+        SongBean songBean=new SongBean("KW",songId);
+        try{
+            SongDetail detail=GsonConverter.fromJson(response,SongDetail.class);
+            SongDetail.Data data=detail.getData();
+            if(detail!=null&&data!=null){
+                songBean.setSongName(data.getSongName());
+                songBean.setSingersId(Arrays.asList(data.getSingerId()+""));
+                songBean.setPicUrl(data.getPic());
+                songBean.setAlbumName(data.albumName);
+                songBean.setQuality(data.hasLossless?"SQ":"HQ");
+                songBean.setAlbumId(data.albumId+"");
+                songBean.setSingersName(Arrays.asList(data.singerName));
+                return songBean;
+            }
+        }catch (Exception e){
+
+        }
+        return null;
+    }
+
     /**
      * 酷我音乐解密算法
      */
@@ -734,6 +763,117 @@ public class KwMusic implements MusicHelper {
                 public void setTime(String time) {
                     this.time = time;
                 }
+            }
+        }
+    }
+
+    private static class SongDetail{
+        int code;
+        Data data;
+
+        public int getCode() {
+            return code;
+        }
+
+        public void setCode(int code) {
+            this.code = code;
+        }
+
+        public Data getData() {
+            return data;
+        }
+
+        public void setData(Data data) {
+            this.data = data;
+        }
+
+        static class Data{
+            @SerializedName("artist")
+            String singerName;
+            String pic;
+            @SerializedName("songId")
+            long rid;
+            int duration;
+            @SerializedName("artistid")
+            long singerId;
+            @SerializedName("album")
+            String albumName;
+            @SerializedName("albumid")
+            long albumId;
+            boolean hasLossless;
+            @SerializedName("name")
+            String songName;
+
+            public String getSingerName() {
+                return singerName;
+            }
+
+            public void setSingerName(String singerName) {
+                this.singerName = singerName;
+            }
+
+            public String getPic() {
+                return pic;
+            }
+
+            public void setPic(String pic) {
+                this.pic = pic;
+            }
+
+            public long getRid() {
+                return rid;
+            }
+
+            public void setRid(long rid) {
+                this.rid = rid;
+            }
+
+            public int getDuration() {
+                return duration;
+            }
+
+            public void setDuration(int duration) {
+                this.duration = duration;
+            }
+
+            public long getSingerId() {
+                return singerId;
+            }
+
+            public void setSingerId(long singerId) {
+                this.singerId = singerId;
+            }
+
+            public String getAlbumName() {
+                return albumName;
+            }
+
+            public void setAlbumName(String albumName) {
+                this.albumName = albumName;
+            }
+
+            public long getAlbumId() {
+                return albumId;
+            }
+
+            public void setAlbumId(long albumId) {
+                this.albumId = albumId;
+            }
+
+            public boolean isHasLossless() {
+                return hasLossless;
+            }
+
+            public void setHasLossless(boolean hasLossless) {
+                this.hasLossless = hasLossless;
+            }
+
+            public String getSongName() {
+                return songName;
+            }
+
+            public void setSongName(String songName) {
+                this.songName = songName;
             }
         }
     }

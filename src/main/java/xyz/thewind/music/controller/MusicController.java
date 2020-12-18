@@ -90,7 +90,7 @@ public class MusicController {
                         pic="img/wind-icon-256.png";
                     }
                     String url=bean.getDownloadLinkMap().get("PQ");
-                    if(url==null){
+                    if(url==null&&(url=bean.getDownloadLinkMap().get("LQ"))==null){
                         url="";
                     }
                     String author="";
@@ -103,13 +103,33 @@ public class MusicController {
                         }
                     }
                     String lyric=musicDispatcher.searchLyricDispatcher(songSrc,songId);
-                    PlayerBean playerBean=new PlayerBean(LyricHelper.getSongName(songSrc,lyric) , LyricHelper.getSingerName(songSrc,lyric),pic,url,lyric);
+                    SongBean detail=musicDispatcher.songDetailDispatcher(songSrc,songId);
+                    String title=LyricHelper.getSongName(songSrc,lyric);
+                    String singerName=LyricHelper.getSingerName(songSrc,lyric);
+                    if(detail!=null){
+                        title=detail.getSongName();
+                        List<String> singerNames=detail.getSingersName();
+                        if(singerNames.size()==1){
+                            singerName=singerNames.get(0);
+                        }else if(singerNames.size()>1){
+                            singerName=singerNames.get(0)+"&"+singerNames.get(1);
+                        }
+                        if(detail.getPicUrl()!=null){
+                            pic=detail.getPicUrl();
+                        }
+                    }
+                    PlayerBean playerBean=new PlayerBean(title ,singerName ,pic,url,lyric);
                     playerBeanList.add(playerBean);
                 }
 
             }
         }
         return new ResponseEntity<>(playerBeanList,HttpStatus.OK);
+    }
+    @RequestMapping("/api/songdetail")
+    public ResponseEntity<SongBean> getSongDetail(String src,String songid){
+        SongBean bean=musicDispatcher.songDetailDispatcher(src,songid);
+        return new ResponseEntity<>(bean,HttpStatus.OK);
     }
 
 

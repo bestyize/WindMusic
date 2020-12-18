@@ -12,6 +12,7 @@ import xyz.thewind.music.util.GsonConverter;
 import xyz.thewind.music.util.HttpRequestHelper;
 import xyz.thewind.music.util.PropertyReader;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.*;
 
@@ -230,6 +231,51 @@ public class QqMusic implements MusicHelper {
             e.printStackTrace();
         }
         return "";
+    }
+
+    @Override
+    public SongBean searchSongDetail(String songId) {
+        String data="{\"songinfo\":{\"module\":\"music.pf_song_detail_svr\",\"method\":\"get_song_detail\",\"param\":{\"song_mid\":\""+songId+"\"}}}";
+        String encode= null;
+        SongBean songBean=null;
+        try {
+
+            encode = URLEncoder.encode(data,"UTF-8");
+            String api="https://u.y.qq.com/cgi-bin/musicu.fcg";
+            String response=HttpRequestHelper.downloadWebSiteUseGet(api+"?data="+encode,null);
+            SongDetail detail=GsonConverter.fromJson(response,SongDetail.class);
+            SongDetail.Songinfo.Data.TrackInfo trackInfo=detail.songinfo.data.trackInfo;
+            songBean=new SongBean("QQ",songId);
+            songBean.setSongId(trackInfo.getMid());
+            songBean.setSongName(trackInfo.getName());
+            List<SongDetail.Songinfo.Data.TrackInfo.Singer> singerList=trackInfo.getSinger();
+            List<String> singersName=new ArrayList<>();
+            List<String> singersId=new ArrayList<>();
+            for (SongDetail.Songinfo.Data.TrackInfo.Singer singer:singerList){
+                singersName.add(singer.name);
+                singersId.add(singer.mid);
+            }
+            songBean.setSingersName(singersName);
+            songBean.setSingersId(singersId);
+            SongDetail.Songinfo.Data.TrackInfo.Album album=trackInfo.getAlbum();
+            songBean.setAlbumId(album.mid);
+            songBean.setAlbumName(album.name);
+            List<SongDetail.Songinfo.Data.Info> infos=detail.songinfo.data.info;
+            for (SongDetail.Songinfo.Data.Info info:infos){
+                if(info.type.equals("lyric")){
+                    if(info.content.size()>0){
+                        songBean.setLrcUrl(info.content.get(0).value);
+                    }
+
+                }
+            }
+            songBean.setMvUrl(trackInfo.getMv().vid);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        return songBean;
     }
 
     private static class SearchResponseBean{
@@ -672,7 +718,7 @@ public class QqMusic implements MusicHelper {
             }
         }
     }
-    static class LyricResponseBean{
+    private static class LyricResponseBean{
         String lyric;
         String trans;
 
@@ -690,6 +736,216 @@ public class QqMusic implements MusicHelper {
 
         public void setTrans(String trans) {
             this.trans = trans;
+        }
+    }
+
+    private static class SongDetail{
+        int code;
+        Songinfo songinfo=new Songinfo();
+        static class Songinfo{
+            int code;
+            Data data=new Data();
+
+            public int getCode() {
+                return code;
+            }
+
+            public void setCode(int code) {
+                this.code = code;
+            }
+
+            public Data getData() {
+                return data;
+            }
+
+            public void setData(Data data) {
+                this.data = data;
+            }
+
+            static class Data{
+                @SerializedName("track_info")
+                TrackInfo trackInfo=new TrackInfo();
+                List<Info> info=new ArrayList<>();
+
+                public List<Info> getInfo() {
+                    return info;
+                }
+
+                public void setInfo(List<Info> info) {
+                    this.info = info;
+                }
+
+                public TrackInfo getTrackInfo() {
+                    return trackInfo;
+                }
+
+                public void setTrackInfo(TrackInfo trackInfo) {
+                    this.trackInfo = trackInfo;
+                }
+
+                static class TrackInfo{
+                    String mid;
+                    String name;
+                    List<Singer> singer=new ArrayList<>();
+                    Album album=new Album();
+                    Mv mv=new Mv();
+                    @SerializedName("interval")
+                    int duration;
+
+                    public String getMid() {
+                        return mid;
+                    }
+
+                    public void setMid(String mid) {
+                        this.mid = mid;
+                    }
+
+                    public String getName() {
+                        return name;
+                    }
+
+                    public void setName(String name) {
+                        this.name = name;
+                    }
+
+                    public List<Singer> getSinger() {
+                        return singer;
+                    }
+
+                    public void setSinger(List<Singer> singer) {
+                        this.singer = singer;
+                    }
+
+                    public Album getAlbum() {
+                        return album;
+                    }
+
+                    public void setAlbum(Album album) {
+                        this.album = album;
+                    }
+
+                    public Mv getMv() {
+                        return mv;
+                    }
+
+                    public void setMv(Mv mv) {
+                        this.mv = mv;
+                    }
+
+                    public int getDuration() {
+                        return duration;
+                    }
+
+                    public void setDuration(int duration) {
+                        this.duration = duration;
+                    }
+
+                    static class Singer{
+                        String mid;
+                        String name;
+
+                        public String getMid() {
+                            return mid;
+                        }
+
+                        public void setMid(String mid) {
+                            this.mid = mid;
+                        }
+
+                        public String getName() {
+                            return name;
+                        }
+
+                        public void setName(String name) {
+                            this.name = name;
+                        }
+                    }
+                    static class Album{
+                        String mid;
+                        String name;
+
+                        public String getMid() {
+                            return mid;
+                        }
+
+                        public void setMid(String mid) {
+                            this.mid = mid;
+                        }
+
+                        public String getName() {
+                            return name;
+                        }
+
+                        public void setName(String name) {
+                            this.name = name;
+                        }
+                    }
+
+                    static class Mv{
+                        String vid;
+
+                        public String getVid() {
+                            return vid;
+                        }
+
+                        public void setVid(String vid) {
+                            this.vid = vid;
+                        }
+                    }
+
+                }
+
+                static class Info{
+                    String title;
+                    String type;
+                    List<Content> content=new ArrayList<>();
+
+                    public String getTitle() {
+                        return title;
+                    }
+
+                    public void setTitle(String title) {
+                        this.title = title;
+                    }
+
+                    public String getType() {
+                        return type;
+                    }
+
+                    public void setType(String type) {
+                        this.type = type;
+                    }
+
+                    public List<Content> getContent() {
+                        return content;
+                    }
+
+                    public void setContent(List<Content> content) {
+                        this.content = content;
+                    }
+
+                    static class Content{
+                        String value;
+                        String mid;
+
+                        public String getValue() {
+                            return value;
+                        }
+
+                        public void setValue(String value) {
+                            this.value = value;
+                        }
+
+                        public String getMid() {
+                            return mid;
+                        }
+
+                        public void setMid(String mid) {
+                            this.mid = mid;
+                        }
+                    }
+                }
+            }
         }
     }
 }

@@ -94,5 +94,13 @@ public class MusicDispatcher {
         return musicHelper.getLyric(songId);
     }
 
+    public SongBean songDetailDispatcher(String songSrc,String songId){
+        if(!srcMap.containsKey(songSrc)){
+            return null;
+        }
+        MusicHelper musicHelper=srcMap.get(songSrc);
+        return musicHelper.searchSongDetail(songId);
+    }
+
 
 }
