@@ -94,9 +94,6 @@ https://www.thewind.xyz/api/configupdate?params=cXFtdXNpY191aW49MTIzNDU2Nzg7cXFt
 https://www.thewind.xyz/api/configupdate?params=c29uZ1NyYz1XWQ==
 ```
 
-
-
-
 ### 1.2.2 搜索API介绍
 
 |名称|内容|备注|是否必须|
