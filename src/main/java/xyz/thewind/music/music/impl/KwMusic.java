@@ -99,7 +99,7 @@ public class KwMusic implements MusicHelper {
                             String.valueOf(detail.getAlbumId()),
                             detail.albumName,
                             (detail.hasLossless?QUALITY_SQ:QUALITY_HQ),
-                            detail.picUrl,"","");
+                            detail.getPicUrl(),"","");
                     list.add(songBean);
                 }
             }
@@ -344,7 +344,7 @@ public class KwMusic implements MusicHelper {
         return arrByte2;
     }
 
-    private static String base64Encrypt(String msg) {
+    public static String base64Encrypt(String msg) {
         long[] b1 = encrypt(msg);
         byte[] b2 = longTobyte(b1);
         return Base64.getEncoder().encodeToString(b2);
@@ -630,6 +630,9 @@ public class KwMusic implements MusicHelper {
                 }
 
                 public String getPicUrl() {
+                    if(picUrl!=null&&picUrl.contains("http://")){
+                        picUrl=picUrl.replace("http://","https://");
+                    }
                     return picUrl;
                 }
 
@@ -813,6 +816,9 @@ public class KwMusic implements MusicHelper {
             }
 
             public String getPic() {
+                if(pic!=null&&pic.contains("http://")){
+                    pic=pic.replace("http://","https://");
+                }
                 return pic;
             }
 

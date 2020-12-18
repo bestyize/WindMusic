@@ -193,7 +193,8 @@ public class WyMusic implements MusicHelper {
                 SongDetail.Song.Album album=song.getAlbum();
                 songBean.setSongName(song.getName());
                 if(album!=null){
-                    songBean.setPicUrl(album.getPicUrl());
+                    String picUrl= album.getPicUrl().replace("http://","https://");
+                    songBean.setPicUrl(picUrl);
                     songBean.setAlbumId(album.getId()+"");
                     songBean.setAlbumName(album.getName());
                 }
@@ -412,6 +413,9 @@ public class WyMusic implements MusicHelper {
                     }
 
                     public String getAlbumPicUrl() {
+                        if(albumPicUrl!=null&&albumPicUrl.contains("http://")){
+                            albumPicUrl=albumPicUrl.replace("http://","https://");
+                        }
                         return albumPicUrl;
                     }
 

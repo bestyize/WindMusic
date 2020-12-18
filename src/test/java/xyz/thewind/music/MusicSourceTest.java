@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 import static xyz.thewind.music.util.HttpRequestHelper.downloadWebSiteUseGet;
+import static xyz.thewind.music.util.SongUtil.*;
 
 public class MusicSourceTest {
     MusicDispatcher dispatcher=new MusicDispatcher();
@@ -117,6 +118,41 @@ public class MusicSourceTest {
         String api="https://u.y.qq.com/cgi-bin/musicu.fcg";
         String response=HttpRequestHelper.downloadWebSiteUseGet(api+"?data="+encode,null);
         System.out.println(response);
+    }
+
+    private static final HashMap<String, String> qualityMap;
+
+    static {
+        qualityMap=new HashMap<>();
+        qualityMap.put(QUALITY_SQ,"&br=2000&format=flac");
+        qualityMap.put(QUALITY_HQ,"&br=320&format=mp3");
+        qualityMap.put(QUALITY_PQ,"&br=192&format=mp3");
+        qualityMap.put(QUALITY_LQ,"&br=128&format=mp3");
+    }
+    @Test
+    public void testKw(){
+        String songId=228908+"";
+        System.out.println(getDownloadLinkById(songId,"SQ"));
+    }
+    /**
+     * 还有另外的接口，支持VIP歌曲，除了flac都可以下载
+     * http://www.kuwo.cn/url?format=mp3&rid=228908&response=url&type=convert_url3&br=320&from=web&t=1584003980221&reqId=xxxxxxxxxxxxxxxxxx
+     * http://antiserver.kuwo.cn/anti.s?type=convert_url3&rid=228908&format=mp3&response=url&br=320
+     */
+
+    private String getDownloadLinkById(String songid, String quality) {
+        String downloadLink=null;
+        try {
+            String link = "http://antiserver.kuwo.cn/anti.s?q=";
+            String encParams = KwMusic.base64Encrypt("&type=convert_url3" + qualityMap.get(quality) + "&rid=" + songid );
+            Map<String,String> headerMap=new HashMap<>();
+            //headerMap.put("User-Agent",USER_AGENT_ANDROID);
+            String response= downloadWebSiteUseGet(link + encParams,headerMap);
+            System.out.println(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return downloadLink;
     }
 
 
