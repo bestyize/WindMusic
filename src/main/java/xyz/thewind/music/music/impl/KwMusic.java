@@ -171,9 +171,10 @@ public class KwMusic implements MusicHelper {
         return sb.toString();
     }
     public String convertToLyricTime(String time){
-        if(time==null||time.length()<4||!time.contains(".")){
+        if(time==null||time.length()<4||!time.contains(".")||time.lastIndexOf(".")+2>time.length()-1){
             return "";
         }
+        time=time.substring(0,time.indexOf(".")+3);
         int len=time.length();
 
         String subSecond=time.substring(len-2,len);
