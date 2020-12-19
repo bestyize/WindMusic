@@ -232,9 +232,17 @@
 
 
     function hiddenDownloadBtn(currQuality,maxQuality) {
+
         if(maxQuality==='HQ'&&currQuality==='SQ'){
             return 'hidden';
         }else if(maxQuality==='PQ'&&(currQuality==='SQ'||currQuality==='HQ')){
+            return 'hidden';
+        }
+        return '';
+    }
+
+    function hiddenZqDownloadBtn(currQuality,maxQuality){
+        if(currQuality!==maxQuality){
             return 'hidden';
         }
         return '';

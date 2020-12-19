@@ -7,7 +7,7 @@ public class SongUtil {
     public static final String SRC_KW="KW";
     public static final String SRC_KG="KG";
     public static final String SRC_XM="XM";
-
+    public static final String QUALITY_ZQ="ZQ";//咪咕音乐支持24bit的flac
     public static final String QUALITY_SQ="SQ";
     public static final String QUALITY_HQ="HQ";
     public static final String QUALITY_PQ="PQ";
