@@ -5,9 +5,10 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import xyz.thewind.music.model.SongBean;
 import xyz.thewind.music.music.impl.*;
+import xyz.thewind.music.music.impl.qq.QqMusic;
+import xyz.thewind.music.music.impl.wy.WyMusic;
 import xyz.thewind.music.util.Base64Converter;
 
-import javax.servlet.http.Cookie;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;

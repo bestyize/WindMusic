@@ -167,7 +167,7 @@ public class KgMusic implements MusicHelper {
     public static String downloadRequest(String hash){
         Map<String,String> headerMap=new HashMap<>();
         headerMap.put("User-Agent","Android511-AndroidPhone-10259-14-0-NetMusic-wifi");
-        headerMap.put("KG-FAKE",configMap.getOrDefault("kg_uid","0"));
+        headerMap.put("KG-FAKE",configMap.getOrDefault("kg_uid","1717986917"));
         headerMap.put("KG-RC","1");
         headerMap.put("KG-RF","00877b56");
         headerMap.put("KG-THash","1509c84");
@@ -179,7 +179,7 @@ public class KgMusic implements MusicHelper {
     public static String downloadLinkBuilder(String hash,boolean usePid){
 
         String pidVersionSecret= "57ae12eb6890223e355ccfcb74edf70d";
-        String uid=configMap.get("kg_uid");
+        String uid=configMap.getOrDefault("kg_uid","1717986917");
         if(uid==null){
             uid="0";
         }

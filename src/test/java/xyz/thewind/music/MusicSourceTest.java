@@ -1,18 +1,15 @@
 package xyz.thewind.music;
 
 import org.junit.Test;
-import org.springframework.data.relational.core.sql.In;
-import org.thymeleaf.util.TextUtils;
 import xyz.thewind.music.model.SongBean;
 import xyz.thewind.music.music.MusicDispatcher;
 import xyz.thewind.music.music.MusicHelper;
 import xyz.thewind.music.music.impl.*;
+import xyz.thewind.music.music.impl.qq.QqMusic;
+import xyz.thewind.music.music.impl.wy.WyMusic;
 import xyz.thewind.music.util.GsonConverter;
 import xyz.thewind.music.util.HttpRequestHelper;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
