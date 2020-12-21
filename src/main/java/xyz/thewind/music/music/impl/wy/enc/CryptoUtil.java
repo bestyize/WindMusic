@@ -1,4 +1,6 @@
-package xyz.thewind.music.util;
+package xyz.thewind.music.music.impl.wy.enc;
+
+import xyz.thewind.music.util.HttpRequestHelper;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
@@ -110,7 +112,7 @@ public class CryptoUtil {
     private static String strToHex(String s) {
         StringBuilder str = new StringBuilder();
         for (int i = 0; i < s.length(); i++) {
-            int ch = (int) s.charAt(i);
+            int ch = s.charAt(i);
             String s4 = Integer.toHexString(ch);
             str.append(s4);
         }

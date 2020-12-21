@@ -16,7 +16,7 @@ import java.util.*;
 
 import static xyz.thewind.music.util.HttpRequestHelper.downloadWebSiteUseGet;
 import static xyz.thewind.music.util.HttpRequestHelper.downloadWebSiteUsePost;
-import static xyz.thewind.music.util.SongUtil.*;
+import static xyz.thewind.music.music.common.SongUtil.*;
 
 
 public class QqMusic implements MusicHelper {
@@ -234,16 +234,13 @@ public class QqMusic implements MusicHelper {
     @Override
     public SongBean searchSongDetail(String songId) {
         String data="{\"songinfo\":{\"module\":\"music.pf_song_detail_svr\",\"method\":\"get_song_detail\",\"param\":{\"song_mid\":\""+songId+"\"}}}";
-        String encode= null;
-        SongBean songBean=null;
         try {
-
-            encode = URLEncoder.encode(data,"UTF-8");
+            String encode = URLEncoder.encode(data,"UTF-8");
             String api="https://u.y.qq.com/cgi-bin/musicu.fcg";
             String response=HttpRequestHelper.downloadWebSiteUseGet(api+"?data="+encode,null);
             SongDetail detail=GsonConverter.fromJson(response,SongDetail.class);
             SongDetail.Songinfo.Data.TrackInfo trackInfo=detail.songinfo.data.trackInfo;
-            songBean=new SongBean("QQ",songId);
+            SongBean songBean=new SongBean("QQ",songId);
             songBean.setSongId(trackInfo.getMid());
             songBean.setSongName(trackInfo.getName());
             List<SongDetail.Songinfo.Data.TrackInfo.Singer> singerList=trackInfo.getSinger();
@@ -268,12 +265,13 @@ public class QqMusic implements MusicHelper {
                 }
             }
             songBean.setMvUrl(trackInfo.getMv().vid);
+            return songBean;
         } catch (Exception e) {
             e.printStackTrace();
         }
 
 
-        return songBean;
+        return null;
     }
 
 }

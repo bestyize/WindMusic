@@ -15,7 +15,4 @@ public class EdrawActivateController {
     public ResponseEntity<String> edrawActivate(@PathVariable(value = "id") String id, @PathVariable String product){
         return new ResponseEntity<>(edrawVipInfo.replaceAll("88888888",id), HttpStatus.OK);
     }
-
-
-
 }

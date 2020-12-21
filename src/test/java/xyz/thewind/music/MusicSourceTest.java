@@ -4,9 +4,12 @@ import org.junit.Test;
 import xyz.thewind.music.model.SongBean;
 import xyz.thewind.music.music.MusicDispatcher;
 import xyz.thewind.music.music.MusicHelper;
-import xyz.thewind.music.music.impl.*;
+import xyz.thewind.music.music.impl.kg.KgMusic;
+import xyz.thewind.music.music.impl.kw.KwMusic;
+import xyz.thewind.music.music.impl.mg.MgMusic;
 import xyz.thewind.music.music.impl.qq.QqMusic;
 import xyz.thewind.music.music.impl.wy.WyMusic;
+import xyz.thewind.music.music.impl.xm.XmMusic;
 import xyz.thewind.music.util.GsonConverter;
 import xyz.thewind.music.util.HttpRequestHelper;
 
@@ -17,7 +20,7 @@ import java.util.*;
 
 import static xyz.thewind.music.util.HttpRequestHelper.downloadWebSiteUseGet;
 import static xyz.thewind.music.util.Md5Encrypt.convertToMd5;
-import static xyz.thewind.music.util.SongUtil.*;
+import static xyz.thewind.music.music.common.SongUtil.*;
 
 public class MusicSourceTest {
     MusicDispatcher dispatcher=new MusicDispatcher();
@@ -104,8 +107,7 @@ public class MusicSourceTest {
         headerMap.put("csrf","62COOIBCS34");
         //headerMap.put("Referer","https://kuwo.cn/search/list?key="+key);
         headerMap.put("Keep-Alive","close");
-        String response = downloadWebSiteUseGet(requestLink,headerMap);
-        System.out.printf(response);
+        System.out.print(downloadWebSiteUseGet(requestLink,headerMap));
     }
 
     @Test
@@ -147,7 +149,7 @@ public class MusicSourceTest {
         Map<String,String> headerMap=new HashMap<>();
         headerMap.put("User-Agent",USER_AGENT_ANDROID);
         String response= downloadWebSiteUseGet(link + encParams,headerMap);
-        if(response!=null&&response.contains("url=")&&response.contains("sig=")){
+        if(response.contains("url=") && response.contains("sig=")){
             response=response.substring(response.indexOf("url=")+4,response.indexOf("sig="));
             System.out.println(response);
         }
@@ -247,10 +249,10 @@ public class MusicSourceTest {
             p = magic(dirE,magic);
             s[0] = (int) (p & 4294967295L);
             s[1] = (int) ((p & -4294967296L) >> 32);
-            for (int i = 0; i < arr.length; i++) {
+            for (long l : arr) {
                 r = s[1];
-                r = magic(dirF,r);
-                r ^= arr[i];
+                r = magic(dirF, r);
+                r ^= l;
                 for (int j = 0; j < t.length; j++) {
                     t[j] = (byte) ((int) (255 & (r >> (j * 8))));
                 }
@@ -266,7 +268,7 @@ public class MusicSourceTest {
                     k = w - 1;
                 }
                 r = u;
-                r = magic(dirH,r);
+                r = magic(dirH, r);
                 q = s[0];
                 s[0] = s[1];
                 s[1] = (int) (q ^ r);
@@ -351,7 +353,7 @@ public class MusicSourceTest {
 
         public static Map<String,String> requestHeader(String keyword,String msiDn){
             String deviceId=genDeviceId(32);
-            HashMap hashMap = new HashMap();
+            HashMap<String,String> hashMap = new HashMap<>();
             hashMap.put("deviceId", deviceId);
             hashMap.put("appId", "yyapp2");
             hashMap.put("android_id", "afad815163f1d394");

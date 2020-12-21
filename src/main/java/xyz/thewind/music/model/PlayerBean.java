@@ -1,9 +1,5 @@
 package xyz.thewind.music.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Generated;
-
 public class PlayerBean {
     private String title;
     private String author;

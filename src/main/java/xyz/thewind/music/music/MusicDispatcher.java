@@ -4,9 +4,12 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import xyz.thewind.music.model.SongBean;
-import xyz.thewind.music.music.impl.*;
+import xyz.thewind.music.music.impl.kg.KgMusic;
+import xyz.thewind.music.music.impl.kw.KwMusic;
+import xyz.thewind.music.music.impl.mg.MgMusic;
 import xyz.thewind.music.music.impl.qq.QqMusic;
 import xyz.thewind.music.music.impl.wy.WyMusic;
+import xyz.thewind.music.music.impl.xm.XmMusic;
 import xyz.thewind.music.util.Base64Converter;
 
 import java.util.HashMap;
@@ -14,7 +17,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import static xyz.thewind.music.util.SongUtil.*;
+import static xyz.thewind.music.music.common.SongUtil.*;
 
 public class MusicDispatcher {
     private static final Map<String, MusicHelper> srcMap;

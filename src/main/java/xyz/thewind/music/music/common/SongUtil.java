@@ -1,4 +1,4 @@
-package xyz.thewind.music.util;
+package xyz.thewind.music.music.common;
 
 public class SongUtil {
     public static final String SRC_QQ="QQ";

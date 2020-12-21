@@ -15,8 +15,6 @@ import xyz.thewind.music.util.Base64Converter;
 import xyz.thewind.music.util.GsonConverter;
 import xyz.thewind.music.util.LyricHelper;
 import xyz.thewind.music.util.NumberHelper;
-
-import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,9 +22,12 @@ import java.util.Map;
 
 @RestController
 public class MusicController {
+
     @Autowired
     private RedisService redisService;
+
     private static final MusicDispatcher musicDispatcher=new MusicDispatcher();
+
     @RequestMapping("/api/download")
     public ResponseEntity<String> download(String songid,String quality,String src,String batch){
         String response;
@@ -46,6 +47,7 @@ public class MusicController {
         }
         return new ResponseEntity<>(response,headers, HttpStatus.OK);
     }
+
     @RequestMapping("/api/search")
     public ResponseEntity<List<SongBean>> search(String keyword,String num,String src){
         String songSrc=loadConfig().get("songSrc");
@@ -66,6 +68,7 @@ public class MusicController {
         List<SongBean> songBeanList=musicDispatcher.searchDownDispatcher(src,keyword,NumberHelper.parseNumber(num,10));
         return new ResponseEntity<>(songBeanList,HttpStatus.OK);
     }
+
     @RequestMapping("/api/getlyric")
     public ResponseEntity<String> searchLyric(String songid,String src){
         String songSrc=loadConfig().get("songSrc");
@@ -74,6 +77,7 @@ public class MusicController {
         }
         return new ResponseEntity<>(musicDispatcher.searchLyricDispatcher(src,songid),HttpStatus.OK);
     }
+
     @RequestMapping("/api/player")
     public ResponseEntity<List<PlayerBean>> player(String shareId){
         List<PlayerBean> playerBeanList=new ArrayList<>();
@@ -92,15 +96,6 @@ public class MusicController {
                     String url=bean.getDownloadLinkMap().get("PQ");
                     if(url==null&&(url=bean.getDownloadLinkMap().get("LQ"))==null){
                         url="";
-                    }
-                    String author="";
-                    if(bean.getSingersName()!=null){
-                        int size=bean.getSingersName().size();
-                        if(size==1){
-                            author=bean.getSingersName().get(0);
-                        }else if(size>=2){
-                            author=bean.getSingersName().get(0)+"&"+bean.getSingersName().get(1);
-                        }
                     }
                     String lyric=musicDispatcher.searchLyricDispatcher(songSrc,songId);
                     SongBean detail=musicDispatcher.songDetailDispatcher(songSrc,songId);
@@ -126,12 +121,12 @@ public class MusicController {
         }
         return new ResponseEntity<>(playerBeanList,HttpStatus.OK);
     }
+
     @RequestMapping("/api/songdetail")
     public ResponseEntity<SongBean> getSongDetail(String src,String songid){
         SongBean bean=musicDispatcher.songDetailDispatcher(src,songid);
         return new ResponseEntity<>(bean,HttpStatus.OK);
     }
-
 
     @RequestMapping("/api/configupdate")
     public ResponseEntity<CommonResp> configUpdate(String params){
@@ -143,6 +138,7 @@ public class MusicController {
         }
         return new ResponseEntity<>(commonResp,HttpStatus.OK);
     }
+
     @RequestMapping("/api/getconfig")
     public ResponseEntity<CommonResp> getConfig(){
         HttpHeaders headers=new HttpHeaders();
@@ -192,6 +188,4 @@ public class MusicController {
         }
         return configMap;
     }
-
-
 }

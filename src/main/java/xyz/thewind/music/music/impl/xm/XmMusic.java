@@ -1,8 +1,8 @@
-package xyz.thewind.music.music.impl;
+package xyz.thewind.music.music.impl.xm;
 
-import com.google.gson.annotations.SerializedName;
 import xyz.thewind.music.model.SongBean;
 import xyz.thewind.music.music.MusicHelper;
+import xyz.thewind.music.music.impl.xm.bean.SearchResponseBean;
 import xyz.thewind.music.util.GsonConverter;
 import xyz.thewind.music.util.HttpRequestHelper;
 
@@ -14,10 +14,13 @@ import java.util.*;
 
 import static xyz.thewind.music.util.HttpRequestHelper.downloadWebSiteUseGet;
 import static xyz.thewind.music.util.Md5Encrypt.convertToMd5;
-import static xyz.thewind.music.util.SongUtil.*;
+import static xyz.thewind.music.music.common.SongUtil.*;
 
 
 public class XmMusic implements MusicHelper {
+
+    public static Map<String,String> qualityMap;
+
     @Override
     public List<SongBean> searchMusic(String keyword, int num) {
         String method = "mtop.alimusic.search.searchservice.searchsongs";
@@ -88,8 +91,8 @@ public class XmMusic implements MusicHelper {
         }
         try {
             SearchResponseBean xmSongRespBean= GsonConverter.fromJson(response,SearchResponseBean.class);
-            if(xmSongRespBean!=null&&xmSongRespBean.data!=null&&xmSongRespBean.data.data!=null){
-                List<SearchResponseBean.Data1.Data.SongDetail> songDetailList=xmSongRespBean.data.data.songDetailList;
+            if(xmSongRespBean!=null&&xmSongRespBean.getData()!=null&&xmSongRespBean.getData().getData()!=null){
+                List<SearchResponseBean.Data1.Data.SongDetail> songDetailList=xmSongRespBean.getData().getData().getSongDetailList();
                 for (SearchResponseBean.Data1.Data.SongDetail detail:songDetailList){
                     Map<String,String> map=new HashMap<>();
                     for (SearchResponseBean.Data1.Data.SongDetail.ListenFiles files: detail.getListenFiles()){
@@ -160,10 +163,10 @@ public class XmMusic implements MusicHelper {
         String sign = convertToMd5(signData);
         String url = "https://h5api.m.xiami.com/h5/mtop.alimusic.music.list.collectservice.getcollectdetail/1.0/?jsv=2.4.0&appKey=23649156&t=" + time + "&sign=" + sign + "&api=mtop.alimusic.music.list.collectservice.getcollectdetail&v=1.0&type=originaljsonp&timeout=200000&dataType=originaljsonp&closeToast=true&callback=mtopjsonp1&data=%7B%22requestStr%22%3A%22%7B%5C%22header%5C%22%3A%7B%5C%22platformId%5C%22%3A%5C%22h5%5C%22%2C%5C%22callId%5C%22%3A" + time + "%2C%5C%22appVersion%5C%22%3A1000000%2C%5C%22resolution%5C%22%3A%5C%221920*375%5C%22%7D%2C%5C%22model%5C%22%3A%7B%5C%22listId%5C%22%3A%5C%22873784428%5C%22%2C%5C%22isFullTags%5C%22%3Afalse%2C%5C%22pagingVO%5C%22%3A%7B%5C%22pageSize%5C%22%3A1000%2C%5C%22page%5C%22%3A1%7D%7D%7D%22%7D";
         String cookie = getXiaMiCookie(url);
-        if (cookie == null || cookie == "") {
+        if (cookie == null || cookie.isEmpty()) {
             return;
         }
-        cookie = cookie.replaceAll("\\[", "").replaceAll("\\]", "");
+        cookie = cookie.replaceAll("\\[", "").replaceAll("]", "");
         String[] cookies = cookie.split(";");
         StringBuilder tempCookie = new StringBuilder();
         for (String c : cookies) {
@@ -177,7 +180,7 @@ public class XmMusic implements MusicHelper {
         if (cnaCookie == null || cnaCookie.equals("")) {
             return;
         }
-        cnaCookie = cnaCookie.replaceAll("\\[", "").replaceAll("\\]", "");
+        cnaCookie = cnaCookie.replaceAll("\\[", "").replaceAll("]", "");
         String[] canCookies = cnaCookie.split(";");
 
         String cna = "";
@@ -233,289 +236,5 @@ public class XmMusic implements MusicHelper {
         return String.valueOf(6000000 + ran.nextInt(6000000));
     }
 
-    private static class SearchResponseBean{
-        String api;
-        Data1 data;
 
-        public String getApi() {
-            return api;
-        }
-
-        public void setApi(String api) {
-            this.api = api;
-        }
-
-        public Data1 getData() {
-            return data;
-        }
-
-        public void setData(Data1 data) {
-            this.data = data;
-        }
-
-        static class Data1{
-            Data data;
-
-            public Data getData() {
-                return data;
-            }
-
-            public void setData(Data data) {
-                this.data = data;
-            }
-
-            static class Data{
-                @SerializedName("songs")
-                List<SongDetail> songDetailList;
-
-                public List<SongDetail> getSongs() {
-                    return songDetailList;
-                }
-
-                public void setSongs(List<SongDetail> songDetailList) {
-                    this.songDetailList = songDetailList;
-                }
-
-                static class SongDetail{
-                    String songId;
-                    String songName;
-                    long albumId;
-                    @SerializedName("albumLogo")
-                    String albumPicUrl;
-                    String albumName;
-                    int albumSongCount;
-                    @SerializedName("artistId")
-                    long singerId;
-                    @SerializedName("artistLogo")
-                    String singerPic;
-                    List<ListenFiles> listenFiles;
-                    LyricInfo lyricInfo;
-                    String mvId;
-                    @SerializedName("singerVOs")
-                    List<SingerVOs> singerList;
-                    static class SingerVOs{
-                        @SerializedName("artistStringId")
-                        String singerId;
-                        @SerializedName("artistLogo")
-                        String singerPic;
-                        @SerializedName("artistName")
-                        String singerName;
-                        String gender;
-
-                        public String getSingerId() {
-                            return singerId;
-                        }
-
-                        public void setSingerId(String singerId) {
-                            this.singerId = singerId;
-                        }
-
-                        public String getSingerPic() {
-                            return singerPic;
-                        }
-
-                        public void setSingerPic(String singerPic) {
-                            this.singerPic = singerPic;
-                        }
-
-                        public String getSingerName() {
-                            return singerName;
-                        }
-
-                        public void setSingerName(String singerName) {
-                            this.singerName = singerName;
-                        }
-
-                        public String getGender() {
-                            return gender;
-                        }
-
-                        public void setGender(String gender) {
-                            this.gender = gender;
-                        }
-                    }
-
-                    static class ListenFiles{
-
-                        long fileSize;
-                        String format;
-                        @SerializedName("length")
-                        long timeSpan;
-                        @SerializedName("listenFile")
-                        String downloadLink;
-                        String quality;
-
-                        public long getFileSize() {
-                            return fileSize;
-                        }
-
-                        public void setFileSize(long fileSize) {
-                            this.fileSize = fileSize;
-                        }
-
-                        public String getFormat() {
-                            return format;
-                        }
-
-                        public void setFormat(String format) {
-                            this.format = format;
-                        }
-
-                        public long getTimeSpan() {
-                            return timeSpan;
-                        }
-
-                        public void setTimeSpan(long timeSpan) {
-                            this.timeSpan = timeSpan;
-                        }
-
-                        public String getDownloadLink() {
-                            return downloadLink;
-                        }
-
-                        public void setDownloadLink(String downloadLink) {
-                            this.downloadLink = downloadLink;
-                        }
-
-                        public String getQuality() {
-                            if(qualityMap==null){
-                                qualityMap=new HashMap<>();
-                                qualityMap.put("e","LQ");
-                                qualityMap.put("f","LQ");
-                                qualityMap.put("l","PQ");
-                                qualityMap.put("h","HQ");
-                                qualityMap.put("s","SQ");
-                            }
-                            return qualityMap.get(quality);
-                        }
-
-                        public void setQuality(String quality) {
-                            this.quality = quality;
-                        }
-                    }
-
-                    public String getSongId() {
-                        return songId;
-                    }
-
-                    public void setSongId(String songId) {
-                        this.songId = songId;
-                    }
-
-                    public String getSongName() {
-                        return songName;
-                    }
-
-                    public void setSongName(String songName) {
-                        this.songName = songName;
-                    }
-
-                    public long getAlbumId() {
-                        return albumId;
-                    }
-
-                    public void setAlbumId(long albumId) {
-                        this.albumId = albumId;
-                    }
-
-                    public String getAlbumPicUrl() {
-                        return albumPicUrl;
-                    }
-
-                    public void setAlbumPicUrl(String albumPicUrl) {
-                        this.albumPicUrl = albumPicUrl;
-                    }
-
-                    public String getAlbumName() {
-                        return albumName;
-                    }
-
-                    public void setAlbumName(String albumName) {
-                        this.albumName = albumName;
-                    }
-
-                    public int getAlbumSongCount() {
-                        return albumSongCount;
-                    }
-
-                    public void setAlbumSongCount(int albumSongCount) {
-                        this.albumSongCount = albumSongCount;
-                    }
-
-                    public long getSingerId() {
-                        return singerId;
-                    }
-
-                    public void setSingerId(long singerId) {
-                        this.singerId = singerId;
-                    }
-
-                    public String getSingerPic() {
-                        return singerPic;
-                    }
-
-                    public void setSingerPic(String singerPic) {
-                        this.singerPic = singerPic;
-                    }
-
-                    public List<ListenFiles> getListenFiles() {
-                        return listenFiles;
-                    }
-
-                    public void setListenFiles(List<ListenFiles> listenFiles) {
-                        this.listenFiles = listenFiles;
-                    }
-
-                    public LyricInfo getLyricInfo() {
-                        return lyricInfo;
-                    }
-
-                    public void setLyricInfo(LyricInfo lyricInfo) {
-                        this.lyricInfo = lyricInfo;
-                    }
-
-                    public String getMvId() {
-                        return mvId;
-                    }
-
-                    public void setMvId(String mvId) {
-                        this.mvId = mvId;
-                    }
-
-                    public List<SingerVOs> getSingerList() {
-                        return singerList;
-                    }
-
-                    public void setSingerList(List<SingerVOs> singerList) {
-                        this.singerList = singerList;
-                    }
-
-                    static class LyricInfo{
-                        @SerializedName("lyricFile")
-                        String lyricUrl;
-                        String lyricId;
-
-                        public String getLyricUrl() {
-                            return lyricUrl;
-                        }
-
-                        public void setLyricUrl(String lyricUrl) {
-                            this.lyricUrl = lyricUrl;
-                        }
-
-                        public String getLyricId() {
-                            return lyricId;
-                        }
-
-                        public void setLyricId(String lyricId) {
-                            this.lyricId = lyricId;
-                        }
-                    }
-
-                }
-            }
-
-        }
-    }
-    private static Map<String,String> qualityMap;
 }

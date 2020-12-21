@@ -17,7 +17,6 @@ import xyz.thewind.music.service.RedisService;
 import xyz.thewind.music.service.UserService;
 import xyz.thewind.music.util.StringUtils;
 import xyz.thewind.music.util.VerifyCode;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
@@ -25,12 +24,16 @@ import java.util.List;
 
 @RestController
 public class UserController {
+
     @Autowired
     private JavaMailSenderImpl mailSender;
+
     @Autowired
     private RedisService redisService;
+
     @Autowired
     private UserService userService;
+
     @RequestMapping("/api/reg")
     public ResponseEntity<CommonResp> regAccount(String userId, String password, String email, String userName, HttpServletResponse response){
         CommonResp commonResp=new CommonResp();

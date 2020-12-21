@@ -2,7 +2,6 @@ package xyz.thewind.music.music.impl.qq.bean;
 
 import com.google.gson.annotations.SerializedName;
 import xyz.thewind.music.music.impl.qq.QqMusic;
-
 import java.util.List;
 
 public class DownloadBean {

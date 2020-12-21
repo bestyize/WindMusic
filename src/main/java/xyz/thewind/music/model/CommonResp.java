@@ -31,7 +31,4 @@ public class CommonResp {
         this.obj=obj;
         return this;
     }
-
-
-
 }

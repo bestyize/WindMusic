@@ -1,8 +1,6 @@
 package xyz.thewind.music.dto;
 
-
 import xyz.thewind.music.model.User;
-
 import java.util.Date;
 
 public class DTOConverter {

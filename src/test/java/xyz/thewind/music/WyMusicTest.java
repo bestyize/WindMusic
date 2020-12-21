@@ -14,8 +14,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import static xyz.thewind.music.util.SongUtil.*;
-import static xyz.thewind.music.util.SongUtil.QUALITY_LQ;
+import static xyz.thewind.music.music.common.SongUtil.*;
+import static xyz.thewind.music.music.common.SongUtil.QUALITY_LQ;
 
 public class WyMusicTest {
     @Test
@@ -300,7 +300,7 @@ public class WyMusicTest {
         }
 
         private static String encodeCipherText(byte[] bArr) {
-            StringBuffer stringBuffer = new StringBuffer();
+            StringBuilder stringBuffer = new StringBuilder();
             for (byte b2 : bArr) {
                 String hexString = Integer.toHexString((b2 & BYTE_MAX_VALUE));
                 if (hexString.length() == 1) {

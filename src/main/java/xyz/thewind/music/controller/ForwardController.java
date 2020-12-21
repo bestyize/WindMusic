@@ -9,6 +9,7 @@ public class ForwardController {
     public String index(){
         return "music";
     }
+
     @RequestMapping("/login")
     public String login(){
         return "login";

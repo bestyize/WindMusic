@@ -19,7 +19,7 @@ public class WyEncrypt{
             String path=uri.getPath().replaceFirst("/eapi/","/api/");
             String message="nobody"+path+"use"+clearParams+"md5forencrypt";
             String data=path+"-36cd479b6b5-"+clearParams+"-36cd479b6b5-"+ Md5Encrypt.convertToMd5(message);
-            return WyEncrypt.encodeCipherText(WyEncrypt.encrypt(data,encKey));
+            return WyEncrypt.byteToArray(WyEncrypt.encrypt(data,encKey));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -27,7 +27,7 @@ public class WyEncrypt{
     }
 
     public static String eapiDecrypt(String cipherText){
-        return new String(WyEncrypt.decrypt(WyEncrypt.decodeCipherText(cipherText),WyEncrypt.encKey));
+        return new String(WyEncrypt.decrypt(WyEncrypt.arrayToByte(cipherText),WyEncrypt.encKey));
     }
 
     private static byte[] encrypt(String text,String key){
@@ -71,8 +71,8 @@ public class WyEncrypt{
         return null;
     }
 
-    private static String encodeCipherText(byte[] bArr) {
-        StringBuffer stringBuffer = new StringBuffer();
+    private static String byteToArray(byte[] bArr) {
+        StringBuilder stringBuffer = new StringBuilder();
         for (byte b2 : bArr) {
             String hexString = Integer.toHexString((b2 & BYTE_MAX_VALUE));
             if (hexString.length() == 1) {
@@ -86,7 +86,7 @@ public class WyEncrypt{
         return stringBuffer.toString();
     }
 
-    private static byte[] decodeCipherText(String str) {
+    private static byte[] arrayToByte(String str) {
         if (str.length() < 1) {
             return null;
         }
