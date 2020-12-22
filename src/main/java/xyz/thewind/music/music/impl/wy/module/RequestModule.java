@@ -32,10 +32,17 @@ public class RequestModule {
         mvQualityMap.put(QUALITY_LQ,"240");
 
     }
-    private static String[] apiServer={"https://interface.music.163.com","https://music.163.com"};
-    public static String searchMusic(String keyword,int offset,int num){
+    public static String[] apiServer={"https://interface.music.163.com","https://music.163.com"};
+    public static String searchSong(String keyword, int offset, int num){
         String queryParams="{\"s\":\""+keyword+"\",\"offset\":"+offset+",\"limit\":"+num+",\"header\":\"{}\",\"e_r\":\"false\",\"scene\":\"normal\"}";
         String api=apiServer[new Random().nextInt(apiServer.length)]+"/eapi/v1/search/song/get";
+        String params= WyEncrypt.eapiEncrypt(api,queryParams);
+        return HttpRequestHelper.downloadWebSiteUsePost(api,"params="+params,headerMap);
+    }
+    //{"c":"[{\"id\":1497799734,\"v\":4},{\"id\":1497799734,\"v\":4}]","e_r":false,"header":"{}"}
+    public static String getSongDetail(String songId){
+        String queryParams="{\"c\":\"[{\\\"id\\\":"+songId+",\\\"v\\\":3}]\",\"e_r\":false,\"header\":\"{}\"}";
+        String api=apiServer[new Random().nextInt(apiServer.length)]+"/eapi/v3/song/detail";
         String params= WyEncrypt.eapiEncrypt(api,queryParams);
         return HttpRequestHelper.downloadWebSiteUsePost(api,"params="+params,headerMap);
     }
@@ -54,7 +61,6 @@ public class RequestModule {
         return HttpRequestHelper.downloadWebSiteUsePost(api,"params="+params,headerMap);
     }
     //{"id":"287063","lv":"-1","kv":"-1","tv":"-1","cp":"true","e_r":false,"header":"{}"}
-
     public static String getLyric(String songId){
         String queryParams="{\"id\":\""+songId+"\",\"lv\":\"-1\",\"kv\":\"-1\",\"tv\":\"-1\",\"cp\":\"true\",\"e_r\":false,\"header\":\"{}\"}";
         String api=apiServer[new Random().nextInt(apiServer.length)]+"/eapi/song/lyric";
@@ -98,6 +104,14 @@ public class RequestModule {
         String api=apiServer[new Random().nextInt(apiServer.length)]+"/eapi/w/login/cellphone";
         String params=WyEncrypt.eapiEncrypt(api,queryParams);
         return HttpRequestHelper.downloadWebSiteUsePost(api,"params="+params,headerMap);
+    }
+
+    public static String sendMessage(String phone){
+        String queryParams="{\"cellphone\":\""+phone+"\",\"ctcode\":\"86\",\"e_r\":false,\"header\":\"{}\"}";
+        String api=apiServer[new Random().nextInt(apiServer.length)]+"/eapi/sms/captcha/sent";
+        String params=WyEncrypt.eapiEncrypt(api,queryParams);
+        return HttpRequestHelper.downloadWebSiteUsePost(api,"params="+params,headerMap);
+
     }
 
     /**
@@ -201,5 +215,69 @@ public class RequestModule {
     public static String getArtist(int offset,int num){
         return getArtist(-1,-1,offset,num);
     }
+
+    public static String getAlbumDetail(String albumId){
+        String queryParams="{\"id\":\""+albumId+"\",\"e_r\":false,\"header\":\"{}\"}";
+        String api=apiServer[new Random().nextInt(apiServer.length)]+"/eapi/v1/album/"+albumId;
+        String params=WyEncrypt.eapiEncrypt(api,queryParams);
+        return HttpRequestHelper.downloadWebSiteUsePost(api,"params="+params,headerMap);
+    }
+
+    public static String getSimPlayList(String songId, int offset, int num){
+        String queryParams="{\"songid\":\""+songId+"\",\"offset\":\""+offset+"\",\"total\":\"true\",\"limit\":\""+num+"\",\"e_r\":false,\"header\":\"{}\"}";
+        String api=apiServer[new Random().nextInt(apiServer.length)]+"/eapi/discovery/simiPlaylist";
+        String params=WyEncrypt.eapiEncrypt(api,queryParams);
+        return HttpRequestHelper.downloadWebSiteUsePost(api,"params="+params,headerMap);
+    }
+    public static String getSimSongList(String songId, int offset, int num){
+        String queryParams="{\"songid\":\""+songId+"\",\"offset\":\""+offset+"\",\"total\":\"true\",\"limit\":\""+num+"\",\"e_r\":false,\"header\":\"{}\"}";
+        String api=apiServer[new Random().nextInt(apiServer.length)]+"/eapi/discovery/simiSong";
+        String params=WyEncrypt.eapiEncrypt(api,queryParams);
+        return HttpRequestHelper.downloadWebSiteUsePost(api,"params="+params,headerMap);
+    }
+    //{"offset":"0","total":"false","limit":"20","liveType":"1","channel":"2","e_r":false,"header":"{}"}
+
+    /**
+     *
+     * @param offset
+     * @param num
+     * @param liveType look直播：看看：1 听听：2
+     * @param channel
+     * @return
+     */
+    public static String liveRecommend(int offset,int num,int liveType,int channel){
+        String queryParams="{\"offset\":\""+offset+"\",\"total\":\"false\",\"limit\":\""+num+"\",\"liveType\":\""+liveType+"\",\"channel\":\""+channel+"\",\"e_r\":false,\"header\":\"{}\"}";
+        String api=apiServer[new Random().nextInt(apiServer.length)]+"/eapi/livestream/dragonball/recommend/v1";
+        String params=WyEncrypt.eapiEncrypt(api,queryParams);
+        return HttpRequestHelper.downloadWebSiteUsePost(api,"params="+params,headerMap);
+    }
+
+    /**
+     * 节目排行榜
+     * @param offset
+     * @param num
+     * @return
+     */
+    public static String getProgramTopList(int offset,int num){
+        String queryParams="{\"offset\":\""+offset+"\",\"total\":\"false\",\"limit\":\""+num+"\",\"e_r\":false,\"header\":\"{}\"}";
+        String api=apiServer[new Random().nextInt(apiServer.length)]+"/eapi/program/toplist/v1";
+        String params=WyEncrypt.eapiEncrypt(api,queryParams);
+        return HttpRequestHelper.downloadWebSiteUsePost(api,"params="+params,headerMap);
+    }
+
+    /**
+     * 电台排行榜
+     * @param offset
+     * @param num
+     * @param type 新晋电台榜：0，热门电台榜：1
+     * @return
+     */
+    public static String getDjRadioTopList(int offset,int num,int type){
+        String queryParams="{\"offset\":\""+offset+"\",\"total\":\"false\",\"limit\":\""+num+"\",\"type\":\""+type+"\",\"e_r\":false,\"header\":\"{}\"}";
+        String api=apiServer[new Random().nextInt(apiServer.length)]+"/eapi/djradio/toplist";
+        String params=WyEncrypt.eapiEncrypt(api,queryParams);
+        return HttpRequestHelper.downloadWebSiteUsePost(api,"params="+params,headerMap);
+    }
+
 
 }
