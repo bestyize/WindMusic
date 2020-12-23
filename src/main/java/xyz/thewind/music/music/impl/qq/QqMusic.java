@@ -269,8 +269,6 @@ public class QqMusic implements MusicHelper {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
         return null;
     }
 

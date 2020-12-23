@@ -127,28 +127,66 @@
                             </div>
                             <!--用户管理折叠狂-->
                             <div id="collapseAccount" class="collapse in" aria-expanded="true">
+<!--                                <div class="row">-->
+<!--                                    <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 levl3 ">-->
+<!--                                        1.1-->
+<!--                                    </div>-->
+<!--                                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4  levl3">-->
+<!--                                        <span class=""> &nbsp;</span><span>qqmusic_key</span>-->
+<!--                                    </div>-->
+<!--                                    <input id="input_qqmusic_key" class="col-lg-5 col-md-5 col-sm-5 col-xs-5" style="border: none" value="Q_H_L_2CntI-50eSSxCL7uzvUr7dtyRlorofXpLJLFQ-AjNyuJdo_ugx9mK9SIgT2ifs6">-->
+<!--                                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">-->
+<!--                                        <button class="btn btn-success btn-xs" onclick="cookieConfigUpdate('input_qqmusic_key','qqmusic_key')">修改</button>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                                <div class="row">-->
+<!--                                    <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 levl3 ">-->
+<!--                                        1.2-->
+<!--                                    </div>-->
+<!--                                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4  levl3">-->
+<!--                                        <span class=""> &nbsp;</span><span>qqmusic_uin</span>-->
+<!--                                    </div>-->
+<!--                                    <input id="input_qqmusic_uin" class="col-lg-5 col-md-5 col-sm-5 col-xs-5" style="border: none" value="3011429848">-->
+<!--                                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">-->
+<!--                                        <button class="btn btn-success btn-xs" onclick="cookieConfigUpdate('input_qqmusic_uin','qqmusic_uin')">修改</button>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+
                                 <div class="row">
                                     <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 levl3 ">
                                         1.1
                                     </div>
                                     <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4  levl3">
-                                        <span class=""> &nbsp;</span><span>qqmusic_key</span>
+                                        <span class=""> &nbsp;</span><span>qqmusic_access_token</span>
                                     </div>
-                                    <input id="input_qqmusic_key" class="col-lg-5 col-md-5 col-sm-5 col-xs-5" style="border: none" value="Q_H_L_2CntI-50eSSxCL7uzvUr7dtyRlorofXpLJLFQ-AjNyuJdo_ugx9mK9SIgT2ifs6">
+                                    <input id="input_qqmusic_access_token" class="col-lg-5 col-md-5 col-sm-5 col-xs-5" style="border: none" value="8AC6966428125969232860272A545155">
                                     <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
-                                        <button class="btn btn-success btn-xs" onclick="cookieConfigUpdate('input_qqmusic_key','qqmusic_key')">修改</button>
+                                        <button class="btn btn-success btn-xs" onclick="cookieConfigUpdate('input_qqmusic_access_token','qqmusic_access_token')">修改</button>
                                     </div>
                                 </div>
+
                                 <div class="row">
                                     <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 levl3 ">
                                         1.2
                                     </div>
                                     <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4  levl3">
-                                        <span class=""> &nbsp;</span><span>qqmusic_uin</span>
+                                        <span class=""> &nbsp;</span><span>qqmusic_refresh_token</span>
                                     </div>
-                                    <input id="input_qqmusic_uin" class="col-lg-5 col-md-5 col-sm-5 col-xs-5" style="border: none" value="3011429848">
+                                    <input id="input_qqmusic_refresh_token" class="col-lg-5 col-md-5 col-sm-5 col-xs-5" style="border: none" value="B14F0FB407603738BC3AD6306DC2FAAB">
                                     <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
-                                        <button class="btn btn-success btn-xs" onclick="cookieConfigUpdate('input_qqmusic_uin','qqmusic_uin')">修改</button>
+                                        <button class="btn btn-success btn-xs" onclick="cookieConfigUpdate('input_qqmusic_refresh_token','qqmusic_refresh_token')">修改</button>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 levl3 ">
+                                        1.3
+                                    </div>
+                                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4  levl3">
+                                        <span class=""> &nbsp;</span><span>qqmusic_musickey_create_time</span>
+                                    </div>
+                                    <input id="input_qqmusic_musickey_create_time" class="col-lg-5 col-md-5 col-sm-5 col-xs-5" style="border: none" value="0">
+                                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                                        <button class="btn btn-success btn-xs">只读</button>
                                     </div>
                                 </div>
 
@@ -2044,8 +2082,8 @@
                             value='暂未配置';
                         }
                         $('#input_'+key.toString()).val(value);
-                        if(key!=='songSrc'){
-
+                        if(key==='qqmusic_musickey_create_time'){//formatDate
+                            $('#input_'+key.toString()).val(new Date(parseInt(value)*1000).toLocaleString());
                         }
                     }
                 }

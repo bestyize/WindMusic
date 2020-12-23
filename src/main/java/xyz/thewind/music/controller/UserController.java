@@ -122,11 +122,14 @@ public class UserController {
     @RequestMapping("/api/queryalluser")
     public ResponseEntity<List<User>> findAllUser(HttpServletRequest request){
         Token token=TokenHelper.parseToken(request.getCookies());
-        User user=userService.findUserByUserIdAndPassword(token.userId, token.password);
         List<User> userList=new ArrayList<>();
-        if(user!=null&&user.getLevel()>=7){
-            userList= userService.findAllUser();
+        if(token.userId.length()>0&&token.password.length()>0&&userService.exists(token.userId)){
+            User user=userService.findUserByUserIdAndPassword(token.userId, token.password);
+            if(user!=null&&user.getLevel()>=7){
+                userList= userService.findAllUser();
+            }
         }
+
         return new ResponseEntity<>(userList,HttpStatus.OK);
     }
 

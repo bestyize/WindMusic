@@ -62,4 +62,13 @@ public class RequestModule {
         return HttpRequestHelper.downloadWebSiteUsePost(apiServer[ran.nextInt(apiServer.length)] +"sign="+sign,templateBuilder.toString(),headerMap);
     }
 
+    public static String login(String accessToken,String refreshToken){
+        long expireTime=System.currentTimeMillis()/1000+3600*24*365;
+        RequestTemplate loginTemplate=new RequestTemplate("QQConnectLogin.LoginServer","QQLogin","{\"access_token\":\""+accessToken+"\",\"appid\":100497308,\"expired_in\":"+expireTime+",\"forceRefreshToken\":0,\"onlyNeedAccessToken\":0,\"openid\":\"54DF0A67E306595CEC62AF02E6176720\",\"refresh_token\":\""+refreshToken+"\"}");
+        RequestTemplateBuilder builder=new RequestTemplateBuilder();
+        builder.add("data",loginTemplate);
+        return HttpRequestHelper.downloadWebSiteUsePost(apiServer[0],builder.toString(),null);
+        //"comm":{"_channelid":"19","_os_version":"6.2.9200-2","ct":"19","cv":"1791","guid":"3954C437586B509983A6805AD81121C3","patch":"118","psrf_access_token_expiresAt":0,"psrf_qqaccess_token":"","psrf_qqopenid":"","psrf_qqunionid":"","tmeAppID":"qqmusic","tmeLoginType":2,"uin":"0","wid":"0"}
+    }
+
 }

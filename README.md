@@ -323,6 +323,13 @@ shareId由平台和songid组成。例如：WY_65766
 |src|KW、KG、QQ、WY、MG、XM|平台ID |√|
 |songid|歌曲ID|歌曲ID |√|
 
+### 1.2.7 更新QQ音乐Cookie
+
+|名称|内容|备注|是否必须|
+|---|---|---|---|
+|api|/api/tokenrefresh|请求地址|√|
+|force|不为空即可|是否强制更新Cookie（不强制的话50000s才能进行下一次更新） |×|
+
 # 2 用户管理模块
 
 ## 2.1 功能介绍

@@ -10,11 +10,11 @@ import xyz.thewind.music.model.CommonResp;
 import xyz.thewind.music.model.PlayerBean;
 import xyz.thewind.music.model.SongBean;
 import xyz.thewind.music.music.MusicDispatcher;
+import xyz.thewind.music.music.impl.qq.bean.LoginRespBean;
+import xyz.thewind.music.music.impl.qq.module.RequestModule;
 import xyz.thewind.music.service.RedisService;
-import xyz.thewind.music.util.Base64Converter;
-import xyz.thewind.music.util.GsonConverter;
-import xyz.thewind.music.util.LyricHelper;
-import xyz.thewind.music.util.NumberHelper;
+import xyz.thewind.music.util.*;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -128,6 +128,11 @@ public class MusicController {
         return new ResponseEntity<>(bean,HttpStatus.OK);
     }
 
+    @RequestMapping("/api/tokenrefresh")
+    public ResponseEntity<CommonResp> tokenRefresh(String force){
+        return new ResponseEntity<>(refreshToken(force),HttpStatus.OK);
+    }
+
     @RequestMapping("/api/configupdate")
     public ResponseEntity<CommonResp> configUpdate(String params){
         CommonResp commonResp=new CommonResp();
@@ -177,15 +182,61 @@ public class MusicController {
             configItemList.add("kg_token");
             configItemList.add("wy_music_u");
             configItemList.add("songSrc");
+            configItemList.add("qqmusic_musickey_create_time");
+            configItemList.add("qqmusic_refresh_token");
+            configItemList.add("qqmusic_access_token");
         }
         Map<String,String> configMap=new HashMap<>();
         if(!redisService.isRedisActive()){
             return configMap;
         }
+        refreshToken(null);
         for (String key:configItemList){
             String val=redisService.get(key);
             configMap.put(key,val);
         }
         return configMap;
     }
+
+    public CommonResp refreshToken(String force){
+        CommonResp resp=new CommonResp();
+        if(!redisService.isRedisActive()){
+            resp.code(-1).msg("更新失败！Redis未开启");
+        }else {
+            String lastCreateTime=redisService.get("qqmusic_musickey_create_time");
+            String qqmusicRefreshToken=redisService.get("qqmusic_refresh_token");
+            String qqmusicAccessToken=redisService.get("qqmusic_access_token");
+            if(lastCreateTime==null){
+                lastCreateTime="0";
+            }
+            if(qqmusicRefreshToken==null||qqmusicAccessToken==null){
+                resp.code(-1).msg("更新失败！Redis中配置参数不正确");
+            }else {
+                try {
+                    long time=Long.parseLong(lastCreateTime);
+                    if((System.currentTimeMillis()/1000-time<3600*12)&&force==null){
+                        resp.code(-1).msg("距离上次更新较短，本次不执行更新");
+                    }else {
+                        String response=RequestModule.login(qqmusicAccessToken,qqmusicRefreshToken);
+                        LoginRespBean respBean=GsonConverter.fromJson(response,LoginRespBean.class);
+                        //更新Redis存的登陆数据数据
+                        redisService.set("qqmusic_musickey_create_time",respBean.getData().getData().getMusicCreateTime()+"");
+                        redisService.set("qqmusic_refresh_token",respBean.getData().getData().getRefreshToken());
+                        redisService.set("qqmusic_access_token",respBean.getData().getData().getAccessToken());
+                        //更新缓存的Cookie
+                        redisService.set("qqmusic_uin",respBean.getData().getData().getMusicId()+"");
+                        redisService.set("qqmusic_key",respBean.getData().getData().getMusicKey());
+                        resp.code(0).msg("更新成功").obj(respBean);
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+
+        }
+        return resp;
+
+    }
+
+
 }

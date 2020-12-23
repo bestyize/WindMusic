@@ -15,4 +15,8 @@ public class QQMusicTest {
         }
 
     }
+    @Test
+    public void testLogin(){
+        System.out.println(RequestModule.login("8AC6966428125969232860272A545155","B14F0FB407603738BC3AD6306DC2FAAB"));
+    }
 }
