@@ -1,5 +1,6 @@
 package xyz.thewind.music.music.impl.wy.module;
 
+import xyz.thewind.music.music.impl.wy.enc.CryptoUtil;
 import xyz.thewind.music.music.impl.wy.enc.WyEncrypt;
 import xyz.thewind.music.util.HttpRequestHelper;
 import xyz.thewind.music.util.IpHelper;
@@ -166,6 +167,9 @@ public class RequestModule {
         String queryParams="{\"e_r\":false,\"header\":\"{}\"}";
         String api=apiServer[new Random().nextInt(apiServer.length)]+"/eapi/toplist";
         String params=WyEncrypt.eapiEncrypt(api,queryParams);
+//        也可用weapi的接口，eapi支持的它都支持
+//        String api=apiServer[new Random().nextInt(apiServer.length)]+"/weapi/toplist";
+//        String params= CryptoUtil.weapiEncrypt(queryParams);
         return HttpRequestHelper.downloadWebSiteUsePost(api,"params="+params,headerMap);
     }
 

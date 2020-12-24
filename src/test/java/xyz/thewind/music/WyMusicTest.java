@@ -2,12 +2,16 @@ package xyz.thewind.music;
 
 
 import org.junit.Test;
+import xyz.thewind.music.music.impl.wy.enc.CryptoUtil;
 import xyz.thewind.music.music.impl.wy.enc.WyEncrypt;
 import xyz.thewind.music.music.impl.wy.module.RequestModule;
 import xyz.thewind.music.util.HttpRequestHelper;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 import static xyz.thewind.music.music.impl.wy.module.RequestModule.apiServer;
 
@@ -59,4 +63,16 @@ public class WyMusicTest {
         System.out.println(response);
     }
 
+    @Test
+    public void testEapi(){
+        System.out.println(getTopList());
+    }
+    public static String getTopList(){
+        String queryParams="{\"e_r\":false,\"header\":\"{}\"}";
+        String api=apiServer[new Random().nextInt(apiServer.length)]+"/weapi/toplist";
+        String params=CryptoUtil.weapiEncrypt(queryParams);
+        Map<String,String> headerMap=new HashMap<>();
+        headerMap.put("Content-Type","application/x-www-form-urlencoded");
+        return HttpRequestHelper.downloadWebSiteUsePost(api,params,headerMap);
+    }
 }

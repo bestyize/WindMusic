@@ -7,6 +7,7 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -37,7 +38,6 @@ public class CryptoUtil {
         }
         return key.toString();
     }
-
     /**
      * aes加密
      *
@@ -50,7 +50,6 @@ public class CryptoUtil {
         if (content == null || key == null)
             return null;
         try {
-
             Cipher cipher = Cipher.getInstance(mode);
             if(iv.length()==0){
                 cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), "AES"));
@@ -58,7 +57,6 @@ public class CryptoUtil {
                 cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), "AES"),
                         new IvParameterSpec(iv.getBytes(StandardCharsets.UTF_8)));
             }
-
             byte[] bytes = cipher.doFinal(content.getBytes(StandardCharsets.UTF_8));
             result = Base64.getEncoder().encodeToString(bytes);
         } catch (Exception e) {
@@ -127,15 +125,16 @@ public class CryptoUtil {
      */
     public static String weapiEncrypt(String content) {
         String mode="AES/CBC/PKCS5Padding";
-        String key = createSecretKey(16);
-        String encText = aesEncrypt(aesEncrypt(content, presetKey,mode,iv), key,mode,iv);
+        String key = createSecretKey(16);//n5IA3AI20heJu9DW
+//        String key="n5IA3AI20heJu9DW";
+        String encText = aesEncrypt(aesEncrypt(content, presetKey,mode,iv), key,mode,iv);//76SjbrPbuyyYekhAc2YT6kNjIC6kOt4QwAz2+oBWiCVqLQvG3XcX3LCW4PDf3tmK
         String encSecKey = rsaEncrypt(key, pubKey, modulus);
         try {
             return "params="+ URLEncoder.encode(encText,"UTF-8")+"&encSecKey="+URLEncoder.encode(encSecKey,"UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        return null;
+        return "";
 
     }
 
@@ -152,21 +151,6 @@ public class CryptoUtil {
 
     }
 
-    public static String md5(String plainText) {
-        byte[] secretBytes ;
-        try {
-            secretBytes = MessageDigest.getInstance("md5").digest(plainText.getBytes(StandardCharsets.UTF_8));
-        } catch (Exception e) {
-            throw new RuntimeException("不支持MD5");
-        }
-        StringBuilder md5code = new StringBuilder(new BigInteger(1, secretBytes).toString(16));
-        for (int i = 0; i < 32 - md5code.length(); i++) {
-            md5code.insert(0, "0");
-        }
-        return md5code.toString();
-    }
-
-    public static String loginApi="https://music.163.com/weapi/login/cellphone";
 
     public static void main(String[] args) {
         String id="65766";
