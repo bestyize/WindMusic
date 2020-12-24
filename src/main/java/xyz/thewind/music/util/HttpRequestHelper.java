@@ -5,6 +5,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class HttpRequestHelper {
@@ -78,5 +80,26 @@ public class HttpRequestHelper {
             e.printStackTrace();
         }
         return response;
+    }
+
+    public static Map<String, List<String>>  downloadHeaderUseGet(String link){
+        Map<String, List<String>> headerMap=new HashMap<>();
+        if(link==null||!link.startsWith("http")){
+            return headerMap;
+        }
+        StringBuilder sb=new StringBuilder();
+        try {
+            URL url=new URL(link);
+            HttpURLConnection conn=(HttpURLConnection)url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.setReadTimeout(10000);
+            conn.setConnectTimeout(10000);
+            Map<String, List<String>> headerField=conn.getHeaderFields();
+            conn.disconnect();
+            return headerField;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return headerMap;
     }
 }
