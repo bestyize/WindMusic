@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>文件上传</title>
+    <script src="https://unpkg.com/vue@next"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
+
+</head>
+<body>
+
+<div id="div_upload">
+    <input type="file" id="files">
+    <button id="btn_upload" v-on:click="refreshToken">上传文件</button>
+    <br>
+    <div id="result">{{message}}<div>
+        <br>
+        {{message.data}}
+        <br>
+    </div></div>
+</div>
+
+<div id="div_wx_ad">
+
+</div>
+
+<script>
+
+    const Uploader={
+        data(){
+            return {
+                message:[]
+            }
+        },
+        methods:{
+            refreshToken(){
+                $.ajax({
+                    url:'/api/tokenrefresh?force=1',
+                    type: 'POST',
+                    cache: false,
+                    data: '',
+                    context:this,
+                    async:true,
+                    processData: false,
+                    contentType: false,
+                    success:function (params) {
+                        //parseSearchInfo(params);
+                        this.message=params;
+
+                    }
+                });
+            },
+            upLoadFile(){
+                let formData=new FormData();
+                let f=$('#files')[0].files[0];
+                if(f==null){
+                    alert('未选择文件');
+                    return ;
+                }
+                formData.append("files",f);
+                $.ajax({
+                    url: '/upload',
+                    type: 'POST',
+                    cache: false,
+                    data: formData,
+                    processData: false,
+                    contentType: false
+                }).done(function(res) {
+                    alert("上传成功！");
+
+                }).fail(function(res) {
+                    alert("上传失败！");
+                });
+            }
+        }
+    }
+    Vue.createApp(Uploader).mount('#div_upload');
+
+
+</script>
+
+
+
+</body>
+</html>

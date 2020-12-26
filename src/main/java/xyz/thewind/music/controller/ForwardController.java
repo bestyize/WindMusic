@@ -24,4 +24,9 @@ public class ForwardController {
     public String manage(){
         return "manager";
     }
+
+    @RequestMapping("/upload")
+    public String upload(){
+        return "upload";
+    }
 }
