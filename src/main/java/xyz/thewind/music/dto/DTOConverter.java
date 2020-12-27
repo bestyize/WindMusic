@@ -1,5 +1,6 @@
 package xyz.thewind.music.dto;
 
+import xyz.thewind.music.model.Article;
 import xyz.thewind.music.model.User;
 import java.util.Date;
 
@@ -19,5 +20,18 @@ public class DTOConverter {
 
     public static UserDTO defaultUserDTO(String userId,String password,String email,String userName){
         return new UserDTO(userId,password,userName,email,null,new Date(),1,1,"/img/person.png");
+    }
+
+    public static Article convertArticleDtoToArticle(ArticleDTO articleDTO){
+        Article article=new Article(articleDTO.getArticleId(),
+                articleDTO.getArticleTitle(),
+                articleDTO.getArticleContent(),
+                articleDTO.getArticleId(),
+                0,
+                new Date(),
+                articleDTO.getCoverUrl(),
+                articleDTO.getUserId(),
+                0);
+        return article;
     }
 }

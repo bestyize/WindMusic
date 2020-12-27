@@ -10,14 +10,11 @@
 <body>
 
 <div id="div_upload">
-    <input type="file" id="files">
-    <button id="btn_upload" v-on:click="refreshToken">上传文件</button>
+    <input type="file" name="files" id="files">
+    <button id="btn_upload" v-on:click="upLoadFile">上传文件</button>
     <br>
-    <div id="result">{{message}}<div>
-        <br>
-        {{message.data}}
-        <br>
-    </div></div>
+    <div>{{message}}<div>
+    <div id="div_progress"></div>
 </div>
 
 <div id="div_wx_ad">
@@ -29,7 +26,7 @@
     const Uploader={
         data(){
             return {
-                message:[]
+                message:''
             }
         },
         methods:{
@@ -59,17 +56,28 @@
                 }
                 formData.append("files",f);
                 $.ajax({
-                    url: '/upload',
+                    url: '/api/upload/img',
                     type: 'POST',
                     cache: false,
+                    async:true,
                     data: formData,
+                    context: this,
                     processData: false,
-                    contentType: false
+                    contentType: false,
+                    xhr:function () {
+                        let xhr=$.ajaxSettings.xhr();
+                        if(xhr.upload){
+                            xhr.upload.addEventListener('progress',function (e) {
+                                $('#div_progress').html(parseInt((e.loaded/e.total)*100))
+                            },false);
+                        }
+                        return xhr;
+                    }
                 }).done(function(res) {
-                    alert("上传成功！");
+                    alert(JSON.stringify(res));
 
                 }).fail(function(res) {
-                    alert("上传失败！");
+                    alert(JSON.stringify(res));
                 });
             }
         }
