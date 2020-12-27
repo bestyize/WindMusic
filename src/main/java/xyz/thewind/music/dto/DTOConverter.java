@@ -2,6 +2,8 @@ package xyz.thewind.music.dto;
 
 import xyz.thewind.music.model.Article;
 import xyz.thewind.music.model.User;
+import xyz.thewind.music.util.GsonConverter;
+
 import java.util.Date;
 
 public class DTOConverter {
@@ -33,5 +35,15 @@ public class DTOConverter {
                 articleDTO.getUserId(),
                 0);
         return article;
+    }
+
+    public static ArticleDTO defaultArticleDTO(String data){
+        ArticleDTO articleDTO=new ArticleDTO();
+        try {
+            articleDTO= GsonConverter.fromJson(data,ArticleDTO.class);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return articleDTO;
     }
 }
