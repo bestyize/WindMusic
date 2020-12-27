@@ -30,8 +30,8 @@ public class ArticleController {
     public ResponseEntity<CommonResp> postArticle(String data, HttpServletRequest request){
         Token token= TokenHelper.parseToken(request.getCookies());
         CommonResp commonResp=new CommonResp();
-        if(!token.userId.isEmpty()&&userService.exists(token.userId)){
-            Article article=articleService.addArticle(DTOConverter.defaultArticleDTO(data));
+        if(!token.userId.isEmpty()&&userService.findUserByUserIdAndPassword(token.userId,token.password)!=null){
+            Article article=articleService.addArticle(DTOConverter.defaultArticleDTO(data,token.userId));
             commonResp.code(0).msg("成功").obj(article);
         }
         return new ResponseEntity<>(commonResp, HttpStatus.OK);

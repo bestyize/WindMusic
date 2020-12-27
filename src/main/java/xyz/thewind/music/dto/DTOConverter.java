@@ -5,6 +5,7 @@ import xyz.thewind.music.model.User;
 import xyz.thewind.music.util.GsonConverter;
 
 import java.util.Date;
+import java.util.UUID;
 
 public class DTOConverter {
     public static User convertUserDtoToUser(UserDTO userDTO){
@@ -25,10 +26,11 @@ public class DTOConverter {
     }
 
     public static Article convertArticleDtoToArticle(ArticleDTO articleDTO){
-        Article article=new Article(articleDTO.getArticleId(),
+        String articleId=UUID.randomUUID().toString().replace("-","");
+        Article article=new Article(articleId,
                 articleDTO.getArticleTitle(),
                 articleDTO.getArticleContent(),
-                articleDTO.getArticleId(),
+                articleId,
                 0,
                 new Date(),
                 articleDTO.getCoverUrl(),
@@ -37,10 +39,11 @@ public class DTOConverter {
         return article;
     }
 
-    public static ArticleDTO defaultArticleDTO(String data){
+    public static ArticleDTO defaultArticleDTO(String data,String userId){
         ArticleDTO articleDTO=new ArticleDTO();
         try {
             articleDTO= GsonConverter.fromJson(data,ArticleDTO.class);
+            articleDTO.setUserId(userId);
         }catch (Exception e){
             e.printStackTrace();
         }
