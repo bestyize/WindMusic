@@ -7,6 +7,7 @@ import org.apache.logging.log4j.Logger;
 import xyz.thewind.music.model.SongBean;
 import xyz.thewind.music.music.MusicHelper;
 import xyz.thewind.music.music.impl.qq.bean.*;
+import xyz.thewind.music.music.impl.qq.module.RequestModule;
 import xyz.thewind.music.util.Base64Converter;
 import xyz.thewind.music.util.GsonConverter;
 import xyz.thewind.music.util.HttpRequestHelper;
@@ -51,7 +52,8 @@ public class QqMusic implements MusicHelper {
 
     @Override
     public SongBean searchDownloadLink(SongBean songBean, String quality) {
-        String downloadLink=getDownloadLinkBySongId(songBean.getSongId(),quality);
+        //String downloadLink=getDownloadLinkBySongId(songBean.getSongId(),quality);
+        String downloadLink= RequestModule.getPlayUrl(songBean.getSongId(),quality);
         songBean.getDownloadLinkMap().put(quality,downloadLink);
         return songBean;
     }

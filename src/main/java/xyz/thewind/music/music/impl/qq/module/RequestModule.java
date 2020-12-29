@@ -23,6 +23,16 @@ public class RequestModule {
         headerMap.put("cache-control","max-age=0");
     }
 
+    /**
+     * 获取下载链接，这里暂时借用QMD的API实现
+     * @param songId
+     * @param quality
+     * @return
+     */
+    public static String getPlayUrl(String songId,String quality){
+        return ThridPartApi.getPlayUrl(songId,quality);
+    }
+
 
     /**
      * 请求示例：{"area":-100,"sex":-100,"genre":-100,"index":15,"sin":0,"cur_page":1}

@@ -32,7 +32,7 @@ public class MusicSourceTest {
     }
     @Test
     public void cloudMusicTest(){
-        List<SongBean> songBean=dispatcher.searchDownDispatcher("QQ","薛之谦",5);
+        List<SongBean> songBean=dispatcher.searchDownDispatcher("QQ","周杰伦",5);
         System.out.println(GsonConverter.toJson(songBean));
     }
 
