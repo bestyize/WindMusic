@@ -16,7 +16,8 @@ import static xyz.thewind.music.music.common.SongUtil.*;
 
 
 public class MgMusic implements MusicHelper {
-    private static final String baseContentLink = "https://c.musicapp.migu.cn/MIGUM2.0/v1.0/content/resourceinfo.do?ua=Android_migu&version=5.0&resourceType=2&copyrightId=";
+    //或者：https://app.c.nf.migu.cn/MIGUM3.0/v2.0/content/querySongBySongId.do?songId=1136379763
+    private static final String baseContentLink = "https://c.musicapp.migu.cn/MIGUM3.0/v1.0/content/resourceinfo.do?ua=Android_migu&version=5.0&resourceType=2&copyrightId=";
 
     @Override
     public List<SongBean> searchMusic(String keyword, int num) {
@@ -43,7 +44,7 @@ public class MgMusic implements MusicHelper {
         }
         return songBeanList;
     }
-
+    //或者https://app.c.nf.migu.cn/MIGUM3.0/v1.0/content/search_all.do?isCopyright=1&isCorrect=1&pageNo=1&pageSize=20&sort=0&text=十年&searchSwitch={"song":1,"album":0,"singer":0,"tagSong":1,"mvSong":0,"songlist":0,"bestShow":1,"lyricSong":0}
     private String mgHttpSearchRequest(String keyword, int num){
         String response="";
         try {
