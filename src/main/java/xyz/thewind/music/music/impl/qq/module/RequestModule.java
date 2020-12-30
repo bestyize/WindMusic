@@ -30,7 +30,7 @@ public class RequestModule {
      * @return
      */
     public static String getPlayUrl(String songId,String quality){
-        return ThridPartApi.getPlayUrl(songId,quality);
+        return ThirdPartApi.getPlayUrl(songId,quality);
     }
 
 
