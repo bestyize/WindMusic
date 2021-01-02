@@ -1,5 +1,6 @@
 package xyz.thewind.music.music.impl.qq.module;
 
+import xyz.thewind.music.util.HttpRequestHelper;
 import xyz.thewind.music.util.Md5Encrypt;
 
 import java.util.*;
@@ -144,5 +145,27 @@ public class ThirdPartApi {
             }
             return response;
         }
+    }
+
+    private static class MusicDownloadUIDumper{
+        private static final String apiHost="http://198.55.120.246:3300/song/url?id=000BO3xy4fd8BJ&type=flac";
+        private static final Map<String,String> qualityMap=new HashMap<>();
+        static {
+            qualityMap.put("LQ","128");
+            qualityMap.put("PQ","128");
+            qualityMap.put("HQ","320");
+            qualityMap.put("SQ","flac");
+        }
+        public static String requestUrl(String songMid,String quality){
+            String response= HttpRequestHelper.downloadWebSiteUseGet(apiHost+"?id="+songMid+"&type="+qualityMap.get(quality),null);
+            if(response.contains("\"data\":\"")){
+                response=response.substring(response.indexOf("\"data\":\"")+"\"data\":\"".length());
+                if(response.contains("\"")){
+                    response=response.substring(0,response.indexOf("\""));
+                }
+            }
+            return response;
+        }
+
     }
 }

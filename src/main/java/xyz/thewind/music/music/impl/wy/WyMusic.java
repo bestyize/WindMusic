@@ -18,8 +18,11 @@ import static xyz.thewind.music.music.common.SongUtil.*;
 public class WyMusic implements MusicHelper {
     private static final HashMap<String, String> qualityMap;
     //MusicTools的Cookie
-    private static final String userCookie="41d12a493b80de6fa49d16f6570d469a23f84bcf3394fedda977317d531e9c861d1b60489766205edfc3c0ec8cbcadd641049cea1c6bb9b6";
+    private static final String userCookie="MUSIC_U=41d12a493b80de6fa49d16f6570d469a23f84bcf3394fedda977317d531e9c861d1b60489766205edfc3c0ec8cbcadd641049cea1c6bb9b6";
+    //我的Cookie
     //private static final String userCookie="MUSIC_U=ba0a04e302da6a12399d1817fe4eae9dd7c6b7f4865bf4fd9b986b5c8c07893333a649814e309366;";
+    //MusicDownloadUI的Cookie
+    //private static final String userCookie="MUSIC_U=7cc06a93dda8951677088ae1cf97bd05986585c17ccea94bc1cbb455ef45f69533a649814e309366";
     private static final Map<String,String> configMap=new HashMap<>();
     static {
         qualityMap=new HashMap<>();
