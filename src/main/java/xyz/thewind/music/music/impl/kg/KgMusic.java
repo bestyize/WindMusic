@@ -84,7 +84,7 @@ public class KgMusic implements MusicHelper {
     public static String searchRequest(String keyword, int num){
         String response=null;
         try {
-            String requestLink="http://mobilecdn.kugou.com/api/v3/search/song?format=json&keyword="+ URLEncoder.encode(keyword,"utf-8") +"&page=1&pagesize="+num;
+            String requestLink="http://mobilecdn.kugou.com/api/v3/search/song?format=json&keyword="+ URLEncoder.encode(keyword,"utf-8") +"&page=1&pagesize="+num+"&area_code=0";
             Map<String,String> headerMap=new HashMap<>();
             headerMap.put("User-Agent",USER_AGENT_ANDROID);
             response= HttpRequestHelper.downloadWebSiteUseGet(requestLink,headerMap);
