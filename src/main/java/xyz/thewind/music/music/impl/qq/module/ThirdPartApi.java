@@ -148,7 +148,7 @@ public class ThirdPartApi {
     }
 
     private static class MusicDownloadUIDumper{
-        private static final String apiHost="http://198.55.120.246:3300/song/url?id=000BO3xy4fd8BJ&type=flac";
+        private static final String apiHost="http://198.55.120.246:3300/song/url";
         private static final Map<String,String> qualityMap=new HashMap<>();
         static {
             qualityMap.put("LQ","128");
@@ -167,5 +167,23 @@ public class ThirdPartApi {
             return response;
         }
 
+    }
+
+    /**
+     * 仙乐接口
+     */
+    private static class XianYueDumper{
+        private static final String apiHost="http://king.junyuewl.com/icq.php";
+        private static final Map<String,String> qualityMap=new HashMap<>();
+        static {
+            qualityMap.put("LQ","128");
+            qualityMap.put("PQ","128");
+            qualityMap.put("HQ","320");
+            qualityMap.put("SQ","flac");
+        }
+        public static String requestUrl(String songMid,String quality){
+            String response= HttpRequestHelper.downloadWebSiteUseGet(apiHost+"?songid="+songMid+"&type="+qualityMap.get(quality)+"&skey="+Md5Encrypt.convertToMd5(songMid+"&monster"),null);
+            return response;
+        }
     }
 }

@@ -6,6 +6,7 @@ import org.apache.logging.log4j.Logger;
 import xyz.thewind.music.model.SongBean;
 import xyz.thewind.music.music.MusicHelper;
 import xyz.thewind.music.music.impl.kg.bean.*;
+import xyz.thewind.music.music.impl.kg.module.ThirdPartApi;
 import xyz.thewind.music.util.Base64Converter;
 import xyz.thewind.music.util.GsonConverter;
 import xyz.thewind.music.util.HttpRequestHelper;
@@ -50,15 +51,17 @@ public class KgMusic implements MusicHelper {
     @Override
     public SongBean searchDownloadLink(SongBean songBean, String quality) {
         String songId=songBean.getSongId();
-        if(songId!=null){
-            String[] hash=songId.split("-");
-            if(hash.length==1||quality.equals(QUALITY_LQ)){
-                songBean=downloadResponseProcess(songBean,downloadRequest(hash[0]));
-            }else if(quality.equals(QUALITY_SQ)){
-                songBean=downloadResponseProcess(songBean,downloadRequest(hash[2]));
-            }else if(quality.equals(QUALITY_HQ)){
-                songBean=downloadResponseProcess(songBean,downloadRequest(hash[1]));
+        if(songId!=null&&songId.length()>=32){
+            String[] hashArr=songBean.getSongId().split("-");
+            Map<String,String> map=songBean.getDownloadLinkMap();
+            songBean.setDownloadLinkMap(map);
+            String hash=hashArr[0];
+            if(quality.equals("SQ")&&hashArr.length==3){
+                hash=hashArr[2];
+            }else if(quality.equals("HQ")&&hashArr.length>=2){
+                hash=hashArr[1];
             }
+            map.put(quality,downloadRequest(hash,quality));
         }
         return songBean;
     }
@@ -67,9 +70,12 @@ public class KgMusic implements MusicHelper {
     public List<SongBean> searchWithDownload(String keyword, int num) {
         List<SongBean> songBeanList=searchMusic(keyword,num);
         for (SongBean bean:songBeanList){
-            String[] hashs=bean.getSongId().split("-");
-            for (String hash:hashs){
-                downloadResponseProcess(bean,downloadRequest(hash));
+            String[] hashArr=bean.getSongId().split("-");
+            String qualitys[]={"PQ","HQ","SQ"};
+            Map<String,String> map=bean.getDownloadLinkMap();
+            bean.setDownloadLinkMap(map);
+            for (int i=0;i<hashArr.length;i++){
+                map.put(qualitys[i],downloadRequest(hashArr[i],qualitys[i]));
             }
         }
         return songBeanList;
@@ -143,7 +149,6 @@ public class KgMusic implements MusicHelper {
     }
 
 
-
     public SongBean downloadResponseProcess(SongBean songBean, String response){
         try {
             response=response.replace("<!--KG_TAG_RES_START-->","").replace("<!--KG_TAG_RES_END-->","");
@@ -163,17 +168,21 @@ public class KgMusic implements MusicHelper {
         return songBean;
     }
 
-    public static String downloadRequest(String hash){
-        Map<String,String> headerMap=new HashMap<>();
-        headerMap.put("User-Agent","Android511-AndroidPhone-10259-14-0-NetMusic-wifi");
-        headerMap.put("KG-FAKE",configMap.getOrDefault("kg_uid","1717986917"));
-        headerMap.put("KG-RC","1");
-        headerMap.put("KG-RF","00877b56");
-        headerMap.put("KG-THash","1509c84");
-        headerMap.put("x-router","tracker.kugou.com");
-        headerMap.put("Host","gateway.kugou.com");
-        return HttpRequestHelper.downloadWebSiteUseGet(downloadLinkBuilder(hash,false),headerMap);
+    public static String downloadRequest(String hash,String quality){
+        return ThirdPartApi.getPlayUrl(hash,quality);
     }
+
+//    public static String downloadRequest(String hash){
+//        Map<String,String> headerMap=new HashMap<>();
+//        headerMap.put("User-Agent","Android511-AndroidPhone-10259-14-0-NetMusic-wifi");
+//        headerMap.put("KG-FAKE",configMap.getOrDefault("kg_uid","1717986917"));
+//        headerMap.put("KG-RC","1");
+//        headerMap.put("KG-RF","00877b56");
+//        headerMap.put("KG-THash","1509c84");
+//        headerMap.put("x-router","tracker.kugou.com");
+//        headerMap.put("Host","gateway.kugou.com");
+//        return HttpRequestHelper.downloadWebSiteUseGet(downloadLinkBuilder(hash,false),headerMap);
+//    }
 
     public static String downloadLinkBuilder(String hash,boolean usePid){
 
