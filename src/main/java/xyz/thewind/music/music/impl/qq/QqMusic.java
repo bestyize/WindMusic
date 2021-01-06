@@ -135,7 +135,7 @@ public class QqMusic implements MusicHelper {
                 for (SearchResponseBean.Data.Song.SongDetail detail:songDetailList){
                     String picUrl="";
                     if(detail.getAlbumId()!=null&&detail.getAlbumId().length()>0){
-                        picUrl="https://y.gtimg.cn/music/photo_new/T002R300x300M000"+detail.getAlbumId()+".jpg";
+                        picUrl="https://y.gtimg.cn/music/photo_new/T002R800x800M000"+detail.getAlbumId()+".jpg";
                     }
                     SongBean songBean=new SongBean(SRC_QQ,
                             detail.getSongId(),
@@ -262,7 +262,7 @@ public class QqMusic implements MusicHelper {
             songBean.setAlbumId(album.getMid());
             songBean.setAlbumName(album.getName());
             if(album.getMid()!=null&&album.getMid().length()>0){
-                songBean.setPicUrl("https://y.gtimg.cn/music/photo_new/T002R300x300M000"+album.getMid()+".jpg");
+                songBean.setPicUrl("https://y.gtimg.cn/music/photo_new/T002R800x800M000"+album.getMid()+".jpg");
             }
             List<SongDetail.Songinfo.Data.Info> infos=detail.songinfo.data.info;
             for (SongDetail.Songinfo.Data.Info info:infos){
