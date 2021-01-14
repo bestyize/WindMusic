@@ -1,4 +1,4 @@
-package xyz.thewind.music;
+package xyz.thewind.music.music.impl;
 
 import org.junit.Test;
 import xyz.thewind.music.model.SongBean;
