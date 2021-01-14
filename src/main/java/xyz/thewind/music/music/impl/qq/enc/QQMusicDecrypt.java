@@ -129,13 +129,19 @@ public class QQMusicDecrypt {
         File file=new File(fullPath);
         FileInputStream is=new FileInputStream(file);
         FileOutputStream fout=new FileOutputStream(getDecryptName(fullPath));
+        long fileLen= file.length();
         byte[] b=new byte[8192];
         int len=0;
         long total=0;
         while ((len=is.read(b))!=-1){
             for (int i=0;i<len;i++){
-                int pos=(int)((total+i)%0x7fff);
-                b[i]^=mKey[(pos*pos+27)%256];
+                if(total+i<fileLen-368){
+                    int pos=(int)((total+i)%0x7fff);
+                    b[i]^=mKey[(pos*pos+27)%256];
+                }else {
+                    len-=368;
+                    break;
+                }
             }
             fout.write(b,0,len);
             total+=len;
