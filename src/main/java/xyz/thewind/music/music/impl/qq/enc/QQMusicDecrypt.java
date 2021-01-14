@@ -115,19 +115,32 @@ public class QQMusicDecrypt {
     }
 
     /**
-     * 暂时没有实现
+     * mflac和mgg解密，参考：https://github.com/Ras0N/QMCTrans/blob/master/QMCTrans/Form1.cs
      * @param fullPath
      * @return
      */
-    private static boolean decryptMFile(String fullPath){
-//        int[] mKey= Arrays.copyOfRange(qmcEncMap,0,qmcEncMap.length);
+    private static boolean decryptMFile(String fullPath)throws Exception{
         int[] mKey=new int[256];
         byte[] priKey=readBytes(fullPath,0x500,64);
 
         for (int i=0;i<64;i++){
             mKey[posMap[i]]=priKey[i];
         }
-        return false;
+        File file=new File(fullPath);
+        FileInputStream is=new FileInputStream(file);
+        FileOutputStream fout=new FileOutputStream(getDecryptName(fullPath));
+        byte[] b=new byte[8192];
+        int len=0;
+        long total=0;
+        while ((len=is.read(b))!=-1){
+            for (int i=0;i<len;i++){
+                int pos=(int)((total+i)%0x7fff);
+                b[i]^=mKey[(pos*pos+27)%256];
+            }
+            fout.write(b,0,len);
+            total+=len;
+        }
+        return true;
     }
 
     /**
