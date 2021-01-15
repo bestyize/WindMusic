@@ -58,6 +58,8 @@ public class QQMusicDecrypt {
             return decryptBkcQmcFile(fullPath);
         }else if(fullPath.endsWith(".flac.mqcc")||fullPath.endsWith(".mp3.mqcc")){
             return decryptMqccFile(fullPath);
+        }else if(fullPath.endsWith(".flac.0")){
+            return decryptFlacZeroFile(fullPath);
         }else if (fullPath.endsWith(".flac.efe") || fullPath.endsWith(".mp3.efe")){
             return decryptEfeFile(fullPath);
         }else if(fullPath.endsWith(".mflac")||fullPath.endsWith(".mgg")){//未实现
@@ -171,13 +173,35 @@ public class QQMusicDecrypt {
     }
 
     /**
-     * Android缓存的加密文件
+     * efe文件解密，QQ音乐缓存文件
      * @param fullPath
      * @return
      * @throws Exception
      */
     private static boolean decryptEfeFile(String fullPath)throws Exception{
-        byte[] key=readBytes(fullPath,0x500,32);
+        return decryptEfeZeroFile(fullPath,0x500,32);
+    }
+
+    /**
+     * .flac.0 文件解密.Moo音乐缓存文件,密钥长度36，存放在音乐文件的空白部分
+     * @param fullPath
+     * @return
+     * @throws Exception
+     */
+    private static boolean decryptZeroFile(String fullPath)throws Exception{
+        return decryptEfeZeroFile(fullPath,0x510,36);
+    }
+
+
+
+    /**
+     * Android缓存的加密文件
+     * @param fullPath
+     * @return
+     * @throws Exception
+     */
+    private static boolean decryptEfeZeroFile(String fullPath,int start,int end)throws Exception{
+        byte[] key=readBytes(fullPath,start,end);
         File file=new File(fullPath);
         FileInputStream is=new FileInputStream(file);
         File decryptFile=new File(getDecryptName(fullPath));
@@ -219,6 +243,10 @@ public class QQMusicDecrypt {
         return decryptFile.renameTo(new File(getDecryptName(fullPath)));
     }
 
+    private static boolean decryptFlacZeroFile(String fullPath){
+        return decryptMqccFile(fullPath);
+    }
+
     /**
      * 根据文件扩展名判断解密后应该的名字
      * @param fullPath
@@ -241,6 +269,11 @@ public class QQMusicDecrypt {
                 return fullPath.replace(".mflac",".flac");
             }
             return fullPath.replace(".mgg",".mp3");
+        }else if(fullPath.endsWith(".flac.0")||fullPath.endsWith(".flac.-1310027065.1")){//Moo缓存文件。存放目录在Android/data/com.tencent.blackkey/files/sd_card_migrated/audio_cache
+            if(fullPath.endsWith(".flac.0")){
+                return fullPath.replace(".flac.0",".flac");//没加密的缓存文件
+            }
+            return fullPath.replace(".flac.-1310027065.1",".flac");//加密的缓存文件
         }
         return "";
     }
