@@ -1,6 +1,5 @@
 package xyz.thewind.music.music.impl.wy.enc;
 
-import com.sun.istack.internal.NotNull;
 import xyz.thewind.music.util.HttpRequestHelper;
 
 import java.io.File;
@@ -14,7 +13,7 @@ import java.util.Locale;
 import java.util.Map;
 
 public class WyMusicDecrypt {
-    public static boolean decrypt(@NotNull String fullPath){
+    public static boolean decrypt(String fullPath){
         if(!fullPath.endsWith(".uc")){
             return false;
         }
@@ -66,7 +65,7 @@ public class WyMusicDecrypt {
      * @param fullPath
      * @return
      */
-    private static String getCorrectMusicFileName(@NotNull String fullPath){
+    private static String getCorrectMusicFileName(String fullPath){
         String dir=fullPath.substring(0,fullPath.lastIndexOf(File.separator)+1);
         Map<String,String> metaMap=readMetaInfo(fullPath);
         if(metaMap.get("singerName").equals("")){
@@ -81,7 +80,7 @@ public class WyMusicDecrypt {
      * @param fullPath
      * @return
      */
-    private static Map<String,String> readMetaInfo(@NotNull String fullPath){
+    private static Map<String,String> readMetaInfo(String fullPath){
         Map<String,String> map=new HashMap<>();
         byte[] bytes=readBytes(fullPath,0,0x1000);//元数据在开始的8k内
         map.put("songName",extraField(bytes,"Title"));
@@ -120,7 +119,7 @@ public class WyMusicDecrypt {
         return "";
     }
     //
-    private static Map<String,String> readMetaInfoFromWeb(@NotNull String fullPath){
+    private static Map<String,String> readMetaInfoFromWeb(String fullPath){
         Map<String,String> map=new HashMap<>();
         byte[] bytes=readBytes(fullPath,0,0x1);//元数据在开始的8k内
         if(bytes[0]=='f'){
