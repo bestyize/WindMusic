@@ -14,11 +14,13 @@ public class KgTest {
     private static Map<String,String> headerMap=new HashMap<>();
     @Test
     public void test1(){
-//        System.out.println(getPlayUrl("811dbd4cdb806d009d7026a4c3fff0f4"));//周杰伦-稻香 SQ VIP 成功
-//        System.out.println(getPlayUrl("daf0ba0d5d4e5fd27eefabc3f201dd40"));//毛不易-消愁 SQ VIP 失败
+ //       System.out.println(getPlayUrl("811dbd4cdb806d009d7026a4c3fff0f4"));//周杰伦-稻香 SQ VIP 成功
+ //       System.out.println(getPlayUrl("A92BD7C7E503A754529A1096A27D753F"));//消愁-片段-成功
+        System.out.println(getPlayUrl("37FB544283B501DDC7D9CEE59FCC2B32"));//毛不易-消愁 SQ VIP 失败
+ //       System.out.println(getPlayUrl("daf0ba0d5d4e5fd27eefabc3f201dd40"));//毛不易-消愁 SQ VIP 失败
 //        System.out.println(getPlayUrl("74350c0818dfced85dbe3d6c1dd3449d"));//薛之谦-天外来物 SQ 成功
 //        System.out.println(getPlayUrl("8AEF65FE99B3608A68BE8E8E8525BCCF"));//毛不易-像我这样的人 试听 VIP 成功
-        System.out.println(getPlayUrl("b84e4149d6ff8adce3cd24fe94c96fd3"));//
+//        System.out.println(getPlayUrl("b84e4149d6ff8adce3cd24fe94c96fd3"));//
     }
     private static String getPlayUrl(String hash){
         SimpleDateFormat format=new SimpleDateFormat("yyyyMMdd");

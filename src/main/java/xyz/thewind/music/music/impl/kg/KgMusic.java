@@ -148,78 +148,111 @@ public class KgMusic implements MusicHelper {
         return new LinkedList<>();//kg音乐没有返回歌手ID
     }
 
-
-    public SongBean downloadResponseProcess(SongBean songBean, String response){
-        try {
-            response=response.replace("<!--KG_TAG_RES_START-->","").replace("<!--KG_TAG_RES_END-->","");
-            DownloadResponseBean responseBean= GsonConverter.fromJson(response,DownloadResponseBean.class);
-            Map<String,String> map=songBean.getDownloadLinkMap();
-            songBean.setDownloadLinkMap(map);
-            if(responseBean.status==1){
-                map.put(responseBean.getQuality(),responseBean.getUrl().get(1).replaceAll("\\\\",""));
-                songBean.setQuality(responseBean.getQuality());
-            }else {
-                logger.warn("is vip song");
-            }
-        }catch (Exception e){
-            logger.error("failed");
-        }
-
-        return songBean;
-    }
-
     public static String downloadRequest(String hash,String quality){
-        return ThirdPartApi.getPlayUrl(hash,quality);
+        //return ThirdPartApi.getPlayUrl(hash,quality);
+        return downloadRequest(hash);
     }
 
-//    public static String downloadRequest(String hash){
-//        Map<String,String> headerMap=new HashMap<>();
-//        headerMap.put("User-Agent","Android511-AndroidPhone-10259-14-0-NetMusic-wifi");
-//        headerMap.put("KG-FAKE",configMap.getOrDefault("kg_uid","1717986917"));
-//        headerMap.put("KG-RC","1");
-//        headerMap.put("KG-RF","00877b56");
-//        headerMap.put("KG-THash","1509c84");
-//        headerMap.put("x-router","tracker.kugou.com");
-//        headerMap.put("Host","gateway.kugou.com");
-//        return HttpRequestHelper.downloadWebSiteUseGet(downloadLinkBuilder(hash,false),headerMap);
-//    }
-
-    public static String downloadLinkBuilder(String hash,boolean usePid){
-
-        String pidVersionSecret= "57ae12eb6890223e355ccfcb74edf70d";
-        String uid=configMap.getOrDefault("kg_uid","1717986917");
-        if(uid==null){
-            uid="0";
-        }
-        String token=configMap.get("kg_token");
-        if(token==null){
-            token="0";
-        }
-        String pidVersion="3001";
-        String appid="1005";//1005是安卓手机版kg音乐
+    private static String downloadRequest(String hash){
+        String dfid="-";
+        String pid="2";
         String mid="0";
-        String baseLink="https://gateway.kugou.com/i/v2/?";
-        String vipType="6";
-        String dfid="0";
+        String cmd="26";
+        String clienttime=Long.valueOf(System.currentTimeMillis() / 1000)+"";
 
-        StringBuilder sb=new StringBuilder();
-        sb.append("pid=2&cmd=26&area_code=1&behavior=play&module=&ptype=0&mtype=0&album_id=39027869&version=10259&album_audio_id=272185068&with_res_tag=1");
-        sb.append("&mid=").append(mid);
-        sb.append("&vipType=").append(vipType);
-        sb.append("&hash=").append(hash);
-        sb.append("&dfid=").append(dfid);
-        sb.append("&token=").append(token);
-        sb.append("&appid=").append(appid);
-        sb.append("&userid=").append(uid);
-        if(usePid){
-            sb.append("&pidversion=").append(pidVersion);
-            String key= Md5Encrypt.convertToMd5(hash+pidVersionSecret+appid+mid+uid);
-            sb.append("&key=").append(key);
-        }else {
-            sb.append("&key=").append(Md5Encrypt.convertToMd5(hash + "kgcloudv2" + appid + mid + uid));
+        String uuid="0";
+        String area_code="1";
+        String behavior="play";
+        String appid="1005";
+        String module="";
+        String vipType="6";
+        String ptype="0";
+        String userid=configMap.getOrDefault("kg_uid","1538743078");
+        String token=configMap.getOrDefault("kg_token","fa044ef0ad5e094b2c10f1567c1686ad7ab84caa862e160cef2232e86f39e832");
+        String mtype="2";
+        String album_id="2900867";
+        String pidversion="3001";
+        String pidVersionSecret="57ae12eb6890223e355ccfcb74edf70d";
+        String clientver="10479";
+        String version="10479";
+        String album_audio_id="album_audio_id";
+
+        Map<String,Object> map=new HashMap<>();
+        map.put("dfid", dfid);
+        map.put("hash",hash);
+        map.put("mtype",mtype);
+        map.put("album_id",album_id);
+        map.put("album_audio_id",album_audio_id);
+        map.put("module",module);
+        map.put("behavior",behavior);
+        map.put("cmd",cmd);
+
+        map.put("uuid", uuid);
+        map.put("clientver", clientver);
+        map.put("clienttime", clienttime);
+
+        map.put("pid",pid);
+        map.put("appid", appid);
+        map.put("mid", mid);
+        map.put("version",version);
+        map.put("token",token);
+
+        map.put("vipType",vipType);
+        map.put("userid",userid);
+        map.put("area_code",area_code);
+        map.put("dfid",dfid);
+        map.put("ptype",ptype);
+        map.put("pidversion",pidversion);
+        map.put("key",Md5Encrypt.convertToMd5(hash+pidVersionSecret+appid+mid+userid));
+        String appkey="OIlwieks28dk2k092lksi2UIkp";
+        map.put("signature",getSignature(appkey,map));
+        String reqLink="https://gateway.kugou.com/v3/url"+getGetRequestParams(map);
+        Map<String,String> headerMap=new HashMap<>();
+        headerMap.put("x-router","tracker.kugou.com");
+        String response=HttpRequestHelper.downloadWebSiteUseGet(reqLink,headerMap);
+        if(response.contains("http:")&&response.contains("\"")){
+            response=response.substring(response.indexOf("\"url\":[\"")+"\"url\":[\"".length());
+            response=response.substring(0,response.indexOf("\"")).replaceAll("\\\\","");
         }
-        return baseLink+sb.toString();
+        return response;
+
     }
+
+    private static String getGetRequestParams(Map<String,Object> map) {
+        if (map == null || map.size() < 0) {
+            return "";
+        }
+        StringBuilder sb = new StringBuilder();
+        sb.append("?");
+        Set<String> keySet = map.keySet();
+        for (String str : keySet) {
+            sb.append(str);
+            sb.append("=");
+            sb.append(map.get(str));
+            sb.append("&");
+        }
+        sb.deleteCharAt(sb.length() - 1);
+        return sb.toString();
+    }
+
+
+
+    private static String getSignature(String str, Map<String, Object> map) {
+        if (map == null || map.size() < 0) {
+            return "";
+        }
+        StringBuilder sb = new StringBuilder();
+        Set<String> keySet = map.keySet();
+        String[] strArr = keySet.toArray(new String[keySet.size()]);
+        Arrays.sort(strArr, String::compareTo);
+        for (String str3 : strArr) {
+            sb.append(str3);
+            sb.append("=");
+            sb.append(map.get(str3));
+        }
+        return Md5Encrypt.convertToMd5(str + sb.toString() + str);
+    }
+
 
 
     /**
