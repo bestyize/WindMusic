@@ -128,7 +128,7 @@ public class KgMusic implements MusicHelper {
                         detail.getAlbumId(),
                         detail.getAlbumName(),
                         detail.getQuality(),
-                        "",
+                        getCoverByHash(detail.getPqHash()),
                         "",
                         detail.getMvId()
                 );
@@ -138,6 +138,20 @@ public class KgMusic implements MusicHelper {
             logger.error("parse search response failed");
         }
         return list;
+    }
+
+    private String getCoverByHash(String hash){
+        String link="https://expendablekmrcdn.kugou.com/container/v1/image?data=%5B%7B%22hash%22%3A%22"+hash+"%22%7D%5D";
+        String response=HttpRequestHelper.downloadWebSiteUseGet(link,null);
+        if(response.contains("\"sizable_avatar\":\"")){
+            response=response.substring(response.indexOf("\"sizable_avatar\":\"")+"\"sizable_avatar\":\"".length());
+            response=response.substring(0,response.indexOf("\""));
+            response=response.replace("{size}","480");
+        }else {
+            response="";
+        }
+        return response;
+
     }
 
     private List<String> parseSingerList(String singer){
@@ -213,6 +227,8 @@ public class KgMusic implements MusicHelper {
         if(response.contains("http:")&&response.contains("\"")){
             response=response.substring(response.indexOf("\"url\":[\"")+"\"url\":[\"".length());
             response=response.substring(0,response.indexOf("\"")).replaceAll("\\\\","");
+        }else {
+            response="";
         }
         return response;
 
