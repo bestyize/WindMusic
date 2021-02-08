@@ -9,7 +9,7 @@ import xyz.thewind.music.music.impl.kw.KwMusic;
 import xyz.thewind.music.music.impl.mg.MgMusic;
 import xyz.thewind.music.music.impl.qq.QqMusic;
 import xyz.thewind.music.music.impl.wy.WyMusic;
-import xyz.thewind.music.music.impl.xm.XmMusic;
+
 import xyz.thewind.music.util.Base64Converter;
 
 import java.util.HashMap;
@@ -29,7 +29,6 @@ public class MusicDispatcher {
         srcMap.put(SRC_MG,new MgMusic());
         srcMap.put(SRC_KW,new KwMusic());
         srcMap.put(SRC_KG,new KgMusic());
-        srcMap.put(SRC_XM,new XmMusic());
     }
 
     public Map<String, String> getConfigMap() {

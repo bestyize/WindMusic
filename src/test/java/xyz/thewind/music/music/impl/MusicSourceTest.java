@@ -9,7 +9,7 @@ import xyz.thewind.music.music.impl.kw.KwMusic;
 import xyz.thewind.music.music.impl.mg.MgMusic;
 import xyz.thewind.music.music.impl.qq.QqMusic;
 import xyz.thewind.music.music.impl.wy.WyMusic;
-import xyz.thewind.music.music.impl.xm.XmMusic;
+
 import xyz.thewind.music.util.GsonConverter;
 import xyz.thewind.music.util.HttpRequestHelper;
 
@@ -64,8 +64,6 @@ public class MusicSourceTest {
         System.out.println(helper4.getLyric("80488731"));
         MusicHelper helper5=new KgMusic();
         System.out.println(helper5.getLyric("1978DAF7ED27A7A53660D940F1D02378"));
-        MusicHelper helper6=new XmMusic();
-        System.out.println(helper6.getLyric("65766"));
     }
     @Test
     public void convertTimeTest(){
@@ -76,18 +74,7 @@ public class MusicSourceTest {
         System.out.println(lyric);
 
     }
-    @Test
-    public void xmTest(){
-        MusicHelper helper=new XmMusic();
-        List<SongBean> list=helper.searchWithDownload("双笙",2);
-        System.out.println(GsonConverter.toJson(list));
-        String lyric=helper.getLyric("1795766597");
-        lyric=lyric.replaceAll("<[\\d]+>","");
-        lyric=lyric.replaceAll("\\[","\n[");
-        lyric=lyric.substring(2);
-        System.out.println(lyric.substring(2));
 
-    }
     @Test
     public void downloadTest(){
         String songSrc="WY";
