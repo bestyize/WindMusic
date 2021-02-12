@@ -7,7 +7,7 @@ import java.util.Random;
 public class QqEncrypt {
     private static final String encNonce="CJBPACrRuNy7";
     private static final String signPrxfix="zza";
-    private static final char[] dir="0234567890abcdefghijklmnopqrstuvwxyz".toCharArray();
+    private static final char[] dir="01234567890abcdefghijklmnopqrstuvwxyz".toCharArray();
 
     /**
      *

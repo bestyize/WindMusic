@@ -128,7 +128,7 @@ public class KgMusic implements MusicHelper {
                         detail.getAlbumId(),
                         detail.getAlbumName(),
                         detail.getQuality(),
-                        getCoverByHash(detail.getPqHash()),
+                        "",
                         "",
                         detail.getMvId()
                 );
