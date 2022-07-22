@@ -1,12 +1,11 @@
 package xyz.thewind.music.music.impl.wy.enc;
 
-import com.sun.jndi.toolkit.url.Uri;
-
 import xyz.thewind.music.util.Md5Encrypt;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 public class WyEncrypt{
@@ -15,7 +14,7 @@ public class WyEncrypt{
 
     public static String eapiEncrypt(String url,String clearParams){
         try {
-            Uri uri = new Uri(url);
+            URL uri = new URL(url);
             String path=uri.getPath().replaceFirst("/eapi/","/api/");
             String message="nobody"+path+"use"+clearParams+"md5forencrypt";
             String data=path+"-36cd479b6b5-"+clearParams+"-36cd479b6b5-"+ Md5Encrypt.convertToMd5(message);
