@@ -229,9 +229,19 @@
         playerMusic(songId,songSrc,'PQ',songName,albumName,avatar);
     }
 
+    function hiddenDownloadBtn(currQuality, maxQuality) {
+        if (maxQuality === 'SQ' && currQuality === 'ZQ') {
+            return 'hidden'
+        }
+        if (maxQuality === 'HQ' && currQuality === 'SQ') {
+            return 'hidden'
+        }
+        return ''
+    }
 
 
-    function hiddenDownloadBtn(currQuality,maxQuality) {
+
+    function hiddenDownloadBtn1(currQuality,maxQuality) {
 
         if(maxQuality==='HQ'&&currQuality==='SQ'){
             return 'hidden';
@@ -307,6 +317,7 @@
             let mvUrl=musicInfo.mvUrl;
             let quality=musicInfo.quality;
             let shareId=songSrc+"_"+songId;
+            let mediaMid = musicInfo.med
 
             if(picUrl==null||picUrl.toString().length===0){
                 picUrl="img/wind-icon-256.png";
@@ -320,6 +331,7 @@
                 '        </div>\n'+
                 '        <div >\n' +
                 '            <span style="font-size: '+getDescTextSize()+'px">'+singerName+'</span>\n' +
+                '            <span style="font-size: '+getTextSize()+'px" class="wind_hand_style m-1 text-warning font-weight-bold" onclick="downloadMusic(\''+songId+'\',\''+songSrc+'\',\'ZQ\')" '+hiddenDownloadBtn("ZQ",quality)+'>ZQ</span>\n' +
                 '            <span style="font-size: '+getTextSize()+'px" class="wind_hand_style m-1 text-danger font-weight-bold" onclick="downloadMusic(\''+songId+'\',\''+songSrc+'\',\'SQ\')" '+hiddenDownloadBtn("SQ",quality)+'>SQ</span>\n' +
                 '            <span style="font-size: '+getTextSize()+'px" class="wind_hand_style m-1 text-info font-weight-bold" onclick="downloadMusic(\''+songId+'\',\''+songSrc+'\',\'HQ\')">HQ</span>\n' +
                 '            <span style="font-size: '+getTextSize()+'px" class="wind_hand_style m-1 text-primary font-weight-bold" onclick="downloadMusic(\''+songId+'\',\''+songSrc+'\',\'PQ\')">PQ</span>\n' +

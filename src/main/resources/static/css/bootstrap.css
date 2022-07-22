@@ -1346,6 +1346,7 @@ a.text-primary:focus {
 .text-success {
   color: #3c763d;
 }
+
 a.text-success:hover,
 a.text-success:focus {
   color: #2b542c;

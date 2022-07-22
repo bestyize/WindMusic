@@ -65,6 +65,7 @@ public class DownloadBean {
                 String downloadLink;
                 @SerializedName("songmid")
                 String songId;
+                String qmdlfromtag;
 
                 public String getFileName() {
                     return fileName;
@@ -75,11 +76,27 @@ public class DownloadBean {
                 }
 
                 public String getDownloadLink() {
-                    return QqMusic.baseDownloadServer + downloadLink;
+                    return QqMusic.baseDownloadServer + downloadLink + "&fromtag="+qmdlfromtag;
                 }
 
                 public void setDownloadLink(String downloadLink) {
                     this.downloadLink = downloadLink;
+                }
+
+                public String getSongId() {
+                    return songId;
+                }
+
+                public void setSongId(String songId) {
+                    this.songId = songId;
+                }
+
+                public String getQmdlfromtag() {
+                    return qmdlfromtag;
+                }
+
+                public void setQmdlfromtag(String qmdlfromtag) {
+                    this.qmdlfromtag = qmdlfromtag;
                 }
             }
         }

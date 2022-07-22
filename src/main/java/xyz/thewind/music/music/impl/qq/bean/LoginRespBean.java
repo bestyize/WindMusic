@@ -22,9 +22,9 @@ public class LoginRespBean {
         this.data = data;
     }
 
-    public class Data {
+    public static class Data {
         private int code;
-        private Detail data=new Detail();
+        private LoginTokenDetail data=new LoginTokenDetail();
 
         public int getCode() {
             return code;
@@ -34,83 +34,167 @@ public class LoginRespBean {
             this.code = code;
         }
 
-        public Detail getData() {
+        public LoginTokenDetail getData() {
             return data;
         }
 
-        public void setData(Detail data) {
+        public void setData(LoginTokenDetail data) {
             this.data = data;
         }
 
-        public class Detail{
-            String openid;
-            @SerializedName("refresh_token")
-            String refreshToken;
-            @SerializedName("access_token")
-            String accessToken;
-            @SerializedName("expired_at")
-            long expiredAt;
-            @SerializedName("musicid")
-            long musicId;
-            @SerializedName("musickey")
-            String musicKey;
-            @SerializedName("musickeyCreateTime")
-            long musicCreateTime;
 
-            public String getOpenid() {
-                return openid;
+    }
+
+    public static class LoginTokenDetail {
+
+        public LoginTokenDetail() {}
+        String openid;
+        @SerializedName("refresh_token")
+        String refreshToken;
+        @SerializedName("access_token")
+        String accessToken;
+        @SerializedName("expired_at")
+        long expiredAt;
+        @SerializedName("str_musicid")
+        String musicId;
+        @SerializedName("musickey")
+        String musicKey;
+        @SerializedName("musickeyCreateTime")
+        long musicCreateTime;
+
+        String unionid;
+
+        private LoginTokenDetail(Builder builder) {
+            setOpenid(builder.openid);
+            setRefreshToken(builder.refreshToken);
+            setAccessToken(builder.accessToken);
+            setExpiredAt(builder.expiredAt);
+            setMusicId(builder.musicId);
+            setMusicKey(builder.musicKey);
+            setMusicCreateTime(builder.musicCreateTime);
+            unionid = builder.unionid;
+        }
+
+
+        public String getOpenid() {
+            return openid;
+        }
+
+        public void setOpenid(String openid) {
+            this.openid = openid;
+        }
+
+        public String getRefreshToken() {
+            return refreshToken;
+        }
+
+        public void setRefreshToken(String refreshToken) {
+            this.refreshToken = refreshToken;
+        }
+
+        public String getAccessToken() {
+            return accessToken;
+        }
+
+        public void setAccessToken(String accessToken) {
+            this.accessToken = accessToken;
+        }
+
+        public long getExpiredAt() {
+            return expiredAt;
+        }
+
+        public void setExpiredAt(long expiredAt) {
+            this.expiredAt = expiredAt;
+        }
+
+        public String getMusicId() {
+            return musicId;
+        }
+
+        public void setMusicId(String musicId) {
+            this.musicId = musicId;
+        }
+
+        public String getMusicKey() {
+            return musicKey;
+        }
+
+        public void setMusicKey(String musicKey) {
+            this.musicKey = musicKey;
+        }
+
+        public long getMusicCreateTime() {
+            return musicCreateTime;
+        }
+
+        public void setMusicCreateTime(long musicCreateTime) {
+            this.musicCreateTime = musicCreateTime;
+        }
+
+        public String getUnionid() {
+            return unionid;
+        }
+
+        public void setUnionid(String unionid) {
+            this.unionid = unionid;
+        }
+
+        public static final class Builder {
+            private String openid;
+            private String refreshToken;
+            private String accessToken;
+            private long expiredAt;
+            private String musicId;
+            private String musicKey;
+            private long musicCreateTime;
+            private String unionid;
+
+            public Builder() {
             }
 
-            public void setOpenid(String openid) {
-                this.openid = openid;
+            public Builder openid(String val) {
+                openid = val;
+                return this;
             }
 
-            public String getRefreshToken() {
-                return refreshToken;
+            public Builder refreshToken(String val) {
+                refreshToken = val;
+                return this;
             }
 
-            public void setRefreshToken(String refreshToken) {
-                this.refreshToken = refreshToken;
+            public Builder accessToken(String val) {
+                accessToken = val;
+                return this;
             }
 
-            public String getAccessToken() {
-                return accessToken;
+            public Builder expiredAt(long val) {
+                expiredAt = val;
+                return this;
             }
 
-            public void setAccessToken(String accessToken) {
-                this.accessToken = accessToken;
+            public Builder musicId(String val) {
+                musicId = val;
+                return this;
             }
 
-            public long getExpiredAt() {
-                return expiredAt;
+            public Builder musicKey(String val) {
+                musicKey = val;
+                return this;
             }
 
-            public void setExpiredAt(long expiredAt) {
-                this.expiredAt = expiredAt;
+            public Builder musicCreateTime(long val) {
+                musicCreateTime = val;
+                return this;
             }
 
-            public long getMusicId() {
-                return musicId;
+            public Builder unionid(String val) {
+                unionid = val;
+                return this;
             }
 
-            public void setMusicId(long musicId) {
-                this.musicId = musicId;
-            }
-
-            public String getMusicKey() {
-                return musicKey;
-            }
-
-            public void setMusicKey(String musicKey) {
-                this.musicKey = musicKey;
-            }
-
-            public long getMusicCreateTime() {
-                return musicCreateTime;
-            }
-
-            public void setMusicCreateTime(long musicCreateTime) {
-                this.musicCreateTime = musicCreateTime;
+            public LoginTokenDetail build() {
+                return new LoginTokenDetail(this);
             }
         }
     }

@@ -217,7 +217,7 @@ public class MusicController {
                     if((System.currentTimeMillis()/1000-time<3600*12)&&force==null){
                         resp.code(-1).msg("距离上次更新较短，本次不执行更新");
                     }else {
-                        String response=RequestModule.login(qqmusicAccessToken,qqmusicRefreshToken);
+                        String response=RequestModule.login("qqmusicAccessToken","qqmusicRefreshToken", "", "", "", "");
                         LoginRespBean respBean=GsonConverter.fromJson(response,LoginRespBean.class);
                         //更新Redis存的登陆数据数据
                         redisService.set("qqmusic_musickey_create_time",respBean.getData().getData().getMusicCreateTime()+"");
