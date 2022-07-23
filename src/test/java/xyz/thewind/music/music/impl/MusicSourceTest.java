@@ -3,7 +3,7 @@ package xyz.thewind.music.music.impl;
 import org.junit.Test;
 import xyz.thewind.music.model.SongBean;
 import xyz.thewind.music.music.MusicDispatcher;
-import xyz.thewind.music.music.MusicHelper;
+import xyz.thewind.music.music.IMusicApi;
 import xyz.thewind.music.music.impl.kg.KgMusic;
 import xyz.thewind.music.music.impl.kw.KwMusic;
 import xyz.thewind.music.music.impl.mg.MgMusic;
@@ -27,7 +27,7 @@ public class MusicSourceTest {
     @Test
     public void test(){
 
-        List<SongBean> songBeanList=dispatcher.searchDownDispatcher("MG","最伟大的作品",5);
+        List<SongBean> songBeanList=dispatcher.searchDownDispatcher("WY","蔡徐坤",5);
         System.out.println(GsonConverter.toJson(songBeanList));
     }
     @Test
@@ -54,20 +54,20 @@ public class MusicSourceTest {
     }
     @Test
     public void qqmusicLyricTest(){
-        MusicHelper helper1=new QqMusic();
+        IMusicApi helper1=new QqMusic();
         System.out.println(helper1.getLyric("0039MnYb0qxYhV"));
-        MusicHelper helper2=new WyMusic();
+        IMusicApi helper2=new WyMusic();
         System.out.println(helper2.getLyric("65766"));
-        MusicHelper helper3=new MgMusic();
+        IMusicApi helper3=new MgMusic();
         System.out.println(helper3.getLyric("60054701923"));
-        MusicHelper helper4=new KwMusic();
+        IMusicApi helper4=new KwMusic();
         System.out.println(helper4.getLyric("80488731"));
-        MusicHelper helper5=new KgMusic();
+        IMusicApi helper5=new KgMusic();
         System.out.println(helper5.getLyric("1978DAF7ED27A7A53660D940F1D02378"));
     }
     @Test
     public void convertTimeTest(){
-        MusicHelper helper=new KgMusic();
+        IMusicApi helper=new KgMusic();
         List<SongBean> list=helper.searchWithDownload("薛之谦",5);
         System.out.println(GsonConverter.toJson(list));
         String lyric=helper.getLyric("a2544e395c12de34f6d3f6c75e8de955-1f2abb109cd8585eb9635bbb213e5f8d-23214810a242765c9e721150593a2992");

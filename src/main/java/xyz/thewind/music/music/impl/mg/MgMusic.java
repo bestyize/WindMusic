@@ -2,7 +2,7 @@ package xyz.thewind.music.music.impl.mg;
 
 import com.google.gson.Gson;
 import xyz.thewind.music.model.SongBean;
-import xyz.thewind.music.music.MusicHelper;
+import xyz.thewind.music.music.IMusicApi;
 import xyz.thewind.music.music.impl.mg.bean.LyricResponseBean;
 import xyz.thewind.music.music.impl.mg.bean.MgDownloadBean;
 import xyz.thewind.music.music.impl.mg.bean.SearchResponseBean;
@@ -18,7 +18,7 @@ import static xyz.thewind.music.music.common.SongUtil.*;
 import static xyz.thewind.music.util.HttpRequestHelper.downloadWebSiteUseGet;
 
 
-public class MgMusic implements MusicHelper {
+public class MgMusic implements IMusicApi {
     //或者：https://app.c.nf.migu.cn/MIGUM3.0/v2.0/content/querySongBySongId.do?songId=1136379763
     private static final String baseContentLink = "https://c.musicapp.migu.cn/MIGUM3.0/v1.0/content/resourceinfo.do?ua=Android_migu&version=5.0&resourceType=2&copyrightId=";
 

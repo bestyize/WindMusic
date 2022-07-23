@@ -1,7 +1,7 @@
 package xyz.thewind.music.music.impl.kw;
 
 import xyz.thewind.music.model.SongBean;
-import xyz.thewind.music.music.MusicHelper;
+import xyz.thewind.music.music.IMusicApi;
 import xyz.thewind.music.music.impl.kw.bean.LyricResponseBean;
 import xyz.thewind.music.music.impl.kw.bean.SearchResponseBean;
 import xyz.thewind.music.music.impl.kw.bean.SongDetail;
@@ -18,7 +18,7 @@ import static xyz.thewind.music.util.HttpRequestHelper.downloadWebSiteUseGet;
 import static xyz.thewind.music.music.common.SongUtil.*;
 
 
-public class KwMusic implements MusicHelper {
+public class KwMusic implements IMusicApi {
     private static final HashMap<String, String> qualityMap;
     private static final Map<String,String> mvQualityMap=new HashMap<>();
 

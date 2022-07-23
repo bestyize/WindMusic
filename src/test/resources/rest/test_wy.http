@@ -1,0 +1,4 @@
+GET http://music.163.com/api/song/enhance/player/url?ids=%5B1965890511%5D&br=999000
+
+Cookie: MUSIC_U=41d12a493b80de6fa49d16f6570d469a23f84bcf3394fedda977317d531e9c861d1b60489766205edfc3c0ec8cbcadd641049cea1c6bb9b6
+X-Real-IP: 183.14.132.83

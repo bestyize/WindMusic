@@ -7,10 +7,8 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
-import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
@@ -38,6 +36,7 @@ public class CryptoUtil {
         }
         return key.toString();
     }
+
     /**
      * aes加密
      *
@@ -45,15 +44,15 @@ public class CryptoUtil {
      * @param key
      * @return
      */
-    private static String aesEncrypt(String content, String key,String mode,String iv) {
+    private static String aesEncrypt(String content, String key, String mode, String iv) {
         String result = null;
         if (content == null || key == null)
             return null;
         try {
             Cipher cipher = Cipher.getInstance(mode);
-            if(iv.length()==0){
+            if (iv.length() == 0) {
                 cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), "AES"));
-            }else {
+            } else {
                 cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), "AES"),
                         new IvParameterSpec(iv.getBytes(StandardCharsets.UTF_8)));
             }
@@ -124,13 +123,13 @@ public class CryptoUtil {
      * @return
      */
     public static String weapiEncrypt(String content) {
-        String mode="AES/CBC/PKCS5Padding";
+        String mode = "AES/CBC/PKCS5Padding";
         String key = createSecretKey(16);//n5IA3AI20heJu9DW
 //        String key="n5IA3AI20heJu9DW";
-        String encText = aesEncrypt(aesEncrypt(content, presetKey,mode,iv), key,mode,iv);//76SjbrPbuyyYekhAc2YT6kNjIC6kOt4QwAz2+oBWiCVqLQvG3XcX3LCW4PDf3tmK
+        String encText = aesEncrypt(aesEncrypt(content, presetKey, mode, iv), key, mode, iv);//76SjbrPbuyyYekhAc2YT6kNjIC6kOt4QwAz2+oBWiCVqLQvG3XcX3LCW4PDf3tmK
         String encSecKey = rsaEncrypt(key, pubKey, modulus);
         try {
-            return "params="+ URLEncoder.encode(encText,"UTF-8")+"&encSecKey="+URLEncoder.encode(encSecKey,"UTF-8");
+            return "params=" + URLEncoder.encode(encText, "UTF-8") + "&encSecKey=" + URLEncoder.encode(encSecKey, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -145,20 +144,20 @@ public class CryptoUtil {
      * @return
      */
     public static String linuxapiEncrypt(String content) {
-        String mode="AES/ECB/PKCS5Padding";
-        String params = aesEncrypt(content, linuxapiKey, mode,"").toUpperCase();
-        return "params="+params;
+        String mode = "AES/ECB/PKCS5Padding";
+        String params = aesEncrypt(content, linuxapiKey, mode, "").toUpperCase();
+        return "params=" + params;
 
     }
 
 
     public static void main(String[] args) {
-        String id="65766";
-        String quality="999000";
+        String id = "65766";
+        String quality = "999000";
         String text = "{\"ids\":[\"" + id + "\"],\"br\":" + quality + ",\"csrf_token\":\"\"}";
-        Map<String,String> headerMap=new HashMap<>();
-        headerMap.put("Cookie","MUSIC_U=ba0a04e302da6a12399d1817fe4eae9dd7c6b7f4865bf4fd9b986b5c8c07893333a649814e309366;");
+        Map<String, String> headerMap = new HashMap<>();
+        headerMap.put("Cookie", "MUSIC_U=ba0a04e302da6a12399d1817fe4eae9dd7c6b7f4865bf4fd9b986b5c8c07893333a649814e309366;");
         String postContentWebApi = weapiEncrypt(text);
-        System.out.println(HttpRequestHelper.downloadWebSiteUsePost("https://music.163.com/weapi/song/enhance/player/url",postContentWebApi,headerMap));
+        System.out.println(HttpRequestHelper.downloadWebSiteUsePost("https://music.163.com/weapi/song/enhance/player/url", postContentWebApi, headerMap));
     }
 }

@@ -7,7 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public interface MusicHelper {
+public interface IMusicApi {
     /**
      * 搜索歌曲列表
      *

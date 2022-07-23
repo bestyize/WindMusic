@@ -62,7 +62,7 @@ public class SearchResponseBean {
             List<Data.SongDetail.Singer> ar;
             Data.SongDetail.Album al;
 
-            @SerializedName("s")
+            @SerializedName("sq")
             Data.SongDetail.Quality sQuality;
             @SerializedName("h")
             Data.SongDetail.Quality hQuality;
@@ -70,6 +70,9 @@ public class SearchResponseBean {
             Data.SongDetail.Quality pQuality;
             @SerializedName("l")
             Data.SongDetail.Quality lQuality;
+
+            @SerializedName("hr")
+            Data.SongDetail.Quality  zqQuality;
             @SerializedName("mv")
             long mvId;
 
@@ -137,6 +140,14 @@ public class SearchResponseBean {
 
             public void setlQuality(Data.SongDetail.Quality lQuality) {
                 this.lQuality = lQuality;
+            }
+
+            public Quality getZqQuality() {
+                return zqQuality;
+            }
+
+            public void setZqQuality(Quality zqQuality) {
+                this.zqQuality = zqQuality;
             }
 
             public long getMvId() {

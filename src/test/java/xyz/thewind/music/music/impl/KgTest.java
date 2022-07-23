@@ -5,11 +5,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.junit.Test;
-import org.thymeleaf.util.TextUtils;
 import xyz.thewind.music.model.SongBean;
-import xyz.thewind.music.music.MusicHelper;
+import xyz.thewind.music.music.IMusicApi;
 import xyz.thewind.music.music.impl.kg.KgMusic;
-import xyz.thewind.music.util.GsonConverter;
 import xyz.thewind.music.util.HttpRequestHelper;
 import xyz.thewind.music.util.Md5Encrypt;
 
@@ -22,7 +20,7 @@ public class KgTest {
 //        List<SongBean> songBeanList=helper.searchMusic("周杰伦",10);
 //        System.out.println(GsonConverter.toJson(songBeanList));
         //requestBuild("0a62227caab66f54d43ec084b4bdd81f");
-        MusicHelper helper=new KgMusic();
+        IMusicApi helper=new KgMusic();
         List<SongBean> list=helper.searchWithDownload("消愁",1);
         System.out.println(list);
     }
@@ -62,7 +60,7 @@ public class KgTest {
                 if(bitRate > max) {
 
 
-                    MusicHelper helper=new KgMusic();
+                    IMusicApi helper=new KgMusic();
                     SongBean songBean=new SongBean("KG",vo.getAsJsonObject().get("hash").getAsString());
                    songBean=helper.searchDownloadLink(songBean,"SQ");
                     System.out.println(songBean);
@@ -77,7 +75,7 @@ public class KgTest {
 
     @Test
     public void test(){
-        MusicHelper helper=new KgMusic();
+        IMusicApi helper=new KgMusic();
         SongBean songBean=new SongBean("KG","6f13080a62ec4a89f0747aa3d080f99d");
         songBean=helper.searchDownloadLink(songBean,"SQ");
         System.out.println(songBean);

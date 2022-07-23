@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xyz.thewind.music.model.SongBean;
-import xyz.thewind.music.music.MusicHelper;
+import xyz.thewind.music.music.IMusicApi;
 import xyz.thewind.music.music.common.MusicConfigManager;
 import xyz.thewind.music.music.impl.qq.bean.*;
 import xyz.thewind.music.music.impl.qq.bean.login.QQMusicLoginToken;
@@ -20,7 +20,7 @@ import static xyz.thewind.music.util.HttpRequestHelper.downloadWebSiteUseGet;
 import static xyz.thewind.music.util.HttpRequestHelper.downloadWebSiteUsePost;
 
 
-public class QqMusic implements MusicHelper {
+public class QqMusic implements IMusicApi {
     public static final String baseDownloadServer = "https://isure.stream.qqmusic.qq.com/";
     private static final Logger logger = LogManager.getLogger(QqMusic.class);
     private static final HashMap<String, String> qualityMap;

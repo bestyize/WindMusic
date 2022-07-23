@@ -4,9 +4,8 @@ package xyz.thewind.music.music.impl.kg;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xyz.thewind.music.model.SongBean;
-import xyz.thewind.music.music.MusicHelper;
+import xyz.thewind.music.music.IMusicApi;
 import xyz.thewind.music.music.impl.kg.bean.*;
-import xyz.thewind.music.music.impl.kg.module.ThirdPartApi;
 import xyz.thewind.music.util.Base64Converter;
 import xyz.thewind.music.util.GsonConverter;
 import xyz.thewind.music.util.HttpRequestHelper;
@@ -20,7 +19,7 @@ import java.util.*;
 import static xyz.thewind.music.music.common.SongUtil.*;
 
 
-public class KgMusic implements MusicHelper {
+public class KgMusic implements IMusicApi {
     private static final Logger logger= LogManager.getLogger(KgMusic.class);
     public static final HashMap<Integer, String> qualityMap;
 
