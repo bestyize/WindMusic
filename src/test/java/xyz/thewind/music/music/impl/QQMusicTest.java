@@ -7,6 +7,10 @@ import xyz.thewind.music.music.impl.qq.bean.login.QQMusicLoginToken;
 import xyz.thewind.music.music.impl.qq.module.RequestModule;
 import xyz.thewind.music.util.GsonConverter;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 public class QQMusicTest {
     @Test
     public void testEnc(){
@@ -31,6 +35,30 @@ public class QQMusicTest {
         String resp = RequestModule.login(token);
         QQMusicLoginResp loginResp = GsonConverter.fromJson(resp, QQMusicLoginResp.class);
         System.out.println(GsonConverter.toJson(loginResp.data.token));
+    }
 
+    private ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+    int index= 0;
+    @Test
+    public void testRefreshLogin() {
+//        RefreshTokenTaskManager.getInstance().startRefresh(false);
+        doRefresh();
+
+    }
+
+    public static void main(String[] args) {
+        new QQMusicTest().doRefresh();
+    }
+
+    private Runnable mRunnable = new Runnable() {
+        @Override
+        public void run() {
+            System.out.println(index++);
+            doRefresh();
+        }
+    };
+
+    private void doRefresh() {
+        scheduledExecutorService.schedule(mRunnable, 1, TimeUnit.SECONDS);
     }
 }

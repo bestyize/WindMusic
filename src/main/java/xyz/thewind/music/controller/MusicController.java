@@ -34,7 +34,6 @@ public class MusicController {
 
     @RequestMapping("/api/download")
     public ResponseEntity<String> download(String songid, String quality, String src, String batch) {
-        MusicConfigManager.getInstance().setRedisService(redisService);
         String response;
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
@@ -55,7 +54,6 @@ public class MusicController {
 
     @RequestMapping("/api/search")
     public ResponseEntity<List<SongBean>> search(String keyword, String num, String src) {
-        MusicConfigManager.getInstance().setRedisService(redisService);
         String songSrc = loadConfig().get("songSrc");
         if (songSrc != null && songSrc.length() > 0) {
             src = songSrc;
@@ -66,7 +64,6 @@ public class MusicController {
 
     @RequestMapping("/api/searchdown")
     public ResponseEntity<List<SongBean>> searchDown(String keyword, String num, String src) {
-        MusicConfigManager.getInstance().setRedisService(redisService);
         String songSrc = loadConfig().get("songSrc");
         if (songSrc != null && songSrc.length() > 0) {
             src = songSrc;
@@ -78,7 +75,6 @@ public class MusicController {
 
     @RequestMapping("/api/getlyric")
     public ResponseEntity<String> searchLyric(String songid, String src) {
-        MusicConfigManager.getInstance().setRedisService(redisService);
         String songSrc = loadConfig().get("songSrc");
         if (songSrc != null && songSrc.length() > 0) {
             src = songSrc;
@@ -88,65 +84,63 @@ public class MusicController {
 
     @RequestMapping("/api/player")
     public ResponseEntity<List<PlayerBean>> player(String shareId) {
-        MusicConfigManager.getInstance().setRedisService(redisService);
         List<PlayerBean> playerBeanList = new ArrayList<>();
-        if (shareId != null) {
-            String[] pair = shareId.split("_");
-            if (pair.length == 2) {
-                String songSrc = pair[0];
-                String songId = pair[1];
-                musicDispatcher.setConfigMap(loadConfig());
-                SongBean bean = musicDispatcher.downloadDispatcher(songSrc, songId, "PQ");
-                if (bean != null) {
-                    String pic = bean.getPicUrl();
-                    if (pic == null || pic.length() < 10) {
-                        pic = "img/wind-icon-256.png";
-                    }
-                    String url = bean.getDownloadLinkMap().get("PQ");
-                    if (url == null && (url = bean.getDownloadLinkMap().get("LQ")) == null) {
-                        url = "";
-                    }
-                    String lyric = musicDispatcher.searchLyricDispatcher(songSrc, songId);
-                    SongBean detail = musicDispatcher.songDetailDispatcher(songSrc, songId);
-                    String title = LyricHelper.getSongName(songSrc, lyric);
-                    String singerName = LyricHelper.getSingerName(songSrc, lyric);
-                    if (detail != null) {
-                        title = detail.getSongName();
-                        List<String> singerNames = detail.getSingersName();
-                        if (singerNames.size() == 1) {
-                            singerName = singerNames.get(0);
-                        } else if (singerNames.size() > 1) {
-                            singerName = singerNames.get(0) + "&" + singerNames.get(1);
-                        }
-                        if (detail.getPicUrl() != null) {
-                            pic = detail.getPicUrl();
-                        }
-                    }
-                    PlayerBean playerBean = new PlayerBean(title, singerName, pic, url, lyric);
-                    playerBeanList.add(playerBean);
-                }
-
+        if (shareId == null) {
+            return new ResponseEntity<>(playerBeanList, HttpStatus.OK);
+        }
+        String[] pair = shareId.split("_");
+        if (pair.length != 2) {
+            return new ResponseEntity<>(playerBeanList, HttpStatus.OK);
+        }
+        String songSrc = pair[0];
+        String songId = pair[1];
+        musicDispatcher.setConfigMap(loadConfig());
+        SongBean bean = musicDispatcher.downloadDispatcher(songSrc, songId, "PQ");
+        if (bean == null) {
+            return new ResponseEntity<>(playerBeanList, HttpStatus.OK);
+        }
+        String pic = bean.getPicUrl();
+        if (pic == null || pic.length() < 10) {
+            pic = "img/wind-icon-256.png";
+        }
+        String url = bean.getDownloadLinkMap().get("PQ");
+        if (url == null && (url = bean.getDownloadLinkMap().get("LQ")) == null) {
+            url = "";
+        }
+        String lyric = musicDispatcher.searchLyricDispatcher(songSrc, songId);
+        SongBean detail = musicDispatcher.songDetailDispatcher(songSrc, songId);
+        String title = LyricHelper.getSongName(songSrc, lyric);
+        String singerName = LyricHelper.getSingerName(songSrc, lyric);
+        if (detail != null) {
+            title = detail.getSongName();
+            List<String> singerNames = detail.getSingersName();
+            if (singerNames.size() == 1) {
+                singerName = singerNames.get(0);
+            } else if (singerNames.size() > 1) {
+                singerName = singerNames.get(0) + "&" + singerNames.get(1);
+            }
+            if (detail.getPicUrl() != null) {
+                pic = detail.getPicUrl();
             }
         }
+        PlayerBean playerBean = new PlayerBean(title, singerName, pic, url, lyric);
+        playerBeanList.add(playerBean);
         return new ResponseEntity<>(playerBeanList, HttpStatus.OK);
     }
 
     @RequestMapping("/api/songdetail")
     public ResponseEntity<SongBean> getSongDetail(String src, String songid) {
-        MusicConfigManager.getInstance().setRedisService(redisService);
         SongBean bean = musicDispatcher.songDetailDispatcher(src, songid);
         return new ResponseEntity<>(bean, HttpStatus.OK);
     }
 
-    @RequestMapping("/api/tokenrefresh")
-    public ResponseEntity<CommonResp> tokenRefresh() {
-        MusicConfigManager.getInstance().setRedisService(redisService);
-        return new ResponseEntity<>(refreshToken(true), HttpStatus.OK);
+    @RequestMapping("/api/updatetoken")
+    public ResponseEntity<CommonResp> updateToken() {
+        return new ResponseEntity<>(refreshToken(), HttpStatus.OK);
     }
 
     @RequestMapping("/api/configupdate")
     public ResponseEntity<CommonResp> configUpdate(String params) {
-        MusicConfigManager.getInstance().setRedisService(redisService);
         CommonResp commonResp = new CommonResp();
         if (updateConfig(params)) {
             commonResp.code(0).msg("更新成功");
@@ -158,7 +152,6 @@ public class MusicController {
 
     @RequestMapping("/api/getconfig")
     public ResponseEntity<CommonResp> getConfig() {
-        MusicConfigManager.getInstance().setRedisService(redisService);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         return new ResponseEntity<>(new CommonResp().code(0).msg("拉取成功").obj(loadConfig()), headers, HttpStatus.OK);
@@ -197,7 +190,6 @@ public class MusicController {
         if (!redisService.isRedisActive()) {
             return configMap;
         }
-        refreshToken(false);
         for (String key : configItemList) {
             String val = redisService.get(key);
             configMap.put(key, val);
@@ -205,10 +197,10 @@ public class MusicController {
         return configMap;
     }
 
-    public CommonResp refreshToken(boolean force) {
-        MusicConfigManager.getInstance().refreshMusicToken(force);
+    public CommonResp refreshToken() {
+        MusicConfigManager.getInstance().refreshToken();
         CommonResp resp = new CommonResp();
-        return resp.code(0).msg("更新成功");
+        return resp.code(0).msg(MusicConfigManager.getInstance().refreshToken());
 
     }
 
