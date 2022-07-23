@@ -1,8 +1,8 @@
 package xyz.thewind.music.music.impl.qq.module;
 
-import xyz.thewind.music.music.impl.qq.bean.LoginRespBean;
 import xyz.thewind.music.music.impl.qq.bean.RequestTemplate;
 import xyz.thewind.music.music.impl.qq.bean.RequestTemplateBuilder;
+import xyz.thewind.music.music.impl.qq.bean.login.QQMusicLoginToken;
 import xyz.thewind.music.music.impl.qq.enc.QqEncrypt;
 import xyz.thewind.music.util.HttpRequestHelper;
 
@@ -74,16 +74,9 @@ public class RequestModule {
         return HttpRequestHelper.downloadWebSiteUsePost(apiServer[ran.nextInt(apiServer.length)] + "sign=" + sign, templateBuilder.toString(), headerMap);
     }
 
-    public static String login(String accessToken, String refreshToken, String openId, String musicId, String unionId, String musicKey) {
+    public static String login(QQMusicLoginToken token) {
         String requestBody = "{\"comm\":{\"tmeLoginType\":1,\"wid\":\"0\"},\"data\":{\"method\":\"Login\",\"module\":\"music.login.LoginServer\",\"param\":{\"access_token\":\"ACCESS_TOKEN\",\"musickey\":\"MUSIC_KEY\",\"expired_at\":1957831066,\"openid\":\"OPENID\",\"refresh_token\":\"REFRESH_TOKEN\",\"str_musicid\":\"MUSICID\",\"unionid\":\"UNIONID\"}}}";
-        requestBody.replace("ACCESS_TOKEN", accessToken).replace("MUSIC_KEY", musicKey).replace("OPENID", openId).replace("REFRESH_TOKEN", refreshToken).replace("MUSICID", musicId).replace("UNIONID", unionId);
-        return HttpRequestHelper.downloadWebSiteUsePost(apiServer[0], requestBody, null);
-        //"comm":{"_channelid":"19","_os_version":"6.2.9200-2","ct":"19","cv":"1791","guid":"3954C437586B509983A6805AD81121C3","patch":"118","psrf_access_token_expiresAt":0,"psrf_qqaccess_token":"","psrf_qqopenid":"","psrf_qqunionid":"","tmeAppID":"qqmusic","tmeLoginType":2,"uin":"0","wid":"0"}
-    }
-
-    public static String login(LoginRespBean.LoginTokenDetail detail) {
-        String requestBody = "{\"comm\":{\"tmeLoginType\":1,\"wid\":\"0\"},\"data\":{\"method\":\"Login\",\"module\":\"music.login.LoginServer\",\"param\":{\"access_token\":\"ACCESS_TOKEN\",\"musickey\":\"MUSIC_KEY\",\"expired_at\":1957831066,\"openid\":\"OPENID\",\"refresh_token\":\"REFRESH_TOKEN\",\"str_musicid\":\"MUSICID\",\"unionid\":\"UNIONID\"}}}";
-        requestBody = requestBody.replace("ACCESS_TOKEN", detail.getAccessToken()).replace("MUSIC_KEY", detail.getMusicKey()).replace("OPENID", detail.getOpenid()).replace("REFRESH_TOKEN", detail.getRefreshToken()).replace("MUSICID", detail.getMusicId()).replace("UNIONID", detail.getUnionid());
+        requestBody = requestBody.replace("ACCESS_TOKEN", token.accessToken).replace("MUSIC_KEY", token.musicKey).replace("OPENID", token.openid).replace("REFRESH_TOKEN", token.refreshToken).replace("MUSICID", token.musicId).replace("UNIONID", token.unionid);
         return HttpRequestHelper.downloadWebSiteUsePost(apiServer[0], requestBody, null);
     }
 

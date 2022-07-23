@@ -5,7 +5,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xyz.thewind.music.model.SongBean;
 import xyz.thewind.music.music.MusicHelper;
+import xyz.thewind.music.music.common.MusicConfigManager;
 import xyz.thewind.music.music.impl.qq.bean.*;
+import xyz.thewind.music.music.impl.qq.bean.login.QQMusicLoginToken;
 import xyz.thewind.music.util.Base64Converter;
 import xyz.thewind.music.util.GsonConverter;
 import xyz.thewind.music.util.HttpRequestHelper;
@@ -24,6 +26,8 @@ public class QqMusic implements MusicHelper {
     private static final HashMap<String, String> qualityMap;
     private static final Map<String, String> configMap = new HashMap<>();
 
+    private static final String SPLIT_MID = "<>";
+
     static {
         qualityMap = new HashMap<>();
         qualityMap.put(QUALITY_ZQ, "RS01songid.flac");
@@ -34,29 +38,30 @@ public class QqMusic implements MusicHelper {
     }
 
     private static String downloadLinkRequestParamsBuilder(List<SongBean> downloadInfoList) {
-        String qqUin = configMap.get("qqmusic_uin") == null ? "0" : configMap.get("qqmusic_uin");
-        String qqKey = configMap.get("qqmusic_key") == null ? "0" : configMap.get("qqmusic_key");
-        qqUin = "1152921504741490647";
-        qqKey = "W_X_54kDybk2sgZVTWnxeFqpF13G_hiuQNGqZ592OXDPEw2sMgz9Fu1lFeKKOV_FBf1EIlsvoW1hfvfe_r_JB";
+        QQMusicLoginToken token = MusicConfigManager.getInstance().getQQMusicLoginToken();
 
         DownloadRequestBean requestBean = new DownloadRequestBean();
-        requestBean.comm.authst = qqKey;
-        requestBean.comm.uin = qqUin;
+        if (token != null) {
+            requestBean.comm.authst = token.musicKey;
+            requestBean.comm.uin = token.musicId;
+            requestBean.queryvkey.param.setUin(token.musicId);
+        }
+
         List<String> filenames = new LinkedList<>();
         List<String> musicfiles = new LinkedList<>();
         List<String> songmid = new LinkedList<>();
         List<Integer> songtype = new LinkedList<>();
         for (SongBean info : downloadInfoList) {
-            filenames.add(qualityMap.get(info.getQuality()).replace("songid", info.getSongId().split("#")[1]));
-            musicfiles.add(qualityMap.get(info.getQuality()).replace("songid", info.getSongId().split("#")[0]));
-            songmid.add(info.getSongId());
+            filenames.add(qualityMap.get(info.getQuality()).replace("songid", info.getSongId().split(SPLIT_MID)[1]));
+            musicfiles.add(qualityMap.get(info.getQuality()).replace("songid", info.getSongId().split(SPLIT_MID)[0]));
+            songmid.add(info.getSongId().split(SPLIT_MID)[0]);
             songtype.add(1);
         }
         requestBean.queryvkey.param.setFilename(filenames);
         requestBean.queryvkey.param.setMusicfile(musicfiles);
         requestBean.queryvkey.param.setSongmid(songmid);
         requestBean.queryvkey.param.setSongtype(songtype);
-        requestBean.queryvkey.param.setUin(qqUin);
+
         return new Gson().toJson(requestBean);
     }
 
@@ -201,7 +206,7 @@ public class QqMusic implements MusicHelper {
                     }
                     String quality = songItem.file.getZqSize() > 0 ? QUALITY_ZQ : songItem.file.getSqSize() > 0 ? QUALITY_SQ : QUALITY_HQ;
                     SongBean songBean = new SongBean(SRC_QQ,
-                            songItem.mid + "#" + songItem.file.mediaMid,
+                            songItem.mid + SPLIT_MID + songItem.file.mediaMid,
                             songItem.name,
                             parseSingersId(songItem.singer),
                             parseSingers(songItem.singer),
@@ -238,7 +243,7 @@ public class QqMusic implements MusicHelper {
 
     @Override
     public String getLyric(String lyricId) {
-        String baseLink = "https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_new.fcg?g_tk=5381&format=json&songmid=" + lyricId;
+        String baseLink = "https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_new.fcg?g_tk=5381&format=json&songmid=" + lyricId.split(SPLIT_MID)[0];
         Map<String, String> headerMap = new HashMap<>();
         headerMap.put("Referer", "https://y.qq.com/portal/player.html");
         String encodeLyric = HttpRequestHelper.downloadWebSiteUseGet(baseLink, headerMap);
@@ -253,7 +258,7 @@ public class QqMusic implements MusicHelper {
 
     @Override
     public SongBean searchSongDetail(String songId) {
-        String data = "{\"songinfo\":{\"module\":\"music.pf_song_detail_svr\",\"method\":\"get_song_detail\",\"param\":{\"song_mid\":\"" + songId + "\"}}}";
+        String data = "{\"songinfo\":{\"module\":\"music.pf_song_detail_svr\",\"method\":\"get_song_detail\",\"param\":{\"song_mid\":\"" + songId.split(SPLIT_MID)[0] + "\"}}}";
         try {
             String encode = URLEncoder.encode(data, "UTF-8");
             String api = "https://u.y.qq.com/cgi-bin/musicu.fcg";

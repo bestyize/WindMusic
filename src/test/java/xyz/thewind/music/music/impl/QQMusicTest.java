@@ -2,21 +2,35 @@ package xyz.thewind.music.music.impl;
 
 import org.junit.Test;
 
+import xyz.thewind.music.music.impl.qq.bean.login.QQMusicLoginResp;
+import xyz.thewind.music.music.impl.qq.bean.login.QQMusicLoginToken;
 import xyz.thewind.music.music.impl.qq.module.RequestModule;
+import xyz.thewind.music.util.GsonConverter;
 
 public class QQMusicTest {
     @Test
     public void testEnc(){
         System.out.println(RequestModule.getHotSingerList());
-//        for (int i=0;i<1000;i++){
-//            System.out.println(i);
-//            System.out.println(RequestModule.getSongDetail("003tzjXT4g0LPK"));
-//            System.out.println(RequestModule.getHotSingerList());
-//        }
-
     }
     @Test
     public void testLogin(){
-        System.out.println(RequestModule.login("8AC6966428125969232860272A545155","B14F0FB407603738BC3AD6306DC2FAAB"));
+        String musicKey = "W_X_5NVTOP7m__XAq_Jzay3CAp188MQVhEJkTjVY-mGx37BYZ2qDh4FNFwzQFI1oIAqYAe4iKMg1LMzo";
+        String musicId = "1152921504741490647";
+        String accessToken= "";
+        String refreshToken = "59_qz4-IC7oLI7GSxkICpvF8wM3ZAVjMZXNCPMbJyc4RJDEvaTmPRVjYeo3DRsNY7jNmfPWexkKoO2KcHqupW0m5QbVMGehRvzI7YEvac6TDP0";
+        String openid = "opCFJw8b_qxl5vdjyZTI6u9Xiz7k";
+        String unionid = "oqFLxslbFUZPalHgFv99RS-n6DPQ";
+        QQMusicLoginToken token = new QQMusicLoginToken.Builder()
+                .musicKey(musicKey)
+                .musicId(musicId)
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .openid(openid)
+                .unionid(unionid)
+                .build();
+        String resp = RequestModule.login(token);
+        QQMusicLoginResp loginResp = GsonConverter.fromJson(resp, QQMusicLoginResp.class);
+        System.out.println(GsonConverter.toJson(loginResp.data.token));
+
     }
 }

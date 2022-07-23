@@ -10,10 +10,14 @@ import xyz.thewind.music.model.CommonResp;
 import xyz.thewind.music.model.PlayerBean;
 import xyz.thewind.music.model.SongBean;
 import xyz.thewind.music.music.MusicDispatcher;
-import xyz.thewind.music.music.impl.qq.bean.LoginRespBean;
-import xyz.thewind.music.music.impl.qq.module.RequestModule;
+import xyz.thewind.music.music.common.MusicConfig;
+import xyz.thewind.music.music.common.MusicConfigManager;
+
 import xyz.thewind.music.service.RedisService;
-import xyz.thewind.music.util.*;
+import xyz.thewind.music.util.Base64Converter;
+import xyz.thewind.music.util.GsonConverter;
+import xyz.thewind.music.util.LyricHelper;
+import xyz.thewind.music.util.NumberHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,218 +27,188 @@ import java.util.Map;
 @RestController
 public class MusicController {
 
+    private static final MusicDispatcher musicDispatcher = new MusicDispatcher();
+    public static List<String> configItemList = new ArrayList<>();
     @Autowired
     private RedisService redisService;
 
-    private static final MusicDispatcher musicDispatcher=new MusicDispatcher();
-
     @RequestMapping("/api/download")
-    public ResponseEntity<String> download(String songid,String quality,String src,String batch){
+    public ResponseEntity<String> download(String songid, String quality, String src, String batch) {
+        MusicConfigManager.getInstance().setRedisService(redisService);
         String response;
-        HttpHeaders headers=new HttpHeaders();
-        headers.add("Content-Type","application/json");
-        String songSrc=loadConfig().get("songSrc");
-        if(songSrc!=null&&songSrc.length()>0){
-            src=songSrc;
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+        String songSrc = loadConfig().get("songSrc");
+        if (songSrc != null && songSrc.length() > 0) {
+            src = songSrc;
         }
         musicDispatcher.setConfigMap(loadConfig());
-        if(batch==null){
-            SongBean songBean=musicDispatcher.downloadDispatcher(src,songid,quality);
-            response=GsonConverter.toJson(songBean);
-        }else {
-            List<SongBean> songBeanList=musicDispatcher.downloadDispatcher(src,batch);
-            response=GsonConverter.toJson(songBeanList);
+        if (batch == null) {
+            SongBean songBean = musicDispatcher.downloadDispatcher(src, songid, quality);
+            response = GsonConverter.toJson(songBean);
+        } else {
+            List<SongBean> songBeanList = musicDispatcher.downloadDispatcher(src, batch);
+            response = GsonConverter.toJson(songBeanList);
         }
-        return new ResponseEntity<>(response,headers, HttpStatus.OK);
+        return new ResponseEntity<>(response, headers, HttpStatus.OK);
     }
 
     @RequestMapping("/api/search")
-    public ResponseEntity<List<SongBean>> search(String keyword,String num,String src){
-        String songSrc=loadConfig().get("songSrc");
-        if(songSrc!=null&&songSrc.length()>0){
-            src=songSrc;
+    public ResponseEntity<List<SongBean>> search(String keyword, String num, String src) {
+        MusicConfigManager.getInstance().setRedisService(redisService);
+        String songSrc = loadConfig().get("songSrc");
+        if (songSrc != null && songSrc.length() > 0) {
+            src = songSrc;
         }
         musicDispatcher.setConfigMap(loadConfig());
-        return new ResponseEntity<>(musicDispatcher.searchDispatcher(src,keyword, NumberHelper.parseNumber(num,10)),HttpStatus.OK);
+        return new ResponseEntity<>(musicDispatcher.searchDispatcher(src, keyword, NumberHelper.parseNumber(num, 10)), HttpStatus.OK);
     }
 
     @RequestMapping("/api/searchdown")
-    public ResponseEntity<List<SongBean>> searchDown(String keyword,String num,String src){
-        String songSrc=loadConfig().get("songSrc");
-        if(songSrc!=null&&songSrc.length()>0){
-            src=songSrc;
+    public ResponseEntity<List<SongBean>> searchDown(String keyword, String num, String src) {
+        MusicConfigManager.getInstance().setRedisService(redisService);
+        String songSrc = loadConfig().get("songSrc");
+        if (songSrc != null && songSrc.length() > 0) {
+            src = songSrc;
         }
         musicDispatcher.setConfigMap(loadConfig());
-        List<SongBean> songBeanList=musicDispatcher.searchDownDispatcher(src,keyword,NumberHelper.parseNumber(num,10));
-        return new ResponseEntity<>(songBeanList,HttpStatus.OK);
+        List<SongBean> songBeanList = musicDispatcher.searchDownDispatcher(src, keyword, NumberHelper.parseNumber(num, 10));
+        return new ResponseEntity<>(songBeanList, HttpStatus.OK);
     }
 
     @RequestMapping("/api/getlyric")
-    public ResponseEntity<String> searchLyric(String songid,String src){
-        String songSrc=loadConfig().get("songSrc");
-        if(songSrc!=null&&songSrc.length()>0){
-            src=songSrc;
+    public ResponseEntity<String> searchLyric(String songid, String src) {
+        MusicConfigManager.getInstance().setRedisService(redisService);
+        String songSrc = loadConfig().get("songSrc");
+        if (songSrc != null && songSrc.length() > 0) {
+            src = songSrc;
         }
-        return new ResponseEntity<>(musicDispatcher.searchLyricDispatcher(src,songid),HttpStatus.OK);
+        return new ResponseEntity<>(musicDispatcher.searchLyricDispatcher(src, songid), HttpStatus.OK);
     }
 
     @RequestMapping("/api/player")
-    public ResponseEntity<List<PlayerBean>> player(String shareId){
-        List<PlayerBean> playerBeanList=new ArrayList<>();
-        if(shareId!=null){
-            String[] pair =shareId.split("_");
-            if(pair.length==2){
-                String songSrc=pair[0];
-                String songId=pair[1];
+    public ResponseEntity<List<PlayerBean>> player(String shareId) {
+        MusicConfigManager.getInstance().setRedisService(redisService);
+        List<PlayerBean> playerBeanList = new ArrayList<>();
+        if (shareId != null) {
+            String[] pair = shareId.split("_");
+            if (pair.length == 2) {
+                String songSrc = pair[0];
+                String songId = pair[1];
                 musicDispatcher.setConfigMap(loadConfig());
-                SongBean bean=musicDispatcher.downloadDispatcher(songSrc,songId,"PQ");
-                if(bean!=null){
-                    String pic=bean.getPicUrl();
-                    if(pic==null||pic.length()<10){
-                        pic="img/wind-icon-256.png";
+                SongBean bean = musicDispatcher.downloadDispatcher(songSrc, songId, "PQ");
+                if (bean != null) {
+                    String pic = bean.getPicUrl();
+                    if (pic == null || pic.length() < 10) {
+                        pic = "img/wind-icon-256.png";
                     }
-                    String url=bean.getDownloadLinkMap().get("PQ");
-                    if(url==null&&(url=bean.getDownloadLinkMap().get("LQ"))==null){
-                        url="";
+                    String url = bean.getDownloadLinkMap().get("PQ");
+                    if (url == null && (url = bean.getDownloadLinkMap().get("LQ")) == null) {
+                        url = "";
                     }
-                    String lyric=musicDispatcher.searchLyricDispatcher(songSrc,songId);
-                    SongBean detail=musicDispatcher.songDetailDispatcher(songSrc,songId);
-                    String title=LyricHelper.getSongName(songSrc,lyric);
-                    String singerName=LyricHelper.getSingerName(songSrc,lyric);
-                    if(detail!=null){
-                        title=detail.getSongName();
-                        List<String> singerNames=detail.getSingersName();
-                        if(singerNames.size()==1){
-                            singerName=singerNames.get(0);
-                        }else if(singerNames.size()>1){
-                            singerName=singerNames.get(0)+"&"+singerNames.get(1);
+                    String lyric = musicDispatcher.searchLyricDispatcher(songSrc, songId);
+                    SongBean detail = musicDispatcher.songDetailDispatcher(songSrc, songId);
+                    String title = LyricHelper.getSongName(songSrc, lyric);
+                    String singerName = LyricHelper.getSingerName(songSrc, lyric);
+                    if (detail != null) {
+                        title = detail.getSongName();
+                        List<String> singerNames = detail.getSingersName();
+                        if (singerNames.size() == 1) {
+                            singerName = singerNames.get(0);
+                        } else if (singerNames.size() > 1) {
+                            singerName = singerNames.get(0) + "&" + singerNames.get(1);
                         }
-                        if(detail.getPicUrl()!=null){
-                            pic=detail.getPicUrl();
+                        if (detail.getPicUrl() != null) {
+                            pic = detail.getPicUrl();
                         }
                     }
-                    PlayerBean playerBean=new PlayerBean(title ,singerName ,pic,url,lyric);
+                    PlayerBean playerBean = new PlayerBean(title, singerName, pic, url, lyric);
                     playerBeanList.add(playerBean);
                 }
 
             }
         }
-        return new ResponseEntity<>(playerBeanList,HttpStatus.OK);
+        return new ResponseEntity<>(playerBeanList, HttpStatus.OK);
     }
 
     @RequestMapping("/api/songdetail")
-    public ResponseEntity<SongBean> getSongDetail(String src,String songid){
-        SongBean bean=musicDispatcher.songDetailDispatcher(src,songid);
-        return new ResponseEntity<>(bean,HttpStatus.OK);
+    public ResponseEntity<SongBean> getSongDetail(String src, String songid) {
+        MusicConfigManager.getInstance().setRedisService(redisService);
+        SongBean bean = musicDispatcher.songDetailDispatcher(src, songid);
+        return new ResponseEntity<>(bean, HttpStatus.OK);
     }
 
     @RequestMapping("/api/tokenrefresh")
-    public ResponseEntity<CommonResp> tokenRefresh(String force){
-        return new ResponseEntity<>(refreshToken(force),HttpStatus.OK);
+    public ResponseEntity<CommonResp> tokenRefresh() {
+        MusicConfigManager.getInstance().setRedisService(redisService);
+        return new ResponseEntity<>(refreshToken(true), HttpStatus.OK);
     }
 
     @RequestMapping("/api/configupdate")
-    public ResponseEntity<CommonResp> configUpdate(String params){
-        CommonResp commonResp=new CommonResp();
-        if(updateConfig(params)){
+    public ResponseEntity<CommonResp> configUpdate(String params) {
+        MusicConfigManager.getInstance().setRedisService(redisService);
+        CommonResp commonResp = new CommonResp();
+        if (updateConfig(params)) {
             commonResp.code(0).msg("更新成功");
-        }else {
+        } else {
             commonResp.msg("更新失败");
         }
-        return new ResponseEntity<>(commonResp,HttpStatus.OK);
+        return new ResponseEntity<>(commonResp, HttpStatus.OK);
     }
 
     @RequestMapping("/api/getconfig")
-    public ResponseEntity<CommonResp> getConfig(){
-        HttpHeaders headers=new HttpHeaders();
-        headers.add("Content-Type","application/json");
-        return new ResponseEntity<>(new CommonResp().code(0).msg("拉取成功").obj(loadConfig()),headers,HttpStatus.OK);
+    public ResponseEntity<CommonResp> getConfig() {
+        MusicConfigManager.getInstance().setRedisService(redisService);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+        return new ResponseEntity<>(new CommonResp().code(0).msg("拉取成功").obj(loadConfig()), headers, HttpStatus.OK);
     }
 
     //qqmusic_uin=3011429848;qqmusic_key=EDKSKDJFAO10919WFKJKQF;kg_uid=12345;kg_token=1234;kg_pid_secret=123456;wy_music_u=ba0a04e302da6a12399d1817fe4eae9dd7c6b7f4865bf4fd9b986b5c8c07893333a649814e309366
-    public boolean updateConfig(String params){
-        if(params==null||params.length()==0||!redisService.isRedisActive()){
+    public boolean updateConfig(String params) {
+        if (params == null || params.length() == 0 || !redisService.isRedisActive()) {
             return false;
         }
         try {
-            String clearContent= Base64Converter.decode(params);
-            String[] cookies=clearContent.split(";");
-            for (String c:cookies){
-                String[] splice=c.split("=");
-                if(splice.length==2){
-                    redisService.set(splice[0],splice[1]);
+            String clearContent = Base64Converter.decode(params);
+            String[] cookies = clearContent.split(";");
+            for (String c : cookies) {
+                String[] splice = c.split("=");
+                if (splice.length == 2) {
+                    redisService.set(splice[0], splice[1]);
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
         return true;
     }
 
-    public static List<String> configItemList=new ArrayList<>();
-
-    public Map<String,String> loadConfig(){
-        if(configItemList.size()==0){
-            configItemList.add("qqmusic_uin");
-            configItemList.add("qqmusic_key");
-            configItemList.add("kg_uid");
-            configItemList.add("kg_token");
-            configItemList.add("wy_music_u");
-            configItemList.add("songSrc");
-            configItemList.add("qqmusic_musickey_create_time");
-            configItemList.add("qqmusic_refresh_token");
-            configItemList.add("qqmusic_access_token");
+    public Map<String, String> loadConfig() {
+        if (configItemList.size() == 0) {
+            configItemList.add(MusicConfig.REDIS_KGMUSIC_UID);
+            configItemList.add(MusicConfig.REDIS_KGMUSIC_TOKEN);
+            configItemList.add(MusicConfig.REDIS_WYMUSIC_TOKEN_KEY);
+            configItemList.add(MusicConfig.REDIS_MUSIC_SRC);
+            configItemList.add(MusicConfig.REDIS_QQMUSIC_WX_LOGIN_INFO);
         }
-        Map<String,String> configMap=new HashMap<>();
-        if(!redisService.isRedisActive()){
+        Map<String, String> configMap = new HashMap<>();
+        if (!redisService.isRedisActive()) {
             return configMap;
         }
-        refreshToken(null);
-        for (String key:configItemList){
-            String val=redisService.get(key);
-            configMap.put(key,val);
+        refreshToken(false);
+        for (String key : configItemList) {
+            String val = redisService.get(key);
+            configMap.put(key, val);
         }
         return configMap;
     }
 
-    public CommonResp refreshToken(String force){
-        CommonResp resp=new CommonResp();
-        if(!redisService.isRedisActive()){
-            resp.code(-1).msg("更新失败！Redis未开启");
-        }else {
-            String lastCreateTime=redisService.get("qqmusic_musickey_create_time");
-            String qqmusicRefreshToken=redisService.get("qqmusic_refresh_token");
-            String qqmusicAccessToken=redisService.get("qqmusic_access_token");
-            if(lastCreateTime==null){
-                lastCreateTime="0";
-            }
-            if(qqmusicRefreshToken==null||qqmusicAccessToken==null){
-                resp.code(-1).msg("更新失败！Redis中配置参数不正确");
-            }else {
-                try {
-                    long time=Long.parseLong(lastCreateTime);
-                    if((System.currentTimeMillis()/1000-time<3600*12)&&force==null){
-                        resp.code(-1).msg("距离上次更新较短，本次不执行更新");
-                    }else {
-                        String response=RequestModule.login("qqmusicAccessToken","qqmusicRefreshToken", "", "", "", "");
-                        LoginRespBean respBean=GsonConverter.fromJson(response,LoginRespBean.class);
-                        //更新Redis存的登陆数据数据
-                        redisService.set("qqmusic_musickey_create_time",respBean.getData().getData().getMusicCreateTime()+"");
-                        redisService.set("qqmusic_refresh_token",respBean.getData().getData().getRefreshToken());
-                        redisService.set("qqmusic_access_token",respBean.getData().getData().getAccessToken());
-                        //更新缓存的Cookie
-                        redisService.set("qqmusic_uin",respBean.getData().getData().getMusicId()+"");
-                        redisService.set("qqmusic_key",respBean.getData().getData().getMusicKey());
-                        resp.code(0).msg("更新成功").obj(respBean);
-                    }
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-            }
-
-        }
-        return resp;
+    public CommonResp refreshToken(boolean force) {
+        MusicConfigManager.getInstance().refreshMusicToken(force);
+        CommonResp resp = new CommonResp();
+        return resp.code(0).msg("更新成功");
 
     }
 
