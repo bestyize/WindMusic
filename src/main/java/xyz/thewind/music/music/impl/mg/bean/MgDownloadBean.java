@@ -48,6 +48,9 @@ public class MgDownloadBean {
         @SerializedName("newRateFormats")
         List<MgMusicDetail.RateFormats> rateFormats;
 
+        @SerializedName("z3dCode")
+        MgMusicDetail.RateFormats eqFormat;
+
         public String getSongName() {
             return songName;
         }
@@ -110,6 +113,14 @@ public class MgDownloadBean {
 
         public void setRateFormats(List<MgMusicDetail.RateFormats> rateFormats) {
             this.rateFormats = rateFormats;
+        }
+
+        public RateFormats getEqFormat() {
+            return eqFormat;
+        }
+
+        public void setEqFormat(RateFormats eqFormat) {
+            this.eqFormat = eqFormat;
         }
 
         public class RateFormats {

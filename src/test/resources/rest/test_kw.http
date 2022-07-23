@@ -1,0 +1,4 @@
+GET http://www.kuwo.cn/api/www/search/searchMusicBykeyWord?key=%E5%91%A8%E6%9D%B0%E4%BC%A6&pn=1&rn=1&httpsStatus=1&reqId=57459b81-0aa3-11ed-9902-319a34f40062 HTTP/1.1
+Cookie: kw_token=FR05N6RD7R
+Referer: http://www.kuwo.cn/search/list?key=%E5%91%A8%E6%9D%B0%E4%BC%A6
+csrf: FR05N6RD7R

@@ -1,7 +1,5 @@
 package xyz.thewind.music.music.impl.mg.bean;
 
-import xyz.thewind.music.music.impl.mg.MgMusic;
-
 public class LyricResponseBean {
     Data data = new Data();
 

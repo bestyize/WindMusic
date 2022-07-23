@@ -27,7 +27,7 @@ public class MusicSourceTest {
     @Test
     public void test(){
 
-        List<SongBean> songBeanList=dispatcher.searchDownDispatcher("MG","周杰伦",20);
+        List<SongBean> songBeanList=dispatcher.searchDownDispatcher("MG","最伟大的作品",5);
         System.out.println(GsonConverter.toJson(songBeanList));
     }
     @Test

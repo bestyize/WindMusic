@@ -19,13 +19,13 @@
 <div id="div_header" class="navbar fixed-top thewind_nav_top m-auto justify-content-center" style="min-height:60px">
     <div id="div_brand" class="wind_hand_style" style="font-weight: bold" onclick="backToDomain()">TheWind</div>
     <div style="width: 2em"></div>
-    <div class="input-group input-group-lg col-lg-3 col-10" >
+    <div class="input-group input-group-lg col-lg-3 col-10">
         <input id="search_input" type="text" class="form-control">
     </div>
     <span id="span_search_music" class="btn-lg btn-primary" onclick="refreshPage()">搜索</span>
-<!--    <input id="search_input" type="text" placeholder="输入音乐名" class="border-0" style="background-color: #F0F0F0">-->
-<!--    <div style="width: 1em"></div>-->
-<!--    <div id="div_search_music" class="wind_hand_style" onclick="refreshPage()">搜索</div>-->
+    <!--    <input id="search_input" type="text" placeholder="输入音乐名" class="border-0" style="background-color: #F0F0F0">-->
+    <!--    <div style="width: 1em"></div>-->
+    <!--    <div id="div_search_music" class="wind_hand_style" onclick="refreshPage()">搜索</div>-->
     <div style="width: 1em"></div>
     <div id="div_user_login" class="wind_hand_style" data-toggle="modal" data-target="#loginModal">登录</div>
     <div style="width: 1em"></div>
@@ -89,7 +89,8 @@
                     </div>
                 </div>
                 <div class="input-group mb-3">
-                    <input id="input_reg_dup_password" type="password" class="form-control" placeholder="6位或以上的字符，以字母开头">
+                    <input id="input_reg_dup_password" type="password" class="form-control"
+                           placeholder="6位或以上的字符，以字母开头">
                     <div class="input-group-append">
                         <span class="input-group-text">再输一遍</span>
                     </div>
@@ -116,7 +117,7 @@
                 <h4 class="modal-title" id="myWx">关注微信公众号</h4>
             </div>
             <div class="modal-body">
-               <img src="img/wechatpublic.jpg" class="col-12" alt="">
+                <img src="img/wechatpublic.jpg" class="col-12" alt="">
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" data-dismiss="modal">确定</button>
@@ -132,41 +133,44 @@
 
 <div id="div_music_list"></div>
 
-<div id="div_bottom_player" class="navbar fixed-bottom navbar-fixed-bottom justify-content-center thewind_nav_bottom "  style="height: 80px;">
-    <img id="img_player_icon" src="https://p1.music.126.net/diGAyEmpymX8G7JcnElncQ==/109951163699673355.jpg" style="width: 50px;height: 50px">
+<div id="div_bottom_player" class="navbar fixed-bottom navbar-fixed-bottom justify-content-center thewind_nav_bottom "
+     style="height: 80px;">
+    <img id="img_player_icon" src="https://p1.music.126.net/diGAyEmpymX8G7JcnElncQ==/109951163699673355.jpg"
+         style="width: 50px;height: 50px">
     <span id="span_player_info">起风了 - 买辣椒也用券</span>
     <span style="width: 1em"></span>
-    <audio id="audio_player" src="https://music.163.com/song/media/outer/url?id=1330348068.mp3" controls="controls"></audio>
+    <audio id="audio_player" src="https://music.163.com/song/media/outer/url?id=1330348068.mp3"
+           controls="controls"></audio>
 </div>
 
 <script>
 
-    let div_header=$('#div_header');
-    let div_brand=$('#div_brand');
-    let span_search_music=$('#span_search_music');
-    let div_top_sep=$('#div_top_sep');
-    let div_music_list=$('#div_music_list');
-    let search_input=$('#search_input');
-    let div_music_search_area=$('#div_music_search_area');
-    let div_user_login=$('#div_user_login');
-    let div_user_reg=$('#div_user_reg');
-    let img_user_avatar=$('#img_user_avatar');
-    let div_bottom_player=$('#div_bottom_player');
-    let img_player_icon=$('#img_player_icon');
-    let span_player_info=$('#span_player_info');
-    let audio_player=$('#audio_player');
+    let div_header = $('#div_header');
+    let div_brand = $('#div_brand');
+    let span_search_music = $('#span_search_music');
+    let div_top_sep = $('#div_top_sep');
+    let div_music_list = $('#div_music_list');
+    let search_input = $('#search_input');
+    let div_music_search_area = $('#div_music_search_area');
+    let div_user_login = $('#div_user_login');
+    let div_user_reg = $('#div_user_reg');
+    let img_user_avatar = $('#img_user_avatar');
+    let div_bottom_player = $('#div_bottom_player');
+    let img_player_icon = $('#img_player_icon');
+    let span_player_info = $('#span_player_info');
+    let audio_player = $('#audio_player');
 
-    let input_userid=$('#input_userid');
-    let input_password=$('#input_password');
+    let input_userid = $('#input_userid');
+    let input_password = $('#input_password');
 
-    let input_reg_password=$('#input_reg_password');
-    let input_reg_userid=$('#input_reg_userid');
+    let input_reg_password = $('#input_reg_password');
+    let input_reg_userid = $('#input_reg_userid');
 
-    let input_reg_dup_password=$('#input_reg_dup_password');
-    let input_reg_email=$('#input_reg_email');
-    let input_reg_username=$('#input_reg_username');
+    let input_reg_dup_password = $('#input_reg_dup_password');
+    let input_reg_email = $('#input_reg_email');
+    let input_reg_username = $('#input_reg_username');
 
-    let div_user_wx=$('#div_user_wx');
+    let div_user_wx = $('#div_user_wx');
 
 
 </script>
@@ -174,63 +178,68 @@
 <script>
 
     //绑定回车事件
-    search_input.on('keypress',function (e) {
-        if(e.keyCode===13){
+    search_input.on('keypress', function (e) {
+        if (e.keyCode === 13) {
             refreshPage();
         }
     });
 
-    function downloadMusic(songId,songSrc,quality) {
-        let formData=new FormData();
-        formData.append('songid',songId);
-        formData.append('src',songSrc);
-        formData.append('quality',quality);
+    function downloadMusic(songId, songSrc, quality) {
+        let formData = new FormData();
+        formData.append('songid', songId);
+        formData.append('src', songSrc);
+        formData.append('quality', quality);
         $.ajax({
-            url:'/api/download',
+            url: '/api/download',
             type: 'POST',
             cache: false,
             data: formData,
-            async:true,
+            async: true,
             processData: false,
             contentType: false,
-            success:function (params) {
-                parseDownloadInfo(params,quality);
-            }
-        });
-    }
-    function playerMusic(songId,songSrc,quality,songName,albumName,avatar) {
-        let formData=new FormData();
-        formData.append('songid',songId);
-        formData.append('src',songSrc);
-        formData.append('quality',quality);
-        $.ajax({
-            url:'/api/download',
-            type: 'POST',
-            cache: false,
-            data: formData,
-            async:true,
-            processData: false,
-            contentType: false,
-            success:function (params) {
-                parsePlayerInfo(params,quality,songName,albumName,avatar);
+            success: function (params) {
+                parseDownloadInfo(params, quality);
             }
         });
     }
 
-    function parsePlayerInfo(params,quality,songName,albumName,avatar) {
-        let downloadLink=params.downloadLinkMap[quality];
-        if(downloadLink!=null){
-            img_player_icon.attr('src',avatar);
-            span_player_info.html(songName+"&nbsp;&nbsp;&nbsp;&nbsp;"+albumName);
-            audio_player.attr('src',downloadLink);
+    function playerMusic(songId, songSrc, quality, songName, albumName, avatar) {
+        let formData = new FormData();
+        formData.append('songid', songId);
+        formData.append('src', songSrc);
+        formData.append('quality', quality);
+        $.ajax({
+            url: '/api/download',
+            type: 'POST',
+            cache: false,
+            data: formData,
+            async: true,
+            processData: false,
+            contentType: false,
+            success: function (params) {
+                parsePlayerInfo(params, quality, songName, albumName, avatar);
+            }
+        });
+    }
+
+    function parsePlayerInfo(params, quality, songName, albumName, avatar) {
+        let downloadLink = params.downloadLinkMap[quality];
+        if (downloadLink != null) {
+            img_player_icon.attr('src', avatar);
+            span_player_info.html(songName + "&nbsp;&nbsp;&nbsp;&nbsp;" + albumName);
+            audio_player.attr('src', downloadLink);
         }
     }
-    function playMusic(songId,songSrc,songName,albumName,avatar) {
-        playerMusic(songId,songSrc,'PQ',songName,albumName,avatar);
+
+    function playMusic(songId, songSrc, songName, albumName, avatar) {
+        playerMusic(songId, songSrc, 'PQ', songName, albumName, avatar);
     }
 
     function hiddenDownloadBtn(currQuality, maxQuality) {
-        if (maxQuality === 'SQ' && currQuality === 'ZQ') {
+        if ((maxQuality === 'HQ' || maxQuality === 'SQ' || maxQuality === 'ZQ') && currQuality === 'EQ') {
+            return 'hidden'
+        }
+        if ((maxQuality === 'HQ' || maxQuality === 'SQ') && currQuality === 'ZQ') {
             return 'hidden'
         }
         if (maxQuality === 'HQ' && currQuality === 'SQ') {
@@ -239,103 +248,85 @@
         return ''
     }
 
-
-
-    function hiddenDownloadBtn1(currQuality,maxQuality) {
-
-        if(maxQuality==='HQ'&&currQuality==='SQ'){
-            return 'hidden';
-        }else if(maxQuality==='PQ'&&(currQuality==='SQ'||currQuality==='HQ')){
-            return 'hidden';
-        }
-        return '';
-    }
-
-    function hiddenZqDownloadBtn(currQuality,maxQuality){
-        if(currQuality!==maxQuality){
-            return 'hidden';
-        }
-        return '';
-    }
-
-    function parseDownloadInfo(params,quality) {
-        let downloadLink=params.downloadLinkMap[quality];
-        if(downloadLink!=null){
-            location.href=downloadLink;
+    function parseDownloadInfo(params, quality) {
+        let downloadLink = params.downloadLinkMap[quality];
+        if (downloadLink != null) {
+            location.href = downloadLink;
         }
     }
 
-    function refreshPage(){
-        let keyword=encodeURI(search_input.val());
-        location.href="?keyword="+keyword;
+    function refreshPage() {
+        let keyword = encodeURI(search_input.val());
+        location.href = "?keyword=" + keyword;
     }
 
-    function goToPlayer(shareId){
-        location.href="player?shareId="+shareId;
+    function goToPlayer(shareId) {
+        location.href = "player?shareId=" + shareId;
     }
 
     function searchMusic() {
-        let keyword=parseRealKey("keyword");
-        if(keyword==null){
+        let keyword = parseRealKey("keyword");
+        if (keyword == null) {
             return;
         }
         search_input.val(keyword);
-        let src='KW';
-        let num='20';
-        let formData=new FormData();
-        formData.append('src',src);
-        formData.append('keyword',keyword);
-        formData.append('num',num);
+        let src = 'KW';
+        let num = '20';
+        let formData = new FormData();
+        formData.append('src', src);
+        formData.append('keyword', keyword);
+        formData.append('num', num);
         $.ajax({
-            url:'/api/search',
+            url: '/api/search',
             type: 'POST',
             cache: false,
             data: formData,
-            async:true,
+            async: true,
             processData: false,
             contentType: false,
-            success:function (params) {
+            success: function (params) {
                 parseSearchInfo(params);
             }
         });
     }
 
-    function parseSearchInfo(params){
+    function parseSearchInfo(params) {
         //div_music_search_area.html('');
-        for (let i=0;i<params.length;i++){
-            let musicInfo=params[i];
-            let songSrc=musicInfo.songSrc;
-            let songId=musicInfo.songId;
-            let songName=musicInfo.songName;
-            let singersId=musicInfo.singersId;
-            let singersName=musicInfo.singersName;
-            let singerName=singersName[0];
-            let albumId=musicInfo.albumId;
-            let albumName=(musicInfo.albumName!=null&&musicInfo.albumName.length>1)?'《'+musicInfo.albumName+'》':'';
-            let picUrl=musicInfo.picUrl;
-            let lrcUrl=musicInfo.lrcUrl;
-            let mvUrl=musicInfo.mvUrl;
-            let quality=musicInfo.quality;
-            let shareId=songSrc+"_"+songId;
+        for (let i = 0; i < params.length; i++) {
+            let musicInfo = params[i];
+            let songSrc = musicInfo.songSrc;
+            let songId = musicInfo.songId;
+            let songName = musicInfo.songName;
+            let singersId = musicInfo.singersId;
+            let singersName = musicInfo.singersName;
+            let singerName = singersName[0];
+            let albumId = musicInfo.albumId;
+            let albumName = (musicInfo.albumName != null && musicInfo.albumName.length > 1) ? '《' + musicInfo.albumName + '》' : '';
+            let picUrl = musicInfo.picUrl;
+            let lrcUrl = musicInfo.lrcUrl;
+            let mvUrl = musicInfo.mvUrl;
+            let quality = musicInfo.quality;
+            let shareId = songSrc + "_" + songId;
             let mediaMid = musicInfo.med
 
-            if(picUrl==null||picUrl.toString().length===0){
-                picUrl="img/wind-icon-256.png";
+            if (picUrl == null || picUrl.toString().length === 0) {
+                picUrl = "img/wind-icon-256.png";
             }
 
-            let div_music_item_html='    <div class="navbar thewind_nav_top col-11 col-lg-6 m-auto" style="min-height:'+getFileItemHeight()+'px">\n' +
-                '        <img class="file_icon_style float-left wind_hand_style" src=\"'+picUrl+'\" alt="" style="width: '+getIconSize()+'px;height: '+getIconSize()+'px" onclick="goToPlayer(\''+shareId+'\')">\n' +
-                '        <div class="wind_hand_style" onclick="playMusic(\''+songId+'\',\''+songSrc+'\',\''+songName+'\',\''+albumName+'\',\''+picUrl+'\')">\n'+
-                '        <span style="font-size: '+getDescTextSize()+'px;margin-right: 1em;font-weight: bold" >'+songName+'</span>\n' +
-                '        <span style="font-size: '+getDescTextSize()+'px">'+albumName+'</span>\n' +
-                '        </div>\n'+
+            let div_music_item_html = '    <div class="navbar thewind_nav_top col-11 col-lg-6 m-auto" style="min-height:' + getFileItemHeight() + 'px">\n' +
+                '        <img class="file_icon_style float-left wind_hand_style" src=\"' + picUrl + '\" alt="" style="width: ' + getIconSize() + 'px;height: ' + getIconSize() + 'px" onclick="goToPlayer(\'' + shareId + '\')">\n' +
+                '        <div class="wind_hand_style" onclick="playMusic(\'' + songId + '\',\'' + songSrc + '\',\'' + songName + '\',\'' + albumName + '\',\'' + picUrl + '\')">\n' +
+                '        <span style="font-size: ' + getDescTextSize() + 'px;margin-right: 1em;font-weight: bold" >' + songName + '</span>\n' +
+                '        <span style="font-size: ' + getDescTextSize() + 'px">' + albumName + '</span>\n' +
+                '        </div>\n' +
                 '        <div >\n' +
-                '            <span style="font-size: '+getDescTextSize()+'px">'+singerName+'</span>\n' +
-                '            <span style="font-size: '+getTextSize()+'px" class="wind_hand_style m-1 text-warning font-weight-bold" onclick="downloadMusic(\''+songId+'\',\''+songSrc+'\',\'ZQ\')" '+hiddenDownloadBtn("ZQ",quality)+'>ZQ</span>\n' +
-                '            <span style="font-size: '+getTextSize()+'px" class="wind_hand_style m-1 text-danger font-weight-bold" onclick="downloadMusic(\''+songId+'\',\''+songSrc+'\',\'SQ\')" '+hiddenDownloadBtn("SQ",quality)+'>SQ</span>\n' +
-                '            <span style="font-size: '+getTextSize()+'px" class="wind_hand_style m-1 text-info font-weight-bold" onclick="downloadMusic(\''+songId+'\',\''+songSrc+'\',\'HQ\')">HQ</span>\n' +
-                '            <span style="font-size: '+getTextSize()+'px" class="wind_hand_style m-1 text-primary font-weight-bold" onclick="downloadMusic(\''+songId+'\',\''+songSrc+'\',\'PQ\')">PQ</span>\n' +
-                '            <span style="font-size: '+getTextSize()+'px" class="wind_hand_style m-1 text-success font-weight-bold" onclick="downloadMusic(\''+songId+'\',\''+songSrc+'\',\'LQ\')">LQ</span>\n' +
+                '            <span style="font-size: ' + getDescTextSize() + 'px">' + singerName + '</span>\n' +
+                '            <span style="font-size: ' + getTextSize() + 'px" class="wind_hand_style m-1 text-success font-weight-bold" onclick="downloadMusic(\'' + songId + '\',\'' + songSrc + '\',\'EQ\')" ' + hiddenDownloadBtn("EQ", quality) + '>EQ</span>\n' +
+                '            <span style="font-size: ' + getTextSize() + 'px" class="wind_hand_style m-1 text-warning font-weight-bold" onclick="downloadMusic(\'' + songId + '\',\'' + songSrc + '\',\'ZQ\')" ' + hiddenDownloadBtn("ZQ", quality) + '>ZQ</span>\n' +
+                '            <span style="font-size: ' + getTextSize() + 'px" class="wind_hand_style m-1 text-danger font-weight-bold" onclick="downloadMusic(\'' + songId + '\',\'' + songSrc + '\',\'SQ\')" ' + hiddenDownloadBtn("SQ", quality) + '>SQ</span>\n' +
+                '            <span style="font-size: ' + getTextSize() + 'px" class="wind_hand_style m-1 text-info font-weight-bold" onclick="downloadMusic(\'' + songId + '\',\'' + songSrc + '\',\'HQ\')">HQ</span>\n' +
+                '            <span style="font-size: ' + getTextSize() + 'px" class="wind_hand_style m-1 text-primary font-weight-bold" onclick="downloadMusic(\'' + songId + '\',\'' + songSrc + '\',\'PQ\')">PQ</span>\n' +
+                '            <span style="font-size: ' + getTextSize() + 'px" class="wind_hand_style m-1 text-success font-weight-bold" onclick="downloadMusic(\'' + songId + '\',\'' + songSrc + '\',\'LQ\')">LQ</span>\n' +
                 '        </div>\n' +
                 '\n' +
                 '    </div>\n' +
@@ -347,83 +338,84 @@
 </script>
 
 <script>
-    function adoptSize(){
-        div_header.css('min-height',getHeaderHeight());
-        div_brand.css('font-size',getBrandTextSize());
-        span_search_music.css('font-size',getTextSize()*1.1);
-        div_user_login.css('font-size',getTextSize()*1.1);
-        div_user_wx.css('font-size',getTextSize()*1.1);
-        div_user_reg.css('font-size',getTextSize()*1.1);
-        div_top_sep.css('height',getMarginTopHeight());
-        div_music_list.css('height',getFileItemHeight());
-        search_input.css('min-height',getFileItemHeight()*0.5);
-        search_input.css('min-width',3*getFileItemHeight());
-        search_input.css('font-size',getTextSize()*1.1);
-        div_bottom_player.css('min-height',getFileItemHeight());
-        span_player_info.css('font-size',getDescTextSize());
-        img_user_avatar.css('width',getIconSize(),'height',getIconSize());
+    function adoptSize() {
+        div_header.css('min-height', getHeaderHeight());
+        div_brand.css('font-size', getBrandTextSize());
+        span_search_music.css('font-size', getTextSize() * 1.1);
+        div_user_login.css('font-size', getTextSize() * 1.1);
+        div_user_wx.css('font-size', getTextSize() * 1.1);
+        div_user_reg.css('font-size', getTextSize() * 1.1);
+        div_top_sep.css('height', getMarginTopHeight());
+        div_music_list.css('height', getFileItemHeight());
+        search_input.css('min-height', getFileItemHeight() * 0.5);
+        search_input.css('min-width', 3 * getFileItemHeight());
+        search_input.css('font-size', getTextSize() * 1.1);
+        div_bottom_player.css('min-height', getFileItemHeight());
+        span_player_info.css('font-size', getDescTextSize());
+        img_user_avatar.css('width', getIconSize(), 'height', getIconSize());
     }
+
     adoptSize();
     searchMusic();
 </script>
 
 <script>
     function login() {
-        let userId=input_userid.val();
-        let password=input_password.val();
-        let formData=new FormData();
-        formData.append('userId',userId);
-        formData.append('password',password);
+        let userId = input_userid.val();
+        let password = input_password.val();
+        let formData = new FormData();
+        formData.append('userId', userId);
+        formData.append('password', password);
         $.ajax({
-            url:'/api/login',
+            url: '/api/login',
             type: 'POST',
             cache: false,
             data: formData,
-            async:true,
+            async: true,
             processData: false,
             contentType: false,
-            success:function (params) {
+            success: function (params) {
                 parseLoginInfo(params);
             }
         });
     }
 
     function parseLoginInfo(params) {
-        let data=params.code;
-        if(data===0){
+        let data = params.code;
+        if (data === 0) {
             parseUserInfo(params.obj);
-        }else {
+        } else {
             alert(params.msg);
         }
     }
 
-    function parseUserInfo(user){
+    function parseUserInfo(user) {
 
         div_user_login.html(user.userName);
         div_user_reg.hide();
         img_user_avatar.removeAttr('hidden');
-        img_user_avatar.attr('src',user.avatar);
+        img_user_avatar.attr('src', user.avatar);
 
     }
 
-    function regAccount(){
-        let userId=input_reg_userid.val();
-        let password=input_reg_password.val();
-        let dupPassword=input_reg_dup_password.val();
-        let email=input_reg_email.val();
-        let userName=input_reg_username.val();
-        if(password!==dupPassword){
+    function regAccount() {
+        let userId = input_reg_userid.val();
+        let password = input_reg_password.val();
+        let dupPassword = input_reg_dup_password.val();
+        let email = input_reg_email.val();
+        let userName = input_reg_username.val();
+        if (password !== dupPassword) {
             alert("输入密码不一致");
-        }else if(!validEmail(email)){
+        } else if (!validEmail(email)) {
             alert("邮箱格式错误，邮箱是找回密码的唯一方式");
-        }else if(!validUserId(userId)){
+        } else if (!validUserId(userId)) {
             alert("用户ID为字母开头的字符串，且长度需要大于6");
-        }else {
-            regNewAccount(userId,password,email,userName,function (params) {
-                if(params!=null&&params.code===0){
+        } else {
+            regNewAccount(userId, password, email, userName, function (params) {
+                if (params != null && params.code === 0) {
                     alert("注册成功");
                     parseUserInfo(params.obj);
-                }else {
+                } else {
                     alert(params.msg);
                 }
             });
@@ -435,16 +427,17 @@
 
 
     function restoreUserInfo() {
-        let info= getCookie('info');
-        if(info!=null){
+        let info = getCookie('info');
+        if (info != null) {
             // let base64Dec=JSON.parse($.base64.decode(info));
-            let base64Dec=JSON.parse($.base64.decode(info));
-            if(base64Dec!=null&&base64Dec.userName!=null){
+            let base64Dec = JSON.parse($.base64.decode(info));
+            if (base64Dec != null && base64Dec.userName != null) {
                 parseUserInfo(base64Dec);
             }
 
         }
     }
+
     restoreUserInfo();
 </script>
 

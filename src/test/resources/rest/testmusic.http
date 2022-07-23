@@ -1,4 +1,4 @@
-GET https://c.musicapp.migu.cn/MIGUM2.0/v1.0/content/resourceinfo.do?ua=Android_migu&version=5.0&resourceType=2&copyrightId=69906400824
+GET https://c.musicapp.migu.cn/MIGUM3.0/v1.0/content/resourceinfo.do?ua=Android_migu&version=5.0&resourceType=2&copyrightId=6902739Z001
 Accept: application/json
 
 ###

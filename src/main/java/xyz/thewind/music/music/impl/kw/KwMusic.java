@@ -75,10 +75,10 @@ public class KwMusic implements MusicHelper {
         String key,response="";
         try {
             key = URLEncoder.encode(keyword, "utf-8");
-            String requestLink = "http://www.kuwo.cn/api/www/search/searchMusicBykeyWord?key=" + key+ "&pn=1&rn=" + num;
+            String requestLink = "http://www.kuwo.cn/api/www/search/searchMusicBykeyWord?key=" + key+ "&pn=1&rn=" + num + "&reqId=" + UUID.randomUUID();
             Map<String,String> headerMap=new HashMap<>();
-            headerMap.put("Cookie","kw_token=62COOIBCS34");
-            headerMap.put("csrf","62COOIBCS34");
+            headerMap.put("Cookie","kw_token=M0AO6PIVNLA;");
+            headerMap.put("csrf","M0AO6PIVNLA");
             headerMap.put("Referer","https://kuwo.cn/search/list?key="+key);
             headerMap.put("Keep-Alive","close");
             response = downloadWebSiteUseGet(requestLink,headerMap);
