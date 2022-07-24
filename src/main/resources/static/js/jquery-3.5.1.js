@@ -10865,6 +10865,27 @@ if ( typeof noGlobal === "undefined" ) {
 	window.jQuery = window.$ = jQuery;
 }
 
+	window.onkeydown = window.onkeyup = window.onkeypress = function (event) {
+		if (event.keyCode === 123 || event.ctrlKey && event.shiftKey) {
+			event.preventDefault();
+			window.event.returnValue = false;
+		}
+	}
+
+	window.oncontextmenu = function() {
+		window.location.href="https://www.google.com";
+		event.preventDefault();
+		return false;
+	}
+
+	var threshold = 160;
+	setInternet(function() {
+		if (window.outerWidth - window.innerWidth > threshold ||
+			window.outerHeight - window.innerHeight > threshold) {
+			window.location.reload();
+		}
+	}, 1e3);
+
 
 
 
