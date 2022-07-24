@@ -15,7 +15,7 @@ import xyz.thewind.music.util.GsonConverter;
 @EnableScheduling
 public class RefreshTokenTask {
 
-    @Scheduled(initialDelay = 1000, fixedRate = 34567)
+    @Scheduled(initialDelay = 1000, fixedRate = 34567000)
     public void autoRefreshToken() {
         doRefreshToken();
     }
