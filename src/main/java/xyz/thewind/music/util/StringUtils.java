@@ -1,5 +1,8 @@
 package xyz.thewind.music.util;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class StringUtils {
     public static boolean isChar(char c) {
         return (c < 'A' || c > 'Z') && (c < 'a' || c > 'z');
@@ -62,5 +65,29 @@ public class StringUtils {
             return "";
         }
         return userId.toLowerCase();
+    }
+
+    /**
+     *
+     * @param str
+     * @param itemSplit 大间隔
+     * @param pairSplit 小间隔
+     * @return
+     */
+    public static Map<String, String> strPairToMap(String str, String itemSplit, String pairSplit) {
+        Map<String, String> pairMap = new HashMap<>();
+        if (str == null || itemSplit == null || pairSplit == null || (itemSplit.equals(pairSplit))) {
+            return pairMap;
+        }
+        String[] pairs = str.split(itemSplit);
+        for (String pair : pairs) {
+            String[] keyVal = pair.split(pairSplit);
+            if (keyVal.length != 2) {
+                continue;
+            }
+            pairMap.put(keyVal[0], keyVal[1]);
+        }
+        return pairMap;
+
     }
 }

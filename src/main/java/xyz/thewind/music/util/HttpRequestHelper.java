@@ -12,6 +12,11 @@ import java.util.Map;
 import java.util.Set;
 
 public class HttpRequestHelper {
+
+    public static String downloadWebSiteUseGet(String link) {
+        return downloadWebSiteUseGet(link, null);
+    }
+
     public static String downloadWebSiteUseGet(String link, Map<String, String> headerMap) {
         if (link == null || !link.startsWith("http")) {
             return "";
