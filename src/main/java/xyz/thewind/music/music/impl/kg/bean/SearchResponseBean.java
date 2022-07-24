@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-import static xyz.thewind.music.music.common.SongUtil.*;
+import static xyz.thewind.music.music.common.MusicCommonConfig.*;
 
 public class SearchResponseBean {
     int status;

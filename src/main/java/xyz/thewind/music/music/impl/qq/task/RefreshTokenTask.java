@@ -3,7 +3,7 @@ package xyz.thewind.music.music.impl.qq.task;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import xyz.thewind.music.music.common.MusicConfig;
+import xyz.thewind.music.music.common.MusicRedisConfig;
 import xyz.thewind.music.music.impl.qq.bean.login.QQMusicLoginResp;
 import xyz.thewind.music.music.impl.qq.bean.login.QQMusicLoginToken;
 import xyz.thewind.music.music.impl.qq.module.RequestModule;
@@ -25,7 +25,7 @@ public class RefreshTokenTask {
         if (!redisService.isRedisActive()) {
             return "redis closed";
         }
-        String oldLoginInfo = redisService.get(MusicConfig.REDIS_QQMUSIC_WX_LOGIN_INFO);
+        String oldLoginInfo = redisService.get(MusicRedisConfig.REDIS_QQMUSIC_WX_LOGIN_INFO);
         QQMusicLoginToken oldToken = GsonConverter.fromJson(oldLoginInfo, QQMusicLoginToken.class);
         if (oldToken == null) {
             return "old token missed";
@@ -36,7 +36,7 @@ public class RefreshTokenTask {
             return "new token missed";
         }
         String newToken = GsonConverter.toJson(resp.data.token);
-        redisService.set(MusicConfig.REDIS_QQMUSIC_WX_LOGIN_INFO, newToken);
+        redisService.set(MusicRedisConfig.REDIS_QQMUSIC_WX_LOGIN_INFO, newToken);
         return "update token success";
     }
 }

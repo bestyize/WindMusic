@@ -1,7 +1,7 @@
 package xyz.thewind.music.music.impl.wy;
 
 import xyz.thewind.music.model.SongBean;
-import xyz.thewind.music.music.IMusicApi;
+import xyz.thewind.music.music.IMusicApiModel;
 import xyz.thewind.music.music.impl.wy.bean.*;
 import xyz.thewind.music.util.GsonConverter;
 import xyz.thewind.music.util.HttpRequestHelper;
@@ -11,10 +11,10 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.*;
 
-import static xyz.thewind.music.music.common.SongUtil.*;
+import static xyz.thewind.music.music.common.MusicCommonConfig.*;
 
 
-public class WyMusic implements IMusicApi {
+public class WyMusicModel implements IMusicApiModel {
     private static final HashMap<String, String> qualityMap;
     //MusicTools的Cookie
     private static final String userCookie = "MUSIC_U=41d12a493b80de6fa49d16f6570d469a23f84bcf3394fedda977317d531e9c861d1b60489766205edfc3c0ec8cbcadd641049cea1c6bb9b6";

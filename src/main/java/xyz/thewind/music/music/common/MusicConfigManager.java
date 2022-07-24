@@ -24,7 +24,7 @@ public class MusicConfigManager {
             return null;
         }
         return GsonConverter.fromJson(
-                service.get(MusicConfig.REDIS_QQMUSIC_WX_LOGIN_INFO),
+                service.get(MusicRedisConfig.REDIS_QQMUSIC_WX_LOGIN_INFO),
                 QQMusicLoginToken.class);
     }
 

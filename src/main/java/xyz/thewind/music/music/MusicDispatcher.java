@@ -4,11 +4,11 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import xyz.thewind.music.model.SongBean;
-import xyz.thewind.music.music.impl.kg.KgMusic;
-import xyz.thewind.music.music.impl.kw.KwMusic;
-import xyz.thewind.music.music.impl.mg.MgMusic;
-import xyz.thewind.music.music.impl.qq.QqMusic;
-import xyz.thewind.music.music.impl.wy.WyMusic;
+import xyz.thewind.music.music.impl.kg.KgMusicModel;
+import xyz.thewind.music.music.impl.kw.KwMusicModel;
+import xyz.thewind.music.music.impl.mg.MgMusicModel;
+import xyz.thewind.music.music.impl.qq.QqMusicModel;
+import xyz.thewind.music.music.impl.wy.WyMusicModel;
 import xyz.thewind.music.util.Base64Converter;
 
 import java.util.HashMap;
@@ -16,18 +16,18 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import static xyz.thewind.music.music.common.SongUtil.*;
+import static xyz.thewind.music.music.common.MusicCommonConfig.*;
 
 public class MusicDispatcher {
-    private static final Map<String, IMusicApi> srcMap;
+    private static final Map<String, IMusicApiModel> srcMap;
 
     static {
         srcMap = new HashMap<>();
-        srcMap.put(SRC_QQ, new QqMusic());
-        srcMap.put(SRC_WY, new WyMusic());
-        srcMap.put(SRC_MG, new MgMusic());
-        srcMap.put(SRC_KW, new KwMusic());
-        srcMap.put(SRC_KG, new KgMusic());
+        srcMap.put(SRC_QQ, new QqMusicModel());
+        srcMap.put(SRC_WY, new WyMusicModel());
+        srcMap.put(SRC_MG, new MgMusicModel());
+        srcMap.put(SRC_KW, new KwMusicModel());
+        srcMap.put(SRC_KG, new KgMusicModel());
     }
 
     private Map<String, String> configMap;
@@ -46,9 +46,9 @@ public class MusicDispatcher {
         if (!srcMap.containsKey(songSrc)) {
             return songList;
         }
-        IMusicApi IMusicApi = srcMap.get(songSrc);
-        IMusicApi.setConfigMap(getConfigMap());
-        songList = IMusicApi.searchMusic(keyword, num);
+        IMusicApiModel IMusicApiModel = srcMap.get(songSrc);
+        IMusicApiModel.setConfigMap(getConfigMap());
+        songList = IMusicApiModel.searchMusic(keyword, num);
         return songList;
     }
 
@@ -58,9 +58,9 @@ public class MusicDispatcher {
         if (!srcMap.containsKey(songSrc)) {
             return songBean;
         }
-        IMusicApi IMusicApi = srcMap.get(songSrc);
-        IMusicApi.setConfigMap(getConfigMap());
-        return IMusicApi.searchDownloadLink(songBean, quality);
+        IMusicApiModel IMusicApiModel = srcMap.get(songSrc);
+        IMusicApiModel.setConfigMap(getConfigMap());
+        return IMusicApiModel.searchDownloadLink(songBean, quality);
     }
 
     public List<SongBean> downloadDispatcher(String songSrc, String batch) {
@@ -85,9 +85,9 @@ public class MusicDispatcher {
         if (!srcMap.containsKey(songSrc)) {
             return songList;
         }
-        IMusicApi IMusicApi = srcMap.get(songSrc);
-        IMusicApi.setConfigMap(getConfigMap());
-        songList = IMusicApi.searchWithDownload(keyword, num);
+        IMusicApiModel IMusicApiModel = srcMap.get(songSrc);
+        IMusicApiModel.setConfigMap(getConfigMap());
+        songList = IMusicApiModel.searchWithDownload(keyword, num);
         return songList;
     }
 
@@ -95,16 +95,16 @@ public class MusicDispatcher {
         if (!srcMap.containsKey(songSrc)) {
             return "";
         }
-        IMusicApi IMusicApi = srcMap.get(songSrc);
-        return IMusicApi.getLyric(songId);
+        IMusicApiModel IMusicApiModel = srcMap.get(songSrc);
+        return IMusicApiModel.getLyric(songId);
     }
 
     public SongBean songDetailDispatcher(String songSrc, String songId) {
         if (!srcMap.containsKey(songSrc)) {
             return null;
         }
-        IMusicApi IMusicApi = srcMap.get(songSrc);
-        return IMusicApi.searchSongDetail(songId);
+        IMusicApiModel IMusicApiModel = srcMap.get(songSrc);
+        return IMusicApiModel.searchSongDetail(songId);
     }
 
 

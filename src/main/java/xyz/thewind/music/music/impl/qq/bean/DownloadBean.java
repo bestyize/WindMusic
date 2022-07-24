@@ -1,7 +1,7 @@
 package xyz.thewind.music.music.impl.qq.bean;
 
 import com.google.gson.annotations.SerializedName;
-import xyz.thewind.music.music.impl.qq.QqMusic;
+import xyz.thewind.music.music.impl.qq.QqMusicModel;
 import java.util.List;
 
 public class DownloadBean {
@@ -76,7 +76,7 @@ public class DownloadBean {
                 }
 
                 public String getDownloadLink() {
-                    return QqMusic.baseDownloadServer + downloadLink + "&fromtag="+qmdlfromtag;
+                    return QqMusicModel.baseDownloadServer + downloadLink + "&fromtag="+qmdlfromtag;
                 }
 
                 public void setDownloadLink(String downloadLink) {

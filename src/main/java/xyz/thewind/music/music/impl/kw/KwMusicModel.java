@@ -1,7 +1,7 @@
 package xyz.thewind.music.music.impl.kw;
 
 import xyz.thewind.music.model.SongBean;
-import xyz.thewind.music.music.IMusicApi;
+import xyz.thewind.music.music.IMusicApiModel;
 import xyz.thewind.music.music.impl.kw.bean.LyricResponseBean;
 import xyz.thewind.music.music.impl.kw.bean.SearchResponseBean;
 import xyz.thewind.music.music.impl.kw.bean.SongDetail;
@@ -15,10 +15,10 @@ import java.net.URLEncoder;
 import java.util.*;
 
 import static xyz.thewind.music.util.HttpRequestHelper.downloadWebSiteUseGet;
-import static xyz.thewind.music.music.common.SongUtil.*;
+import static xyz.thewind.music.music.common.MusicCommonConfig.*;
 
 
-public class KwMusic implements IMusicApi {
+public class KwMusicModel implements IMusicApiModel {
     private static final HashMap<String, String> qualityMap;
     private static final Map<String,String> mvQualityMap=new HashMap<>();
 

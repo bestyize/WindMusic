@@ -1,7 +1,6 @@
 package xyz.thewind.music.music.impl.mg.bean;
 
 import com.google.gson.annotations.SerializedName;
-import xyz.thewind.music.music.impl.mg.MgMusic;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,8 +1,7 @@
 package xyz.thewind.music.music.impl.mg.bean.search;
 
 import com.google.gson.annotations.SerializedName;
-import xyz.thewind.music.music.common.MusicConfig;
-import xyz.thewind.music.music.common.SongUtil;
+import xyz.thewind.music.music.common.MusicCommonConfig;
 
 public class RateFormat {
 
@@ -23,7 +22,7 @@ public class RateFormat {
 
     public String getQuality() {
         if ("z3d".equals(quality)) {
-            return SongUtil.QUALITY_EQ;
+            return MusicCommonConfig.QUALITY_EQ;
         }
         return quality;
     }

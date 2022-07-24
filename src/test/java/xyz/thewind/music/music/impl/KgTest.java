@@ -6,11 +6,12 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.junit.Test;
 import xyz.thewind.music.model.SongBean;
-import xyz.thewind.music.music.IMusicApi;
-import xyz.thewind.music.music.impl.kg.KgMusic;
+import xyz.thewind.music.music.IMusicApiModel;
+import xyz.thewind.music.music.impl.kg.KgMusicModel;
 import xyz.thewind.music.util.HttpRequestHelper;
 import xyz.thewind.music.util.Md5Encrypt;
 
+import java.net.URLEncoder;
 import java.util.*;
 
 public class KgTest {
@@ -20,7 +21,7 @@ public class KgTest {
 //        List<SongBean> songBeanList=helper.searchMusic("周杰伦",10);
 //        System.out.println(GsonConverter.toJson(songBeanList));
         //requestBuild("0a62227caab66f54d43ec084b4bdd81f");
-        IMusicApi helper=new KgMusic();
+        IMusicApiModel helper=new KgMusicModel();
         List<SongBean> list=helper.searchWithDownload("消愁",1);
         System.out.println(list);
     }
@@ -60,7 +61,7 @@ public class KgTest {
                 if(bitRate > max) {
 
 
-                    IMusicApi helper=new KgMusic();
+                    IMusicApiModel helper=new KgMusicModel();
                     SongBean songBean=new SongBean("KG",vo.getAsJsonObject().get("hash").getAsString());
                    songBean=helper.searchDownloadLink(songBean,"SQ");
                     System.out.println(songBean);
@@ -75,7 +76,7 @@ public class KgTest {
 
     @Test
     public void test(){
-        IMusicApi helper=new KgMusic();
+        IMusicApiModel helper=new KgMusicModel();
         SongBean songBean=new SongBean("KG","6f13080a62ec4a89f0747aa3d080f99d");
         songBean=helper.searchDownloadLink(songBean,"SQ");
         System.out.println(songBean);
@@ -154,7 +155,7 @@ public class KgTest {
         for (String str : keySet) {
             sb.append(str);
             sb.append("=");
-            sb.append(map.get(str));
+            sb.append(URLEncoder.encode(map.get(str).toString()));
             sb.append("&");
         }
         sb.deleteCharAt(sb.length() - 1);
@@ -177,6 +178,45 @@ public class KgTest {
             sb.append(map.get(str3));
         }
         return Md5Encrypt.convertToMd5(str + sb.toString() + str);
+    }
+
+    @Test
+    public void test1() {
+        doSearchMusic("周杰伦", 1);
+
+
+    }
+
+
+    private String doSearchMusic(String keyword, int num) {
+        String url = buildSearchUrl(keyword, num);
+        String resp = HttpRequestHelper.downloadWebSiteUseGet(url, null);
+        System.out.println(resp);
+        return resp;
+    }
+
+    private String buildSearchUrl(String keyword, int num) {
+        String searchUrl = "https://complexsearchretry.kugou.com/v2/search/song";
+        String appkey="OIlwieks28dk2k092lksi2UIkp";
+        Map<String,Object> map = new HashMap<>();
+        map.put("userid", "0");
+        map.put("area_code", "1");
+        map.put("appid", "1005");
+        map.put("page", "1");
+        map.put("token", "");
+        map.put("privilegefilter", "0");
+        map.put("requestid", UUID.randomUUID());
+        map.put("pagesize", num + "");
+        map.put("clienttime", System.currentTimeMillis() / 1000);
+        map.put("iscorrection", "1");
+        map.put("uuid", "0");
+        map.put("keyword", keyword);
+        map.put("mid", "0");
+        map.put("dfid", "0");
+        map.put("clientver", "99999");
+        map.put("platform", "AndroidFilter");
+        map.put("signature", getSignature(appkey, map));
+        return searchUrl + getGetRequestParams(map);
     }
 
 

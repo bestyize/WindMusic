@@ -1,6 +1,6 @@
 package xyz.thewind.music.util;
 
-import static xyz.thewind.music.music.common.SongUtil.*;
+import static xyz.thewind.music.music.common.MusicCommonConfig.*;
 
 public class LyricHelper {
     public static String getSingerName(String songSrc,String lyricStr){

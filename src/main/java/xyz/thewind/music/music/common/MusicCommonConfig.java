@@ -1,6 +1,6 @@
 package xyz.thewind.music.music.common;
 
-public class SongUtil {
+public class MusicCommonConfig {
     public static final String SRC_QQ = "QQ";
     public static final String SRC_WY = "WY";
     public static final String SRC_MG = "MG";

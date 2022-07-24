@@ -1,7 +1,5 @@
 package xyz.thewind.music.music.impl.kg.bean;
 
-import xyz.thewind.music.music.impl.kg.KgMusic;
-
 import java.util.List;
 
 public class LyricSearchResponseBean {

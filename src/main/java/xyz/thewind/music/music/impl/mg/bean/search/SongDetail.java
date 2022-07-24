@@ -1,7 +1,7 @@
 package xyz.thewind.music.music.impl.mg.bean.search;
 
 import com.google.gson.annotations.SerializedName;
-import xyz.thewind.music.music.common.SongUtil;
+import xyz.thewind.music.music.common.MusicCommonConfig;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -146,18 +146,18 @@ public class SongDetail {
 
     public String getQuality() {
         if (eqRateFormat != null) {
-            return SongUtil.QUALITY_EQ;
+            return MusicCommonConfig.QUALITY_EQ;
         }
         if (newRateFormats.size() >= 4) {
-            return SongUtil.QUALITY_ZQ;
+            return MusicCommonConfig.QUALITY_ZQ;
         }
         if (newRateFormats.size() >= 3) {
-            return SongUtil.QUALITY_SQ;
+            return MusicCommonConfig.QUALITY_SQ;
         }
         if (newRateFormats.size() >= 2) {
-            return SongUtil.QUALITY_HQ;
+            return MusicCommonConfig.QUALITY_HQ;
         }
-        return SongUtil.QUALITY_PQ;
+        return MusicCommonConfig.QUALITY_PQ;
     }
 
     public String getPicUrl() {

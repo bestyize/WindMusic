@@ -1,7 +1,5 @@
 package xyz.thewind.music.music.impl.kw.enc;
 
-import xyz.thewind.music.music.impl.kw.KwMusic;
-
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 

@@ -1,7 +1,5 @@
 package xyz.thewind.music.music.impl.qq.bean;
 
-import xyz.thewind.music.music.impl.qq.QqMusic;
-
 import java.util.List;
 
 public class DownloadRequestBean {

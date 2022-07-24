@@ -1,11 +1,10 @@
-package xyz.thewind.music.music.impl.kg.bean;
+package xyz.thewind.music.music.impl.kg.bean.search;
 
 import com.google.gson.annotations.SerializedName;
-import xyz.thewind.music.music.impl.kg.KgMusic;
 
 import java.util.List;
 
-public class SongDetail {
+public class MobSongDetail {
     int status;
     Data data = new Data();
 
@@ -25,7 +24,7 @@ public class SongDetail {
         this.data = data;
     }
 
-    public class Data {
+    public static class Data {
         @SerializedName("hash")
         String songId;
         @SerializedName("timelength")
@@ -116,7 +115,7 @@ public class SongDetail {
             this.picUrl = picUrl;
         }
 
-        public class Authors {
+        public static class Authors {
             @SerializedName("author_id")
             String singerId;
             @SerializedName("author_name")

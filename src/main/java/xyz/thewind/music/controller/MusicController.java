@@ -10,7 +10,7 @@ import xyz.thewind.music.model.CommonResp;
 import xyz.thewind.music.model.PlayerBean;
 import xyz.thewind.music.model.SongBean;
 import xyz.thewind.music.music.MusicDispatcher;
-import xyz.thewind.music.music.common.MusicConfig;
+import xyz.thewind.music.music.common.MusicRedisConfig;
 import xyz.thewind.music.music.common.MusicConfigManager;
 
 import xyz.thewind.music.service.RedisService;
@@ -180,11 +180,11 @@ public class MusicController {
 
     public Map<String, String> loadConfig() {
         if (configItemList.size() == 0) {
-            configItemList.add(MusicConfig.REDIS_KGMUSIC_UID);
-            configItemList.add(MusicConfig.REDIS_KGMUSIC_TOKEN);
-            configItemList.add(MusicConfig.REDIS_WYMUSIC_TOKEN_KEY);
-            configItemList.add(MusicConfig.REDIS_MUSIC_SRC);
-            configItemList.add(MusicConfig.REDIS_QQMUSIC_WX_LOGIN_INFO);
+            configItemList.add(MusicRedisConfig.REDIS_KGMUSIC_UID);
+            configItemList.add(MusicRedisConfig.REDIS_KGMUSIC_TOKEN);
+            configItemList.add(MusicRedisConfig.REDIS_WYMUSIC_TOKEN_KEY);
+            configItemList.add(MusicRedisConfig.REDIS_MUSIC_SRC);
+            configItemList.add(MusicRedisConfig.REDIS_QQMUSIC_WX_LOGIN_INFO);
         }
         Map<String, String> configMap = new HashMap<>();
         if (!redisService.isRedisActive()) {

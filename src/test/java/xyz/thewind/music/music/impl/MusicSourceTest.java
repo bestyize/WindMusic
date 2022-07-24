@@ -3,12 +3,12 @@ package xyz.thewind.music.music.impl;
 import org.junit.Test;
 import xyz.thewind.music.model.SongBean;
 import xyz.thewind.music.music.MusicDispatcher;
-import xyz.thewind.music.music.IMusicApi;
-import xyz.thewind.music.music.impl.kg.KgMusic;
-import xyz.thewind.music.music.impl.kw.KwMusic;
-import xyz.thewind.music.music.impl.mg.MgMusic;
-import xyz.thewind.music.music.impl.qq.QqMusic;
-import xyz.thewind.music.music.impl.wy.WyMusic;
+import xyz.thewind.music.music.IMusicApiModel;
+import xyz.thewind.music.music.impl.kg.KgMusicModel;
+import xyz.thewind.music.music.impl.kw.KwMusicModel;
+import xyz.thewind.music.music.impl.mg.MgMusicModel;
+import xyz.thewind.music.music.impl.qq.QqMusicModel;
+import xyz.thewind.music.music.impl.wy.WyMusicModel;
 
 import xyz.thewind.music.util.GsonConverter;
 import xyz.thewind.music.util.HttpRequestHelper;
@@ -20,7 +20,7 @@ import java.util.*;
 
 import static xyz.thewind.music.util.HttpRequestHelper.downloadWebSiteUseGet;
 import static xyz.thewind.music.util.Md5Encrypt.convertToMd5;
-import static xyz.thewind.music.music.common.SongUtil.*;
+import static xyz.thewind.music.music.common.MusicCommonConfig.*;
 
 public class MusicSourceTest {
     MusicDispatcher dispatcher=new MusicDispatcher();
@@ -54,20 +54,20 @@ public class MusicSourceTest {
     }
     @Test
     public void qqmusicLyricTest(){
-        IMusicApi helper1=new QqMusic();
+        IMusicApiModel helper1=new QqMusicModel();
         System.out.println(helper1.getLyric("0039MnYb0qxYhV"));
-        IMusicApi helper2=new WyMusic();
+        IMusicApiModel helper2=new WyMusicModel();
         System.out.println(helper2.getLyric("65766"));
-        IMusicApi helper3=new MgMusic();
+        IMusicApiModel helper3=new MgMusicModel();
         System.out.println(helper3.getLyric("60054701923"));
-        IMusicApi helper4=new KwMusic();
+        IMusicApiModel helper4=new KwMusicModel();
         System.out.println(helper4.getLyric("80488731"));
-        IMusicApi helper5=new KgMusic();
+        IMusicApiModel helper5=new KgMusicModel();
         System.out.println(helper5.getLyric("1978DAF7ED27A7A53660D940F1D02378"));
     }
     @Test
     public void convertTimeTest(){
-        IMusicApi helper=new KgMusic();
+        IMusicApiModel helper=new KgMusicModel();
         List<SongBean> list=helper.searchWithDownload("薛之谦",5);
         System.out.println(GsonConverter.toJson(list));
         String lyric=helper.getLyric("a2544e395c12de34f6d3f6c75e8de955-1f2abb109cd8585eb9635bbb213e5f8d-23214810a242765c9e721150593a2992");
@@ -121,7 +121,7 @@ public class MusicSourceTest {
     @Test
     public void testKw(){
         String songId=228908+"";
-        KwMusic music=new KwMusic();
+        KwMusicModel music=new KwMusicModel();
         SongBean songBean=new SongBean("KW",songId);
         System.out.println(music.searchDownloadLink(songBean,"HQ"));
     }
