@@ -17,9 +17,10 @@ import java.util.List;
 public class ArticleServiceImpl implements ArticleService {
     @Autowired
     ArticleRepository articleRepository;
+
     @Override
     public Article addArticle(ArticleDTO articleDTO) {
-        Article article= DTOConverter.convertArticleDtoToArticle(articleDTO);
+        Article article = DTOConverter.convertArticleDtoToArticle(articleDTO);
         return articleRepository.save(article);
     }
 

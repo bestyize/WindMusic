@@ -21,28 +21,28 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean exists(String userId) {
-        return userRepository.findTopByUserId(userId)!=null;
+        return userRepository.findTopByUserId(userId) != null;
     }
 
     @Override
     public boolean existsEmail(String email) {
-        return userRepository.findTopByEmail(email)!=null;
+        return userRepository.findTopByEmail(email) != null;
     }
 
     @Override
-    public User findUserByUserIdAndPassword(String userId,String password) {
-        return userRepository.findTopByUserIdAndPassword(userId,password);
+    public User findUserByUserIdAndPassword(String userId, String password) {
+        return userRepository.findTopByUserIdAndPassword(userId, password);
     }
 
     @Override
     public void updateUserStateById(String userId, int state) {
-        int status=userRepository.updateStatusByUserId(state, userId);
+        int status = userRepository.updateStatusByUserId(state, userId);
     }
 
 
     @Override
     public User addUser(UserDTO userDTO) {
-        User user= DTOConverter.convertUserDtoToUser(userDTO);
+        User user = DTOConverter.convertUserDtoToUser(userDTO);
         return userRepository.save(user);
     }
 

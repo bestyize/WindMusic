@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.UUID;
 
 public class DTOConverter {
-    public static User convertUserDtoToUser(UserDTO userDTO){
+    public static User convertUserDtoToUser(UserDTO userDTO) {
         return new User(userDTO.getUserId(),
                 userDTO.getPassword(),
                 userDTO.getUserName(),
@@ -21,13 +21,13 @@ public class DTOConverter {
                 userDTO.getAvatar());
     }
 
-    public static UserDTO defaultUserDTO(String userId,String password,String email,String userName){
-        return new UserDTO(userId,password,userName,email,null,new Date(),1,1,"/img/person.png");
+    public static UserDTO defaultUserDTO(String userId, String password, String email, String userName) {
+        return new UserDTO(userId, password, userName, email, null, new Date(), 1, 1, "/img/person.png");
     }
 
-    public static Article convertArticleDtoToArticle(ArticleDTO articleDTO){
-        String articleId=UUID.randomUUID().toString().replace("-","");
-        Article article=new Article(articleId,
+    public static Article convertArticleDtoToArticle(ArticleDTO articleDTO) {
+        String articleId = UUID.randomUUID().toString().replace("-", "");
+        Article article = new Article(articleId,
                 articleDTO.getArticleTitle(),
                 articleDTO.getArticleContent(),
                 articleId,
@@ -39,12 +39,12 @@ public class DTOConverter {
         return article;
     }
 
-    public static ArticleDTO defaultArticleDTO(String data,String userId){
-        ArticleDTO articleDTO=new ArticleDTO();
+    public static ArticleDTO defaultArticleDTO(String data, String userId) {
+        ArticleDTO articleDTO = new ArticleDTO();
         try {
-            articleDTO= GsonConverter.fromJson(data,ArticleDTO.class);
+            articleDTO = GsonConverter.fromJson(data, ArticleDTO.class);
             articleDTO.setUserId(userId);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return articleDTO;

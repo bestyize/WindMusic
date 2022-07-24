@@ -23,134 +23,140 @@ import static xyz.thewind.music.util.Md5Encrypt.convertToMd5;
 import static xyz.thewind.music.music.common.MusicCommonConfig.*;
 
 public class MusicSourceTest {
-    MusicDispatcher dispatcher=new MusicDispatcher();
-    @Test
-    public void test(){
+    private static final HashMap<String, String> qualityMap;
 
-        List<SongBean> songBeanList=dispatcher.searchDownDispatcher("WY","蔡徐坤",5);
+    static {
+        qualityMap = new HashMap<>();
+        qualityMap.put(QUALITY_SQ, "&br=2000&format=flac");
+        qualityMap.put(QUALITY_HQ, "&br=320&format=mp3");
+        qualityMap.put(QUALITY_PQ, "&br=192&format=mp3");
+        qualityMap.put(QUALITY_LQ, "&br=128&format=mp3");
+    }
+
+    MusicDispatcher dispatcher = new MusicDispatcher();
+
+    @Test
+    public void test() {
+
+        List<SongBean> songBeanList = dispatcher.searchDownDispatcher("WY", "蔡徐坤", 5);
         System.out.println(GsonConverter.toJson(songBeanList));
     }
+
     @Test
-    public void cloudMusicTest(){
-        List<SongBean> songBean=dispatcher.searchDownDispatcher("KG","周杰伦",5);
+    public void cloudMusicTest() {
+        List<SongBean> songBean = dispatcher.searchDownDispatcher("KG", "周杰伦", 5);
         System.out.println(GsonConverter.toJson(songBean));
     }
 
-
     @Test
     public void cloudMusicTest1() throws UnsupportedEncodingException {
-        List<String> ids=new ArrayList<>();
+        List<String> ids = new ArrayList<>();
         ids.add("478303470");
-        System.out.println(getSongUrl(ids,"SQ"));
+        System.out.println(getSongUrl(ids, "SQ"));
     }
 
-    public String getSongUrl(List<String> ids,String quality) throws UnsupportedEncodingException {
-        int br=999000;
-        String url="http://music.163.com/api/song/enhance/player/url?ids="+ URLEncoder.encode(ids.toString(),"UTF-8")+"&br="+br;
+    public String getSongUrl(List<String> ids, String quality) throws UnsupportedEncodingException {
+        int br = 999000;
+        String url = "http://music.163.com/api/song/enhance/player/url?ids=" + URLEncoder.encode(ids.toString(), "UTF-8") + "&br=" + br;
         System.out.println(url);
-        Map<String,String> headerMap=new HashMap<>();
-        headerMap.put("Cookie","MUSIC_U=ba0a04e302da6a12399d1817fe4eae9dd7c6b7f4865bf4fd9b986b5c8c07893333a649814e309366;");
-        return HttpRequestHelper.downloadWebSiteUseGet(url,headerMap);
+        Map<String, String> headerMap = new HashMap<>();
+        headerMap.put("Cookie", "MUSIC_U=ba0a04e302da6a12399d1817fe4eae9dd7c6b7f4865bf4fd9b986b5c8c07893333a649814e309366;");
+        return HttpRequestHelper.downloadWebSiteUseGet(url, headerMap);
     }
+
     @Test
-    public void qqmusicLyricTest(){
-        IMusicApiModel helper1=new QqMusicModel();
+    public void qqmusicLyricTest() {
+        IMusicApiModel helper1 = new QqMusicModel();
         System.out.println(helper1.getLyric("0039MnYb0qxYhV"));
-        IMusicApiModel helper2=new WyMusicModel();
+        IMusicApiModel helper2 = new WyMusicModel();
         System.out.println(helper2.getLyric("65766"));
-        IMusicApiModel helper3=new MgMusicModel();
+        IMusicApiModel helper3 = new MgMusicModel();
         System.out.println(helper3.getLyric("60054701923"));
-        IMusicApiModel helper4=new KwMusicModel();
+        IMusicApiModel helper4 = new KwMusicModel();
         System.out.println(helper4.getLyric("80488731"));
-        IMusicApiModel helper5=new KgMusicModel();
+        IMusicApiModel helper5 = new KgMusicModel();
         System.out.println(helper5.getLyric("1978DAF7ED27A7A53660D940F1D02378"));
     }
+
     @Test
-    public void convertTimeTest(){
-        IMusicApiModel helper=new KgMusicModel();
-        List<SongBean> list=helper.searchWithDownload("薛之谦",5);
+    public void convertTimeTest() {
+        IMusicApiModel helper = new KgMusicModel();
+        List<SongBean> list = helper.searchWithDownload("薛之谦", 5);
         System.out.println(GsonConverter.toJson(list));
-        String lyric=helper.getLyric("a2544e395c12de34f6d3f6c75e8de955-1f2abb109cd8585eb9635bbb213e5f8d-23214810a242765c9e721150593a2992");
+        String lyric = helper.getLyric("a2544e395c12de34f6d3f6c75e8de955-1f2abb109cd8585eb9635bbb213e5f8d-23214810a242765c9e721150593a2992");
         System.out.println(lyric);
 
     }
 
     @Test
-    public void downloadTest(){
-        String songSrc="WY";
-        String songId="65766";
-        SongBean songBean=new SongBean(songSrc,songId);
-        SongBean bean=dispatcher.downloadDispatcher(songSrc,songId,"PQ");
+    public void downloadTest() {
+        String songSrc = "WY";
+        String songId = "65766";
+        SongBean songBean = new SongBean(songSrc, songId);
+        SongBean bean = dispatcher.downloadDispatcher(songSrc, songId, "PQ");
         System.out.println(GsonConverter.toJson(bean));
 
 
     }
+
     @Test
-    public void testKwInfo(){
-        String songId="157578224";
-        String requestLink = "http://www.kuwo.cn/api/www/music/musicInfo?mid=" +songId;
-        Map<String,String> headerMap=new HashMap<>();
-        headerMap.put("Cookie","kw_token=62COOIBCS34");
-        headerMap.put("csrf","62COOIBCS34");
+    public void testKwInfo() {
+        String songId = "157578224";
+        String requestLink = "http://www.kuwo.cn/api/www/music/musicInfo?mid=" + songId;
+        Map<String, String> headerMap = new HashMap<>();
+        headerMap.put("Cookie", "kw_token=62COOIBCS34");
+        headerMap.put("csrf", "62COOIBCS34");
         //headerMap.put("Referer","https://kuwo.cn/search/list?key="+key);
-        headerMap.put("Keep-Alive","close");
-        System.out.print(downloadWebSiteUseGet(requestLink,headerMap));
+        headerMap.put("Keep-Alive", "close");
+        System.out.print(downloadWebSiteUseGet(requestLink, headerMap));
     }
 
     @Test
     public void testQQ() throws UnsupportedEncodingException {
 //002J4UUk29y8BY
 //        String data="{\"detail\":{\"module\":\"music.pf_song_detail_svr\",\"method\":\"get_song_detail\",\"param\":{\"song_id\":102636799}}}";
-        String songId="0002u6ZH3GSQPl";
-        String data="{\"songinfo\":{\"module\":\"music.pf_song_detail_svr\",\"method\":\"get_song_detail\",\"param\":{\"song_mid\":\""+songId+"\"}}}";
-        String encode=URLEncoder.encode(data,"UTF-8");
-        String api="https://u.y.qq.com/cgi-bin/musicu.fcg";
-        String response=HttpRequestHelper.downloadWebSiteUseGet(api+"?data="+encode,null);
+        String songId = "0002u6ZH3GSQPl";
+        String data = "{\"songinfo\":{\"module\":\"music.pf_song_detail_svr\",\"method\":\"get_song_detail\",\"param\":{\"song_mid\":\"" + songId + "\"}}}";
+        String encode = URLEncoder.encode(data, "UTF-8");
+        String api = "https://u.y.qq.com/cgi-bin/musicu.fcg";
+        String response = HttpRequestHelper.downloadWebSiteUseGet(api + "?data=" + encode, null);
         System.out.println(response);
     }
 
-    private static final HashMap<String, String> qualityMap;
-
-    static {
-        qualityMap=new HashMap<>();
-        qualityMap.put(QUALITY_SQ,"&br=2000&format=flac");
-        qualityMap.put(QUALITY_HQ,"&br=320&format=mp3");
-        qualityMap.put(QUALITY_PQ,"&br=192&format=mp3");
-        qualityMap.put(QUALITY_LQ,"&br=128&format=mp3");
-    }
     @Test
-    public void testKw(){
-        String songId=228908+"";
-        KwMusicModel music=new KwMusicModel();
-        SongBean songBean=new SongBean("KW",songId);
-        System.out.println(music.searchDownloadLink(songBean,"HQ"));
+    public void testKw() {
+        String songId = 228908 + "";
+        KwMusicModel music = new KwMusicModel();
+        SongBean songBean = new SongBean("KW", songId);
+        System.out.println(music.searchDownloadLink(songBean, "HQ"));
     }
 
-// new String[]{"MP4HV", "MP4HV"}, new String[]{"MP4UL", "MP4UL"}, new String[]{"MP4BD", "MP4BD"}}
+    // new String[]{"MP4HV", "MP4HV"}, new String[]{"MP4UL", "MP4UL"}, new String[]{"MP4BD", "MP4BD"}}
     @Test
-    public void testKwMv(){
-        String quality="SQ";
-        String mvId="228908";
+    public void testKwMv() {
+        String quality = "SQ";
+        String mvId = "228908";
         String link = "http://mobi.kuwo.cn/mobi.s?f=kuwo&q=";
         String encParams = KwEncrypt.encrypt("&type=convert_mv_url2&format=mp4&quality=MP4UL&sig=0&rid=" + mvId + "&network=wifi");
-        Map<String,String> headerMap=new HashMap<>();
-        headerMap.put("User-Agent",USER_AGENT_ANDROID);
-        String response= downloadWebSiteUseGet(link + encParams,headerMap);
-        if(response.contains("url=") && response.contains("sig=")){
-            response=response.substring(response.indexOf("url=")+4,response.indexOf("sig="));
+        Map<String, String> headerMap = new HashMap<>();
+        headerMap.put("User-Agent", USER_AGENT_ANDROID);
+        String response = downloadWebSiteUseGet(link + encParams, headerMap);
+        if (response.contains("url=") && response.contains("sig=")) {
+            response = response.substring(response.indexOf("url=") + 4, response.indexOf("sig="));
             System.out.println(response);
         }
     }
+
     @Test
-    public void testKwLyric(){
-        String api="http://newlyric.kuwo.cn/newlyric.lrc?";
-        String params="&lrcx=1&olrc=1&type=lyric&req=1&rid=MUSIC_228908";
-        String p=base64(params.getBytes(StandardCharsets.UTF_8),"yeelion");
-        System.out.println(api+p);
+    public void testKwLyric() {
+        String api = "http://newlyric.kuwo.cn/newlyric.lrc?";
+        String params = "&lrcx=1&olrc=1&type=lyric&req=1&rid=MUSIC_228908";
+        String p = base64(params.getBytes(StandardCharsets.UTF_8), "yeelion");
+        System.out.println(api + p);
 
     }
 
-    public String base64(byte[] arr,String str){
+    public String base64(byte[] arr, String str) {
         int i6;
         if (str != null && !str.equals("")) {
             byte[] bytes = str.getBytes();
@@ -168,6 +174,19 @@ public class MusicSourceTest {
 
     }
 
+    @Test
+    public void mgTest() {
+        MgHelper.searchMusic("周杰伦", 1, 1);
+    }
+
+    @Test
+    public void mmgtest() {
+        String requestUrl = "https://app.c.nf.migu.cn/MIGUM2.0/v2.1/content/listen-url?albumId=1133602125&contentId=600913000009295303&copyrightId=69926100937&netType=01&resourceType=2&toneFlag=SQ";
+        Map<String, String> headerMap = new HashMap<>();
+        headerMap.put("channel", "0146951");
+        System.out.println(downloadWebSiteUseGet(requestUrl, headerMap));
+    }
+
     private static class KwEncrypt {
 
         public static final byte[] kwEncryptKey = "ylzsxkwm".getBytes();
@@ -175,7 +194,7 @@ public class MusicSourceTest {
         /* renamed from: b  reason: collision with root package name */
         public static final int keyLen = kwEncryptKey.length;
 
-        private static final long[] longMask = {1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144, 524288, 1048576, 2097152, 4194304, 8388608, 16777216, 33554432, 67108864, 134217728, 268435456,536870912,1073741824, 2147483648L, 4294967296L, 8589934592L, 17179869184L, 34359738368L, 68719476736L, 137438953472L, 274877906944L, 549755813888L, 1099511627776L, 2199023255552L, 4398046511104L, 8796093022208L, 17592186044416L, 35184372088832L, 70368744177664L, 140737488355328L, 281474976710656L, 562949953421312L, 1125899906842624L, 2251799813685248L, 4503599627370496L, 9007199254740992L, 18014398509481984L, 36028797018963968L, 72057594037927936L, 144115188075855872L, 288230376151711744L, 576460752303423488L, 1152921504606846976L, 2305843009213693952L, 4611686018427387904L, Long.MIN_VALUE};
+        private static final long[] longMask = {1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144, 524288, 1048576, 2097152, 4194304, 8388608, 16777216, 33554432, 67108864, 134217728, 268435456, 536870912, 1073741824, 2147483648L, 4294967296L, 8589934592L, 17179869184L, 34359738368L, 68719476736L, 137438953472L, 274877906944L, 549755813888L, 1099511627776L, 2199023255552L, 4398046511104L, 8796093022208L, 17592186044416L, 35184372088832L, 70368744177664L, 140737488355328L, 281474976710656L, 562949953421312L, 1125899906842624L, 2251799813685248L, 4503599627370496L, 9007199254740992L, 18014398509481984L, 36028797018963968L, 72057594037927936L, 144115188075855872L, 288230376151711744L, 576460752303423488L, 1152921504606846976L, 2305843009213693952L, 4611686018427387904L, Long.MIN_VALUE};
 
         private static final int[] dirE = {57, 49, 41, 33, 25, 17, 9, 1, 59, 51, 43, 35, 27, 19, 11, 3, 61, 53, 45, 37, 29, 21, 13, 5, 63, 55, 47, 39, 31, 23, 15, 7, 56, 48, 40, 32, 24, 16, 8, 0, 58, 50, 42, 34, 26, 18, 10, 2, 60, 52, 44, 36, 28, 20, 12, 4, 62, 54, 46, 38, 30, 22, 14, 6};
 
@@ -195,17 +214,18 @@ public class MusicSourceTest {
         private static long p = 0;
         private static long q;
         private static long r;
-        private static int[] s = new int[2];
-        private static byte[] t = new byte[8];
+        private static final int[] s = new int[2];
+        private static final byte[] t = new byte[8];
         private static int u;
         private static int v;
         private static int w;
 
 
-        public static String encrypt(String text){
-            byte[] cipherText=encrypt(text.getBytes(StandardCharsets.UTF_8),text.length(), kwEncryptKey,keyLen);
+        public static String encrypt(String text) {
+            byte[] cipherText = encrypt(text.getBytes(StandardCharsets.UTF_8), text.length(), kwEncryptKey, keyLen);
             return Base64.getEncoder().encodeToString(cipherText);
         }
+
         private static long magic(int[] arr, long magic) {
             long sum = 0;
             for (int i = 0; i < arr.length; i++) {
@@ -220,7 +240,7 @@ public class MusicSourceTest {
             long sum = magic(dir, j2);
             for (int i = 0; i < 16; i++) {
                 sum = ((sum & (maskM[dirL[i]] ^ -1)) >> dirL[i]) | ((maskM[dirL[i]] & sum) << (28 - dirL[i]));
-                arr[i] = magic(dirKey,sum);
+                arr[i] = magic(dirKey, sum);
             }
             if (magic == 1) {
                 for (int i = 0; i < 8; i++) {
@@ -233,7 +253,7 @@ public class MusicSourceTest {
         }
 
         private static long magic(long[] arr, long magic) {
-            p = magic(dirE,magic);
+            p = magic(dirE, magic);
             s[0] = (int) (p & 4294967295L);
             s[1] = (int) ((p & -4294967296L) >> 32);
             for (long l : arr) {
@@ -264,7 +284,7 @@ public class MusicSourceTest {
             s[0] = s[1];
             s[1] = v;
             p = (((long) s[0]) & 4294967295L) | ((((long) s[1]) << 32) & -4294967296L);
-            p = magic(dirI,p);
+            p = magic(dirI, p);
             return p;
         }
 
@@ -275,7 +295,7 @@ public class MusicSourceTest {
                 for (int i = 0; i < keyLen; i++) {
                     x |= ((long) key[i]) << (i << 3);
                 }
-                int ranLen = textLen >>3;
+                int ranLen = textLen >> 3;
                 long[] map = new long[16];
                 for (int i = 0; i < 16; i++) {
                     map[i] = 0;
@@ -292,7 +312,7 @@ public class MusicSourceTest {
                     longMap[i] = magic(map, ranArr[i]);
                 }
                 int i10 = textLen % 8;
-                int diffLen =ranLen<<3;
+                int diffLen = ranLen << 3;
                 int fillLen = textLen - diffLen;
                 byte[] fillArr = new byte[fillLen];
                 System.arraycopy(text, diffLen, fillArr, 0, fillLen);
@@ -318,29 +338,24 @@ public class MusicSourceTest {
         }
 
     }
-    @Test
-    public void mgTest(){
-        MgHelper.searchMusic("周杰伦",1,1);
-    }
 
-
-    private static class MgHelper{
-        public static String searchMusic(String keyword,int page,int num) {
+    private static class MgHelper {
+        public static String searchMusic(String keyword, int page, int num) {
             try {
                 keyword = keyword.trim();
                 String userPhoneNum = Base64.getEncoder().encodeToString(genPhoneNumber().getBytes(StandardCharsets.UTF_8));
-                String requestUrl=requestUrl(keyword,num,page);
-                Map<String,String> requestHeader=requestHeader(keyword,userPhoneNum);
-                return HttpRequestHelper.downloadWebSiteUseGet(requestUrl,requestHeader).trim();
+                String requestUrl = requestUrl(keyword, num, page);
+                Map<String, String> requestHeader = requestHeader(keyword, userPhoneNum);
+                return HttpRequestHelper.downloadWebSiteUseGet(requestUrl, requestHeader).trim();
             } catch (Exception e) {
                 e.printStackTrace();
             }
             return "";
         }
 
-        public static Map<String,String> requestHeader(String keyword,String msiDn){
-            String deviceId=genDeviceId(32);
-            HashMap<String,String> hashMap = new HashMap<>();
+        public static Map<String, String> requestHeader(String keyword, String msiDn) {
+            String deviceId = genDeviceId(32);
+            HashMap<String, String> hashMap = new HashMap<>();
             hashMap.put("deviceId", deviceId);
             hashMap.put("appId", "yyapp2");
             hashMap.put("android_id", "afad815163f1d394");
@@ -348,42 +363,43 @@ public class MusicSourceTest {
             hashMap.put("version", "7.0.7");
             hashMap.put("uiVersion", "A_music_3.4.0");
             //hashMap.put("channel", "0146951");
-            String timestamp=System.currentTimeMillis()+"";
-            String sig="6cdc72a439cef99a3418d2a78aa28c73";//咪咕签名的MD5
-            String sign=convertToMd5(keyword+ sig+ "yyapp2d16148780a1dcc7408e06336b98cfd50"+deviceId+msiDn+timestamp);
-            hashMap.put("sign",sign);
-            hashMap.put("timestamp",timestamp);
-            hashMap.put("msisdn",msiDn);
+            String timestamp = System.currentTimeMillis() + "";
+            String sig = "6cdc72a439cef99a3418d2a78aa28c73";//咪咕签名的MD5
+            String sign = convertToMd5(keyword + sig + "yyapp2d16148780a1dcc7408e06336b98cfd50" + deviceId + msiDn + timestamp);
+            hashMap.put("sign", sign);
+            hashMap.put("timestamp", timestamp);
+            hashMap.put("msisdn", msiDn);
             return hashMap;
         }
 
-        public static String requestUrl(String keyword,int num,int page) {
-            HashMap<String,String> hashMap = new HashMap<>();
-            hashMap.put("feature","1011000000");
-            hashMap.put("pageNo", page+"");
-            hashMap.put("pageSize", num+"");
-            hashMap.put("sort","0");
+        public static String requestUrl(String keyword, int num, int page) {
+            HashMap<String, String> hashMap = new HashMap<>();
+            hashMap.put("feature", "1011000000");
+            hashMap.put("pageNo", page + "");
+            hashMap.put("pageSize", num + "");
+            hashMap.put("sort", "0");
             try {
-                hashMap.put("text", URLEncoder.encode(keyword,"UTF-8"));
+                hashMap.put("text", URLEncoder.encode(keyword, "UTF-8"));
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
-            String searchSwitch= null;
+            String searchSwitch = null;
             try {
-                searchSwitch = URLEncoder.encode("{\"song\":1,\"album\":0,\"singer\":0,\"tagSong\":0,\"mvSong\":0,\"bestShow\":0,\"songlist\":0,\"lyricSong\":1}","utf-8");
+                searchSwitch = URLEncoder.encode("{\"song\":1,\"album\":0,\"singer\":0,\"tagSong\":0,\"mvSong\":0,\"bestShow\":0,\"songlist\":0,\"lyricSong\":1}", "utf-8");
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
             hashMap.put("searchSwitch", searchSwitch);
             hashMap.put("sid", getSid());
-            hashMap.put("isCopyright","1");
+            hashMap.put("isCopyright", "1");
             hashMap.put("isCorrect", "1");
-            StringBuilder sb=new StringBuilder();
-            for (String key:hashMap.keySet()){
+            StringBuilder sb = new StringBuilder();
+            for (String key : hashMap.keySet()) {
                 sb.append(key).append("=").append(hashMap.get(key)).append("&");
             }
-            return "https://jadeite.migu.cn/music_search/v2/search/searchAll?"+sb.toString();
+            return "https://jadeite.migu.cn/music_search/v2/search/searchAll?" + sb;
         }
+
         public static String getSid() {
             String uuid = UUID.randomUUID().toString();
             String uuid2 = UUID.randomUUID().toString();
@@ -391,32 +407,26 @@ public class MusicSourceTest {
             return replace + uuid2.replace("-", "");
         }
 
-        public static String genPhoneNumber(){
-            int[] nums={0,1,2,3,4,5,6,7,8,9};
-            StringBuilder sb=new StringBuilder(11);
+        public static String genPhoneNumber() {
+            int[] nums = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+            StringBuilder sb = new StringBuilder(11);
             sb.append("188");
-            Random ran=new Random(System.currentTimeMillis());
-            for (int i=0;i<8;i++){
-                sb.append(nums[ran.nextInt(nums.length)%nums.length]);
-            }
-            return sb.toString();
-        }
-        public static String genDeviceId(int len){
-            char[] cs="01234567890ABCDEF".toCharArray();
-            StringBuilder sb=new StringBuilder(11);
-            Random ran=new Random(System.currentTimeMillis());
-            for (int i=0;i<len;i++){
-                sb.append(cs[ran.nextInt(cs.length)%cs.length]);
+            Random ran = new Random(System.currentTimeMillis());
+            for (int i = 0; i < 8; i++) {
+                sb.append(nums[ran.nextInt(nums.length) % nums.length]);
             }
             return sb.toString();
         }
 
-    }
-    @Test
-    public void mmgtest(){
-        String requestUrl="https://app.c.nf.migu.cn/MIGUM2.0/v2.1/content/listen-url?albumId=1133602125&contentId=600913000009295303&copyrightId=69926100937&netType=01&resourceType=2&toneFlag=SQ";
-        Map<String,String> headerMap=new HashMap<>();
-        headerMap.put("channel","0146951");
-        System.out.println(downloadWebSiteUseGet(requestUrl,headerMap));
+        public static String genDeviceId(int len) {
+            char[] cs = "01234567890ABCDEF".toCharArray();
+            StringBuilder sb = new StringBuilder(11);
+            Random ran = new Random(System.currentTimeMillis());
+            for (int i = 0; i < len; i++) {
+                sb.append(cs[ran.nextInt(cs.length) % cs.length]);
+            }
+            return sb.toString();
+        }
+
     }
 }

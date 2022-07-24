@@ -14,9 +14,9 @@
 <body style="background-color: #F0F0F0">
 <h2>创建模态框（Modal）</h2>
 <!-- 按钮触发模态框 -->
-<button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#loginModal">登录</button>
+<button class="btn btn-primary btn-lg" data-target="#loginModal" data-toggle="modal">登录</button>
 <!-- 模态框（Modal） -->
-<div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div aria-hidden="true" aria-labelledby="myModalLabel" class="modal fade" id="loginModal" role="dialog" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header justify-content-center m-auto">
@@ -24,21 +24,21 @@
             </div>
             <div class="modal-body">
                 <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="用户名">
+                    <input class="form-control" placeholder="用户名" type="text">
                     <div class="input-group-append">
                         <span class="input-group-text">用户名</span>
                     </div>
                 </div>
                 <div class="input-group mb-3">
-                    <input type="password" class="form-control" placeholder="密 码">
+                    <input class="form-control" placeholder="密 码" type="password">
                     <div class="input-group-append">
                         <span class="input-group-text">密&nbsp&nbsp&nbsp&nbsp码</span>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                <button type="button" class="btn btn-primary">登录</button>
+                <button class="btn btn-default" data-dismiss="modal" type="button">取消</button>
+                <button class="btn btn-primary" type="button">登录</button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal -->

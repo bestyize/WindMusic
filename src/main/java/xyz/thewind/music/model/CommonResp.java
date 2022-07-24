@@ -1,12 +1,13 @@
 package xyz.thewind.music.model;
 
 public class CommonResp {
+    public static CommonResp builder = new CommonResp();
     public int code;
     public String msg;
     public Object obj;
 
     public CommonResp() {
-        this.code=-1;
+        this.code = -1;
     }
 
     public CommonResp(int code, String msg, Object obj) {
@@ -15,20 +16,18 @@ public class CommonResp {
         this.obj = obj;
     }
 
-    public static CommonResp builder=new CommonResp();
-
-    public CommonResp code(int code){
-        this.code=code;
+    public CommonResp code(int code) {
+        this.code = code;
         return this;
     }
 
-    public CommonResp msg(String msg){
-        this.msg=msg;
+    public CommonResp msg(String msg) {
+        this.msg = msg;
         return this;
     }
 
-    public CommonResp obj(Object obj){
-        this.obj=obj;
+    public CommonResp obj(Object obj) {
+        this.obj = obj;
         return this;
     }
 }

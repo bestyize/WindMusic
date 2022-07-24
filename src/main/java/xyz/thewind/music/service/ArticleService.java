@@ -7,6 +7,8 @@ import java.util.List;
 
 public interface ArticleService {
     Article addArticle(ArticleDTO articleDTO);
+
     Article findArticleByArticleId(String articleId);
+
     List<Article> findArticleByUserId(String userId);
 }

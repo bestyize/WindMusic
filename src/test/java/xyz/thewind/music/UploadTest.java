@@ -6,11 +6,11 @@ import java.util.UUID;
 
 public class UploadTest {
     @Test
-    public void testUUID(){
-        String fileName="92021iri.png";
-        String saveName= UUID.randomUUID().toString();
-        if(fileName.contains(".")){
-            saveName+=fileName.substring(fileName.lastIndexOf("."));
+    public void testUUID() {
+        String fileName = "92021iri.png";
+        String saveName = UUID.randomUUID().toString();
+        if (fileName.contains(".")) {
+            saveName += fileName.substring(fileName.lastIndexOf("."));
         }
         System.out.println(saveName);
     }

@@ -1,6 +1,7 @@
 package xyz.thewind.music.util;
 
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 
 public class Md5Encrypt {
@@ -8,7 +9,7 @@ public class Md5Encrypt {
     public static String convertToMd5(String plainText) {
         byte[] secretBytes = null;
         try {
-            secretBytes = MessageDigest.getInstance("md5").digest(plainText.getBytes("utf-8"));
+            secretBytes = MessageDigest.getInstance("md5").digest(plainText.getBytes(StandardCharsets.UTF_8));
         } catch (Exception e) {
             throw new RuntimeException("没有这个md5算法！");
         }

@@ -9,32 +9,33 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 public class TokenHelper {
-    public static String generateToken(String userId,String password){
-        return Base64Converter.encode(userId+" "+password);
+    public static String generateToken(String userId, String password) {
+        return Base64Converter.encode(userId + " " + password);
     }
+
     //userId=1234;password=123456
-    public static Token parseToken(Cookie[] cookies){
-        Token token=new Token("","");
-        if(cookies==null){
+    public static Token parseToken(Cookie[] cookies) {
+        Token token = new Token("", "");
+        if (cookies == null) {
             return token;
         }
-        for (Cookie cookie:cookies){
-            if(cookie.getName().equals("token")){
-                String tokenStr=Base64Converter.decode(cookie.getValue());
-                String[] tok=tokenStr.split(" ");
-                if(tok.length==2){
-                    return new Token(tok[0],tok[1]);
+        for (Cookie cookie : cookies) {
+            if (cookie.getName().equals("token")) {
+                String tokenStr = Base64Converter.decode(cookie.getValue());
+                String[] tok = tokenStr.split(" ");
+                if (tok.length == 2) {
+                    return new Token(tok[0], tok[1]);
                 }
             }
         }
         return token;
     }
 
-    public static void setCookie(HttpServletResponse response, User user, String userId, String password){
-        Cookie inf=new Cookie("info", Base64Converter.encode(GsonConverter.toJson(user)));
+    public static void setCookie(HttpServletResponse response, User user, String userId, String password) {
+        Cookie inf = new Cookie("info", Base64Converter.encode(GsonConverter.toJson(user)));
         inf.setPath("/");
         inf.setMaxAge(86400);
-        Cookie tok=new Cookie("token",TokenHelper.generateToken(userId,password));
+        Cookie tok = new Cookie("token", TokenHelper.generateToken(userId, password));
         tok.setPath("/");
         inf.setMaxAge(86400);
         response.addCookie(inf);

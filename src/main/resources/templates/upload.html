@@ -10,83 +10,83 @@
 <body>
 
 <div id="div_upload">
-    <input type="file" name="files" id="files">
+    <input id="files" name="files" type="file">
     <button id="btn_upload" v-on:click="upLoadFile">上传文件</button>
     <br>
-    <div>{{message}}<div>
-    <div id="div_progress"></div>
-</div>
+    <div>{{message}}
+        <div>
+            <div id="div_progress"></div>
+        </div>
 
-<div id="div_wx_ad">
+        <div id="div_wx_ad">
 
-</div>
+        </div>
 
-<script>
+        <script>
 
-    const Uploader={
-        data(){
-            return {
-                message:''
-            }
-        },
-        methods:{
-            refreshToken(){
-                $.ajax({
-                    url:'/api/tokenrefresh?force=1',
-                    type: 'POST',
-                    cache: false,
-                    data: '',
-                    context:this,
-                    async:true,
-                    processData: false,
-                    contentType: false,
-                    success:function (params) {
-                        //parseSearchInfo(params);
-                        this.message=params;
-
+            const Uploader = {
+                data() {
+                    return {
+                        message: ''
                     }
-                });
-            },
-            upLoadFile(){
-                let formData=new FormData();
-                let f=$('#files')[0].files[0];
-                if(f==null){
-                    alert('未选择文件');
-                    return ;
-                }
-                formData.append("files",f);
-                $.ajax({
-                    url: '/api/upload/img',
-                    type: 'POST',
-                    cache: false,
-                    async:true,
-                    data: formData,
-                    context: this,
-                    processData: false,
-                    contentType: false,
-                    xhr:function () {
-                        let xhr=$.ajaxSettings.xhr();
-                        if(xhr.upload){
-                            xhr.upload.addEventListener('progress',function (e) {
-                                $('#div_progress').html(parseInt((e.loaded/e.total)*100))
-                            },false);
+                },
+                methods: {
+                    refreshToken() {
+                        $.ajax({
+                            url: '/api/tokenrefresh?force=1',
+                            type: 'POST',
+                            cache: false,
+                            data: '',
+                            context: this,
+                            async: true,
+                            processData: false,
+                            contentType: false,
+                            success: function (params) {
+                                //parseSearchInfo(params);
+                                this.message = params;
+
+                            }
+                        });
+                    },
+                    upLoadFile() {
+                        let formData = new FormData();
+                        let f = $('#files')[0].files[0];
+                        if (f == null) {
+                            alert('未选择文件');
+                            return;
                         }
-                        return xhr;
+                        formData.append("files", f);
+                        $.ajax({
+                            url: '/api/upload/img',
+                            type: 'POST',
+                            cache: false,
+                            async: true,
+                            data: formData,
+                            context: this,
+                            processData: false,
+                            contentType: false,
+                            xhr: function () {
+                                let xhr = $.ajaxSettings.xhr();
+                                if (xhr.upload) {
+                                    xhr.upload.addEventListener('progress', function (e) {
+                                        $('#div_progress').html(parseInt((e.loaded / e.total) * 100))
+                                    }, false);
+                                }
+                                return xhr;
+                            }
+                        }).done(function (res) {
+                            alert(JSON.stringify(res));
+
+                        }).fail(function (res) {
+                            alert(JSON.stringify(res));
+                        });
                     }
-                }).done(function(res) {
-                    alert(JSON.stringify(res));
-
-                }).fail(function(res) {
-                    alert(JSON.stringify(res));
-                });
+                }
             }
-        }
-    }
-    Vue.createApp(Uploader).mount('#div_upload');
+            Vue.createApp(Uploader).mount('#div_upload');
 
 
-</script>
-
+        </script>
 
 
 </body>

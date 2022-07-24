@@ -12,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 public class RedisServiceImpl implements RedisService {
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
+
     @Override
     public void set(String key, String value) {
         stringRedisTemplate.opsForValue().set(key, value);
@@ -35,16 +36,16 @@ public class RedisServiceImpl implements RedisService {
 
     @Override
     public Long increment(String key, long gap) {
-        return stringRedisTemplate.opsForValue().increment(key,gap);
+        return stringRedisTemplate.opsForValue().increment(key, gap);
     }
 
     @Override
     public boolean isRedisActive() {
         boolean connectState;
         try {
-           connectState= !Objects.requireNonNull(stringRedisTemplate.getConnectionFactory()).getConnection().isClosed();
-        }catch (Exception e){
-            connectState=false;
+            connectState = !Objects.requireNonNull(stringRedisTemplate.getConnectionFactory()).getConnection().isClosed();
+        } catch (Exception e) {
+            connectState = false;
         }
         return connectState;
     }

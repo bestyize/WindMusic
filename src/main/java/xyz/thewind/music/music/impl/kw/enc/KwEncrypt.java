@@ -33,8 +33,8 @@ public class KwEncrypt {
     private static long p = 0;
     private static long q;
     private static long r;
-    private static int[] s = new int[2];
-    private static byte[] t = new byte[8];
+    private static final int[] s = new int[2];
+    private static final byte[] t = new byte[8];
     private static int u;
     private static int v;
     private static int w;

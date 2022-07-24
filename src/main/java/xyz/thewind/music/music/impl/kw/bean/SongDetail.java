@@ -23,6 +23,9 @@ public class SongDetail {
     }
 
     public class Data {
+        @SerializedName("albumid")
+        public long albumId;
+        public boolean hasLossless;
         @SerializedName("artist")
         String singerName;
         String pic;
@@ -33,9 +36,6 @@ public class SongDetail {
         long singerId;
         @SerializedName("album")
         String albumName;
-        @SerializedName("albumid")
-        public long albumId;
-        public boolean hasLossless;
         @SerializedName("name")
         String songName;
 

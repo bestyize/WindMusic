@@ -5,7 +5,7 @@
     <title>无名音乐-在线版</title>
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/wind.css" rel="stylesheet">
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link href="favicon.ico" rel="icon" type="image/x-icon">
     <script src="js/jquery-3.5.1.js"></script>
     <script src="js/jquery.cookie.js"></script>
     <script src="js/jquery.base64.js"></script>
@@ -14,32 +14,34 @@
     <script src="js/download.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/common.js"></script>
-    <script >
-        setInterval(function () { debugger}, 100);
+    <script>
+        setInterval(function () {
+            debugger
+        }, 100);
     </script>
 </head>
 <body style="background-color: #F0F0F0">
 
-<div id="div_header" class="navbar fixed-top thewind_nav_top m-auto justify-content-center" style="min-height:60px">
-    <div id="div_brand" class="wind_hand_style" style="font-weight: bold" onclick="backToDomain()">TheWind</div>
+<div class="navbar fixed-top thewind_nav_top m-auto justify-content-center" id="div_header" style="min-height:60px">
+    <div class="wind_hand_style" id="div_brand" onclick="backToDomain()" style="font-weight: bold">TheWind</div>
     <div style="width: 2em"></div>
     <div class="input-group input-group-lg col-lg-3 col-10">
-        <input id="search_input" type="text" class="form-control">
+        <input class="form-control" id="search_input" type="text">
     </div>
-    <span id="span_search_music" class="btn-lg btn-primary" onclick="refreshPage()">搜索</span>
+    <span class="btn-lg btn-primary" id="span_search_music" onclick="refreshPage()">搜索</span>
     <!--    <input id="search_input" type="text" placeholder="输入音乐名" class="border-0" style="background-color: #F0F0F0">-->
     <!--    <div style="width: 1em"></div>-->
     <!--    <div id="div_search_music" class="wind_hand_style" onclick="refreshPage()">搜索</div>-->
     <div style="width: 1em"></div>
-    <div id="div_user_login" class="wind_hand_style" data-toggle="modal" data-target="#loginModal">登录</div>
+    <div class="wind_hand_style" data-target="#loginModal" data-toggle="modal" id="div_user_login">登录</div>
     <div style="width: 1em"></div>
-    <div id="div_user_reg" class="wind_hand_style" data-toggle="modal" data-target="#regModal">注册</div>
-    <img id="img_user_avatar" class="wind_hand_style" src="/img/person.png" hidden alt="">
+    <div class="wind_hand_style" data-target="#regModal" data-toggle="modal" id="div_user_reg">注册</div>
+    <img alt="" class="wind_hand_style" hidden id="img_user_avatar" src="/img/person.png">
     <div style="width: 1em"></div>
-    <div id="div_user_wx" class="wind_hand_style font-weight-bold" data-toggle="modal" data-target="#wxModal">公众号</div>
+    <div class="wind_hand_style font-weight-bold" data-target="#wxModal" data-toggle="modal" id="div_user_wx">公众号</div>
 </div>
 
-<div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div aria-hidden="true" aria-labelledby="myModalLabel" class="modal fade" id="loginModal" role="dialog" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header justify-content-center m-auto">
@@ -47,27 +49,27 @@
             </div>
             <div class="modal-body">
                 <div class="input-group mb-3">
-                    <input id="input_userid" type="text" class="form-control" placeholder="用户ID">
+                    <input class="form-control" id="input_userid" placeholder="用户ID" type="text">
                     <div class="input-group-append">
                         <span class="input-group-text">用户ID</span>
                     </div>
                 </div>
                 <div class="input-group mb-3">
-                    <input id="input_password" type="password" class="form-control" placeholder="密 码">
+                    <input class="form-control" id="input_password" placeholder="密 码" type="password">
                     <div class="input-group-append">
                         <span class="input-group-text">密&nbsp&nbsp&nbsp&nbsp码</span>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                <button type="button" class="btn btn-primary" onclick="login()" data-dismiss="modal">登录</button>
+                <button class="btn btn-default" data-dismiss="modal" type="button">取消</button>
+                <button class="btn btn-primary" data-dismiss="modal" onclick="login()" type="button">登录</button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal -->
 </div>
 
-<div class="modal fade" id="regModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div aria-hidden="true" aria-labelledby="myModalLabel" class="modal fade" id="regModal" role="dialog" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header justify-content-center m-auto">
@@ -75,56 +77,56 @@
             </div>
             <div class="modal-body">
                 <div class="input-group mb-3">
-                    <input id="input_reg_userid" type="text" class="form-control" placeholder="六位或以上字符，以字母开头">
+                    <input class="form-control" id="input_reg_userid" placeholder="六位或以上字符，以字母开头" type="text">
                     <div class="input-group-append">
                         <span class="input-group-text">用户&nbsp&nbsp&nbsp&nbspID</span>
                     </div>
                 </div>
                 <div class="input-group mb-3">
-                    <input id="input_reg_username" type="text" class="form-control" placeholder="英文汉字均可">
+                    <input class="form-control" id="input_reg_username" placeholder="英文汉字均可" type="text">
                     <div class="input-group-append">
                         <span class="input-group-text">昵&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp称</span>
                     </div>
                 </div>
                 <div class="input-group mb-3">
-                    <input id="input_reg_password" type="password" class="form-control" placeholder="6位或以上的字符，以字母开头">
+                    <input class="form-control" id="input_reg_password" placeholder="6位或以上的字符，以字母开头" type="password">
                     <div class="input-group-append">
                         <span class="input-group-text">密&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp码</span>
                     </div>
                 </div>
                 <div class="input-group mb-3">
-                    <input id="input_reg_dup_password" type="password" class="form-control"
-                           placeholder="6位或以上的字符，以字母开头">
+                    <input class="form-control" id="input_reg_dup_password" placeholder="6位或以上的字符，以字母开头"
+                           type="password">
                     <div class="input-group-append">
                         <span class="input-group-text">再输一遍</span>
                     </div>
                 </div>
                 <div class="input-group mb-3">
-                    <input id="input_reg_email" type="email" class="form-control" placeholder="邮 箱">
+                    <input class="form-control" id="input_reg_email" placeholder="邮 箱" type="email">
                     <div class="input-group-append">
                         <span class="input-group-text">邮&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp箱</span>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                <button type="button" class="btn btn-primary" onclick="regAccount()" data-dismiss="modal">注册</button>
+                <button class="btn btn-default" data-dismiss="modal" type="button">取消</button>
+                <button class="btn btn-primary" data-dismiss="modal" onclick="regAccount()" type="button">注册</button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal -->
 </div>
 
-<div class="modal fade" id="wxModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div aria-hidden="true" aria-labelledby="myModalLabel" class="modal fade" id="wxModal" role="dialog" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header justify-content-center m-auto">
                 <h4 class="modal-title" id="myWx">关注微信公众号</h4>
             </div>
             <div class="modal-body">
-                <img src="img/wechatpublic.jpg" class="col-12" alt="">
+                <img alt="" class="col-12" src="img/wechatpublic.jpg">
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-dismiss="modal">确定</button>
+                <button class="btn btn-primary" data-dismiss="modal" type="button">确定</button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal -->
@@ -137,14 +139,14 @@
 
 <div id="div_music_list"></div>
 
-<div id="div_bottom_player" class="navbar fixed-bottom navbar-fixed-bottom justify-content-center thewind_nav_bottom "
+<div class="navbar fixed-bottom navbar-fixed-bottom justify-content-center thewind_nav_bottom " id="div_bottom_player"
      style="height: 80px;">
     <img id="img_player_icon" src="https://p1.music.126.net/diGAyEmpymX8G7JcnElncQ==/109951163699673355.jpg"
          style="width: 50px;height: 50px">
     <span id="span_player_info">起风了 - 买辣椒也用券</span>
     <span style="width: 1em"></span>
-    <audio id="audio_player" src="https://music.163.com/song/media/outer/url?id=1330348068.mp3"
-           controls="controls"></audio>
+    <audio controls="controls" id="audio_player"
+           src="https://music.163.com/song/media/outer/url?id=1330348068.mp3"></audio>
 </div>
 
 <script>

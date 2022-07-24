@@ -6,7 +6,8 @@ import xyz.thewind.music.model.Article;
 
 import java.util.List;
 
-public interface ArticleRepository extends JpaRepository<Article,Long>, JpaSpecificationExecutor<Article> {
+public interface ArticleRepository extends JpaRepository<Article, Long>, JpaSpecificationExecutor<Article> {
     Article findTopByArticleId(String articleId);
+
     List<Article> findArticlesByUserId(String userId);
 }

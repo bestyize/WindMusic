@@ -20,7 +20,7 @@ public class MvDownloadBean {
         this.data = data;
     }
 
-    public class Data {
+    public static class Data {
         int id;
         String url;
 

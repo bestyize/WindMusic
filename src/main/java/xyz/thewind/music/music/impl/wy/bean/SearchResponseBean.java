@@ -72,7 +72,7 @@ public class SearchResponseBean {
             Data.SongDetail.Quality lQuality;
 
             @SerializedName("hr")
-            Data.SongDetail.Quality  zqQuality;
+            Data.SongDetail.Quality zqQuality;
             @SerializedName("mv")
             long mvId;
 

@@ -8,11 +8,8 @@ import xyz.thewind.music.util.GsonConverter;
 
 public class MusicConfigManager {
 
-    private static class Inner {
-        public static MusicConfigManager INSTANCE = new MusicConfigManager();
+    private MusicConfigManager() {
     }
-
-    private MusicConfigManager() {}
 
     public static MusicConfigManager getInstance() {
         return Inner.INSTANCE;
@@ -30,6 +27,10 @@ public class MusicConfigManager {
 
     public String refreshToken() {
         return RefreshTokenTask.doRefreshToken();
+    }
+
+    private static class Inner {
+        public static MusicConfigManager INSTANCE = new MusicConfigManager();
     }
 
 

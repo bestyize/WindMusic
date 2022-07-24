@@ -2,9 +2,9 @@ package xyz.thewind.music.model;
 
 import lombok.Data;
 
-
 import javax.persistence.*;
 import java.util.Date;
+
 @Entity
 @Table(name = "tb_user")
 @Data
@@ -12,25 +12,25 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "user_id",columnDefinition = "varchar(32)",nullable = false,unique = true)
+    @Column(name = "user_id", columnDefinition = "varchar(32)", nullable = false, unique = true)
     private String userId;
-    @Column(name = "password",columnDefinition = "varchar(32)",nullable = false)
+    @Column(name = "password", columnDefinition = "varchar(32)", nullable = false)
     private String password;
-    @Column(name = "user_name",columnDefinition = "varchar(32)",nullable = false)
+    @Column(name = "user_name", columnDefinition = "varchar(32)", nullable = false)
     private String userName;
-    @Column(name = "email",columnDefinition = "varchar(32)",nullable = true,unique = true)
+    @Column(name = "email", columnDefinition = "varchar(32)", nullable = true, unique = true)
     private String email;
-    @Column(name = "mobile",columnDefinition = "varchar(11)",nullable = true,unique = true)
+    @Column(name = "mobile", columnDefinition = "varchar(11)", nullable = true, unique = true)
     private String mobile;
-    @Column(name = "birthday",columnDefinition = "timestamp",nullable = false)
+    @Column(name = "birthday", columnDefinition = "timestamp", nullable = false)
     private Date birthday;
-    @Column(name = "create_date",columnDefinition = "timestamp",nullable = false)
+    @Column(name = "create_date", columnDefinition = "timestamp", nullable = false)
     private Date createDate;
-    @Column(name = "level",columnDefinition = "int",nullable = false)
+    @Column(name = "level", columnDefinition = "int", nullable = false)
     private Integer level;
-    @Column(name = "status",columnDefinition = "int",nullable = false)
+    @Column(name = "status", columnDefinition = "int", nullable = false)
     private Integer status;
-    @Column(name = "avatar",columnDefinition = "varchar(200)",nullable = true)
+    @Column(name = "avatar", columnDefinition = "varchar(200)", nullable = true)
     private String avatar;
 
     public User() {

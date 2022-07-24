@@ -10,9 +10,8 @@ import xyz.thewind.music.model.CommonResp;
 import xyz.thewind.music.model.PlayerBean;
 import xyz.thewind.music.model.SongBean;
 import xyz.thewind.music.music.MusicDispatcher;
-import xyz.thewind.music.music.common.MusicRedisConfig;
 import xyz.thewind.music.music.common.MusicConfigManager;
-
+import xyz.thewind.music.music.common.MusicRedisConfig;
 import xyz.thewind.music.service.RedisService;
 import xyz.thewind.music.util.Base64Converter;
 import xyz.thewind.music.util.GsonConverter;

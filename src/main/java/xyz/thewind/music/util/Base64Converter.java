@@ -1,9 +1,5 @@
 package xyz.thewind.music.util;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
@@ -13,7 +9,7 @@ public class Base64Converter {
     final static Base64.Decoder decoder = Base64.getDecoder();
 
     public static String encode(String clearText) {
-        if(clearText==null||clearText.length()==0){
+        if (clearText == null || clearText.length() == 0) {
             return "";
         }
         byte[] b = clearText.getBytes(StandardCharsets.UTF_8);
@@ -21,12 +17,12 @@ public class Base64Converter {
     }
 
     public static String decode(String encodedText) {
-        String decodeStr=null;
+        String decodeStr = null;
         try {
-            decodeStr=new String(decoder.decode(encodedText), StandardCharsets.UTF_8);
-        }catch (Exception e){
+            decodeStr = new String(decoder.decode(encodedText), StandardCharsets.UTF_8);
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        return decodeStr==null?"":decodeStr;
+        return decodeStr == null ? "" : decodeStr;
     }
 }

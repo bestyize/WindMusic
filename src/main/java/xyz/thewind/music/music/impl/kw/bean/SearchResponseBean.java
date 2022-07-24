@@ -35,8 +35,8 @@ public class SearchResponseBean {
     }
 
     public class Data {
-        private String total;
         public List<Data.SongDetail> list;
+        private String total;
 
         public String getTotal() {
             return total;

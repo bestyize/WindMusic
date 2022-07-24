@@ -1,4 +1,5 @@
 package xyz.thewind.music.model;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
@@ -21,7 +22,7 @@ public class SongBean implements Serializable {
     private String mvUrl;//MV链接
     private String songLink;//歌曲链接
     private String quality;//最高质量
-    private Map<String,String> downloadLinkMap;
+    private Map<String, String> downloadLinkMap;
 //    private String lqDownloadLink;//128或者最低品质音乐
 //    private String pqDownloadLink;//128或者192的MP3
 //    private String hqDownloadLink;//320的音乐
@@ -29,7 +30,7 @@ public class SongBean implements Serializable {
 
     //此处构造函数只传入songSrc,songId,仅供搜索下载链接时候使用
     public SongBean(String songSrc, String songId) {
-        this.songSrc=songSrc;
+        this.songSrc = songSrc;
         this.songId = songId;
     }
 
@@ -47,28 +48,28 @@ public class SongBean implements Serializable {
         this.songLink = songLink;
     }
 
-    public SongBean(String picUrl, String lrcUrl, String mvUrl, Map<String,String> downloadLinkMap) {
+    public SongBean(String picUrl, String lrcUrl, String mvUrl, Map<String, String> downloadLinkMap) {
         this.picUrl = picUrl;
         this.lrcUrl = lrcUrl;
         this.mvUrl = mvUrl;
-        this.downloadLinkMap=downloadLinkMap;
+        this.downloadLinkMap = downloadLinkMap;
     }
 
-    public SongBean(String songSrc, String songId, String songName,List<String> singersId, List<String> singersName,String albumId, String albumName, String quality,String picUrl, String lrcUrl, String mvUrl) {
+    public SongBean(String songSrc, String songId, String songName, List<String> singersId, List<String> singersName, String albumId, String albumName, String quality, String picUrl, String lrcUrl, String mvUrl) {
         this.songSrc = songSrc;
         this.songId = songId;
         this.songName = songName;
-        this.singersId=singersId;
+        this.singersId = singersId;
         this.singersName = singersName;
-        this.albumId=albumId;
+        this.albumId = albumId;
         this.albumName = albumName;
-        this.quality=quality;
+        this.quality = quality;
         this.picUrl = picUrl;
         this.lrcUrl = lrcUrl;
         this.mvUrl = mvUrl;
     }
 
-    public SongBean(String songSrc, String songId, String songName, List<String> singersName, String albumName, String picUrl, String lrcUrl, String mvUrl, String songLink, String quality, Map<String,String> downloadLinkMap) {
+    public SongBean(String songSrc, String songId, String songName, List<String> singersName, String albumName, String picUrl, String lrcUrl, String mvUrl, String songLink, String quality, Map<String, String> downloadLinkMap) {
         this.songSrc = songSrc;
         this.songId = songId;
         this.songName = songName;
@@ -79,7 +80,11 @@ public class SongBean implements Serializable {
         this.mvUrl = mvUrl;
         this.songLink = songLink;
         this.quality = quality;
-        this.downloadLinkMap=downloadLinkMap;
+        this.downloadLinkMap = downloadLinkMap;
+    }
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
     }
 
     public String getSongSrc() {
@@ -104,10 +109,6 @@ public class SongBean implements Serializable {
 
     public void setSongName(String songName) {
         this.songName = songName;
-    }
-
-    public static long getSerialVersionUID() {
-        return serialVersionUID;
     }
 
     public List<String> getSingersId() {
@@ -183,8 +184,8 @@ public class SongBean implements Serializable {
     }
 
     public Map<String, String> getDownloadLinkMap() {
-        if(downloadLinkMap==null){
-            downloadLinkMap=new HashMap<>();
+        if (downloadLinkMap == null) {
+            downloadLinkMap = new HashMap<>();
         }
         return downloadLinkMap;
     }

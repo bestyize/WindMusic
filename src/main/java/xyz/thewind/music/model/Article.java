@@ -13,23 +13,23 @@ public class Article {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "article_id",columnDefinition = "varchar(64)",nullable = false,unique = true)
+    @Column(name = "article_id", columnDefinition = "varchar(64)", nullable = false, unique = true)
     private String articleId;
-    @Column(name = "article_title",columnDefinition = "varchar(64)",nullable = false,unique = true)
+    @Column(name = "article_title", columnDefinition = "varchar(64)", nullable = false, unique = true)
     private String articleTitle;
-    @Column(name = "content",columnDefinition = "text",nullable = false)
+    @Column(name = "content", columnDefinition = "text", nullable = false)
     private String content;
-    @Column(name = "article_url",columnDefinition = "varchar(64)",nullable = false,unique = true)
+    @Column(name = "article_url", columnDefinition = "varchar(64)", nullable = false, unique = true)
     private String articleUrl;
-    @Column(name = "type",columnDefinition = "int",nullable = false)
+    @Column(name = "type", columnDefinition = "int", nullable = false)
     private Integer type;
-    @Column(name = "publish_time",columnDefinition = "timestamp",nullable = false)
+    @Column(name = "publish_time", columnDefinition = "timestamp", nullable = false)
     private Date publishTime;
-    @Column(name = "cover_url",columnDefinition = "varchar(64)")
+    @Column(name = "cover_url", columnDefinition = "varchar(64)")
     private String coverUrl;
-    @Column(name = "user_id",columnDefinition = "varchar(64)",nullable = false)
+    @Column(name = "user_id", columnDefinition = "varchar(64)", nullable = false)
     private String userId;
-    @Column(name = "like_count",columnDefinition = "int")
+    @Column(name = "like_count", columnDefinition = "int")
     private Integer likeCount;
 
     public Article() {

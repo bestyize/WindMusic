@@ -11,16 +11,16 @@ import xyz.thewind.music.model.User;
 import xyz.thewind.music.service.UserService;
 
 
-
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestPropertySource(locations = {"classpath:application.properties"})
 @SpringBootTest
 class UserServiceImplTestTest {
     @Autowired
     UserService userService;
+
     @Test
-    public void testFindUserByUserId(){
-        User user=userService.findUserByUserIdAndPassword("bestyize","123456");
+    public void testFindUserByUserId() {
+        User user = userService.findUserByUserIdAndPassword("bestyize", "123456");
         System.out.println(user);
     }
 
