@@ -92,51 +92,6 @@ public class KwMusicModel implements IMusicApiModel {
     }
 
     /**
-     * @param response
-     * @return
-     */
-    private List<SongBean> kwSongSearchRespProcess(String response) {
-
-        List<SongBean> list = new LinkedList<>();
-        if (response.length() == 0) {
-            return list;
-        }
-        try {
-            SearchResponseBean searchResponseBean = GsonConverter.fromJson(response, SearchResponseBean.class);
-            if (searchResponseBean.code == HTTP_CODE_200) {
-                List<SearchResponseBean.Data.SongDetail> songDetailList = searchResponseBean.data.list;
-                for (SearchResponseBean.Data.SongDetail detail : songDetailList) {
-                    SongBean songBean = new SongBean(SRC_KW,
-                            detail.songId,
-                            detail.songName,
-                            parseSingersId(detail.getSingerId() + ""),
-                            parseSingers(detail.singerName),
-                            String.valueOf(detail.getAlbumId()),
-                            detail.albumName,
-                            (detail.hasLossless ? QUALITY_SQ : QUALITY_HQ),
-                            detail.getPicUrl(), "", "");
-                    list.add(songBean);
-                }
-            }
-        } catch (Exception ignored) {
-
-        }
-
-        return list;
-    }
-
-    private List<String> parseSingers(String singers) {
-        List<String> singerList = new LinkedList<>();
-        String[] singerArr = singers.split("&");
-        Collections.addAll(singerList, singerArr);
-        return singerList;
-    }
-
-    private List<String> parseSingersId(String singerId) {
-        return new LinkedList<>(Collections.singletonList(singerId));//kw音乐只返回第一个歌手id
-    }
-
-    /**
      * 下面的接口是支持无损下载，且不需要加密的，mid为歌曲ID，br有四种选项 分别是:空出（aac）、128kmp3、320kmp3、2000kflac
      * http://www.kuwo.cn/bd/search/getSongUrlByMid?mid=226543302&br=2000kflac&bdfrom=&c=nfmbhi6fxwaj
      */
