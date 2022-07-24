@@ -5,8 +5,8 @@ import xyz.thewind.music.model.SongBean;
 import xyz.thewind.music.music.IMusicApi;
 import xyz.thewind.music.music.impl.mg.bean.LyricResponseBean;
 import xyz.thewind.music.music.impl.mg.bean.MgDownloadBean;
-import xyz.thewind.music.music.impl.mg.bean.SearchResponseBean;
-import xyz.thewind.music.music.impl.mg.bean.SongDetail;
+import xyz.thewind.music.music.impl.mg.bean.search.MgSearchResp;
+import xyz.thewind.music.music.impl.mg.bean.search.SongDetail;
 import xyz.thewind.music.util.GsonConverter;
 import xyz.thewind.music.util.HttpRequestHelper;
 
@@ -24,8 +24,7 @@ public class MgMusic implements IMusicApi {
 
     @Override
     public List<SongBean> searchMusic(String keyword, int num) {
-        String response = mgHttpSearchRequest(keyword, num);
-        return mgSongSearchRespProcess(response);
+        return parseSearchResult(doSearchMusic(keyword, num));
     }
 
     @Override
@@ -48,69 +47,36 @@ public class MgMusic implements IMusicApi {
         return songBeanList;
     }
 
-    //或者https://app.c.nf.migu.cn/MIGUM3.0/v1.0/content/search_all.do?isCopyright=1&isCorrect=1&pageNo=1&pageSize=20&sort=0&text=十年&searchSwitch={"song":1,"album":0,"singer":0,"tagSong":1,"mvSong":0,"songlist":0,"bestShow":1,"lyricSong":0}
-    private String mgHttpSearchRequest(String keyword, int num) {
-        String response = "";
-        try {
-            String key = URLEncoder.encode(keyword, "utf-8");
-            String link = "https://m.music.migu.cn/migu/remoting/scr_search_tag?rows=" + num + "&type=2&keyword=" + key + "&pgc=1";
-            Map<String, String> headerMap = new HashMap<>();
-            headerMap.put("Referer", "https://m.music.migu.cn/v3/search?keyword=" + key);
-            response = downloadWebSiteUseGet(link, headerMap);
-
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        return response;
-
+    public static void main(String[] args) {
+        MgMusic mgMusic = new MgMusic();
+        System.out.println(GsonConverter.toJson(mgMusic.searchMusic("周杰伦", 1)));
     }
 
-    /**
-     * this.songSrc = songSrc;
-     * this.songId = songId;
-     * this.songName = songName;
-     * this.singersName = singersName;
-     * this.albumName = albumName;
-     * this.quality=quality;
-     * this.picUrl = picUrl;
-     * this.lrcUrl = lrcUrl;
-     * this.mvUrl = mvUrl;
-     *
-     * @param response
-     * @return
-     */
-    private List<SongBean> mgSongSearchRespProcess(String response) {
-        List<SongBean> list = new LinkedList<>();
-        if (response.length() == 0) {
-            return list;
-        }
+    private String doSearchMusic(String keyword, int num) {
+        String key = null;
         try {
-            SearchResponseBean mgSongRespBean = GsonConverter.fromJson(response, SearchResponseBean.class);
-            if (mgSongRespBean != null) {
-                List<SongDetail> detailList = mgSongRespBean.getSongDetailList();
-                if (detailList != null) {
-                    for (SongDetail detail : detailList) {
-                        SongBean songBean = new SongBean(SRC_MG,
-                                detail.getSongId(),
-                                detail.getSongName(),
-                                parseSingersId(detail.getSingerId()),
-                                parseSingers(detail.getSingerName()),
-                                detail.getAlbumId(),
-                                detail.getAlbumName(),
-                                detail.getQuality(),
-                                detail.getPicUrl(),
-                                detail.getLyricUrl(),
-                                detail.getMvId());
-                        list.add(songBean);
-
-                    }
-                }
-            }
-        } catch (Exception ignored) {
-
+            key = URLEncoder.encode(keyword, "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            return "";
         }
+        String api = "https://app.c.nf.migu.cn/MIGUM3.0/v1.0/content/search_all.do?isCopyright=1&isCorrect=1&pageNo=1&pageSize=" + num + "&sort=0&text=" + key + "&searchSwitch={\"song\":1}";
+        return downloadWebSiteUseGet(api, null);
+    }
 
-        return list;
+    private List<SongBean> parseSearchResult(String response) {
+        List<SongBean> songBeanList = new LinkedList<>();
+        MgSearchResp resp = GsonConverter.fromJson(response, MgSearchResp.class);
+        if (resp == null) {
+            return songBeanList;
+        }
+        for (List<SongDetail> details : resp.songResultData.resultList) {
+            SongDetail detail = details.get(0);
+            SongBean songBean = new SongBean(SRC_MG, detail.getSongId(), detail.getSongName(), detail.getSingersId(),
+                    detail.getSingersName(), detail.getAlbumId(), detail.getAlbumName(), detail.getQuality(),
+                    detail.getPicUrl(), detail.getLyricUrl(), detail.getMvId());
+            songBeanList.add(songBean);
+        }
+        return songBeanList;
     }
 
     @Override
@@ -130,15 +96,8 @@ public class MgMusic implements IMusicApi {
         return "";
     }
 
-    private List<String> parseSingers(String singers) {
-        String[] singerArr = singers.split(",");
-        return new LinkedList<>(Arrays.asList(singerArr));
-    }
 
-    private List<String> parseSingersId(String singersId) {
-        String[] singerIdArr = singersId.split(",");
-        return new LinkedList<>(Arrays.asList(singerIdArr));//kw音乐只返回第一个歌手id
-    }
+
 
     @Override
     public SongBean searchSongDetail(String songId) {
@@ -147,39 +106,33 @@ public class MgMusic implements IMusicApi {
 
     private SongBean getDownloadLinkById(String songid, String quality) {
         SongBean songBean = new SongBean("MG", songid);
-        try {
-            String link = baseContentLink + songid;
-            Map<String, String> headerMap = new HashMap<>();
-            headerMap.put("User-Agent", USER_AGENT_ANDROID);
-            headerMap.put("Host", "m.music.migu.cn");
-            String response = downloadWebSiteUseGet(link, headerMap);
-            MgDownloadBean mgDownloadBean = new Gson().fromJson(response, MgDownloadBean.class);
-
-            if (mgDownloadBean != null && mgDownloadBean.getResource() != null && mgDownloadBean.getResource().size() > 0) {
-                MgDownloadBean.MgMusicDetail musicDetail = mgDownloadBean.getResource().get(0);
-                List<MgDownloadBean.MgMusicDetail.RateFormats> rateFormatList = musicDetail.getRateFormats();
-                songBean.setLrcUrl(mgDownloadBean.getResource().get(0).getLrcUrl());
-                if (rateFormatList != null) {
-                    Map<String, String> map = songBean.getDownloadLinkMap();
-                    for (MgDownloadBean.MgMusicDetail.RateFormats formats : rateFormatList) {
-                        map.put(formats.getFormatType(), formats.getUrl());
-
-                    }
-                    if (musicDetail.getEqFormat() != null) {
-                        map.put(QUALITY_EQ, musicDetail.getEqFormat().getUrl());
-                    }
-                }
-                songBean.setSongName(musicDetail.getSongName());
-                songBean.setAlbumName(musicDetail.getAlbumName());
-                songBean.setSingersName(Collections.singletonList(musicDetail.getSingerName()));
-                songBean.setSingersId(Collections.singletonList(musicDetail.getSingerId()));
-                if (musicDetail.getAlbumImgs().size() > 0) {
-                    songBean.setPicUrl(musicDetail.getAlbumImgs().get(0).getImg());
-                }
-
+        String link = baseContentLink + songid;
+        Map<String, String> headerMap = new HashMap<>();
+        headerMap.put("User-Agent", USER_AGENT_ANDROID);
+        headerMap.put("Host", "m.music.migu.cn");
+        String response = downloadWebSiteUseGet(link, headerMap);
+        MgDownloadBean mgDownloadBean = new Gson().fromJson(response, MgDownloadBean.class);
+        if (mgDownloadBean == null || mgDownloadBean.getResource() == null || mgDownloadBean.getResource().size() == 0) {
+            return songBean;
+        }
+        MgDownloadBean.MgMusicDetail musicDetail = mgDownloadBean.getResource().get(0);
+        List<MgDownloadBean.MgMusicDetail.RateFormats> rateFormatList = musicDetail.getRateFormats();
+        songBean.setLrcUrl(mgDownloadBean.getResource().get(0).getLrcUrl());
+        Map<String, String> map = songBean.getDownloadLinkMap();
+        if (rateFormatList != null) {
+            for (MgDownloadBean.MgMusicDetail.RateFormats formats : rateFormatList) {
+                map.put(formats.getFormatType(), formats.getUrl());
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        }
+        if (musicDetail.getEqFormat() != null) {
+            map.put(QUALITY_EQ, musicDetail.getEqFormat().getUrl());
+        }
+        songBean.setSongName(musicDetail.getSongName());
+        songBean.setAlbumName(musicDetail.getAlbumName());
+        songBean.setSingersName(Collections.singletonList(musicDetail.getSingerName()));
+        songBean.setSingersId(Collections.singletonList(musicDetail.getSingerId()));
+        if (musicDetail.getAlbumImgs().size() > 0) {
+            songBean.setPicUrl(musicDetail.getAlbumImgs().get(0).getImg());
         }
         return songBean;
     }

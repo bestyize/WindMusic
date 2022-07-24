@@ -21,7 +21,9 @@ public class GsonConverter {
         T t = null;
         try {
             t = gson.fromJson(json,classOfT);
-        } catch (Exception ignored) {}
+        } catch (Exception e) {
+            System.out.println(e);
+        }
 
         return t;
     }
