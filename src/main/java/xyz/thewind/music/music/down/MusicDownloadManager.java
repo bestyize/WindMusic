@@ -3,9 +3,8 @@ package xyz.thewind.music.music.down;
 
 import xyz.thewind.music.model.SongBean;
 import xyz.thewind.music.music.common.MusicCommonConfig;
-import xyz.thewind.music.music.impl.qq.bean.SearchResponse;
-import xyz.thewind.music.tool.down.DownloadHelper;
 import xyz.thewind.music.tool.down.DownloadListener;
+import xyz.thewind.music.tool.down.DownloadManager;
 import xyz.thewind.music.tool.down.DownloadParams;
 
 import java.io.File;
@@ -56,7 +55,7 @@ public class MusicDownloadManager {
                     .downloadLink(downloadLink)
                     .saveName(generateSongFileName(songBean, quality))
                     .build();
-            DownloadHelper.download(params, listener);
+            DownloadManager.getInstance().start(params, listener);
         }
     }
 
@@ -93,7 +92,7 @@ public class MusicDownloadManager {
                 .downloadLink(downloadLink)
                 .saveName(generateSongFileNameAuto(songBean, maxQuality))
                 .build();
-        DownloadHelper.download(params, listener);
+        DownloadManager.getInstance().start(params, listener);
     }
 
     public String generateSongFileName(SongBean songBean, String quality) {

@@ -3,6 +3,8 @@ package xyz.thewind.music.tool.down;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class DownloadHelper {
 

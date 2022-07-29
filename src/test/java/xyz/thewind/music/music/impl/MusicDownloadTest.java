@@ -11,7 +11,7 @@ import java.util.List;
 
 public class MusicDownloadTest {
 
-    private DownloadListener downloadListener = new DownloadListener() {
+    private static DownloadListener downloadListener = new DownloadListener() {
         @Override
         public void onStart(DownloadParams params) {
             System.out.println("onStart, name = " + params.saveName);
@@ -41,7 +41,13 @@ public class MusicDownloadTest {
     @Test
     public void testDownload() {
         MusicDownloadManager.getInstance().setSavePath("/home/read/Music");
-        List<SongBean> songBeans = new MgMusicModel().searchWithDownload("周杰伦", 10);
+        List<SongBean> songBeans = new MgMusicModel().searchWithDownload("陈奕迅", 10);
+        MusicDownloadManager.getInstance().downloadHighestQuality(songBeans, downloadListener);
+    }
+
+    public static void main(String[] args) {
+        MusicDownloadManager.getInstance().setSavePath("/home/read/Music");
+        List<SongBean> songBeans = new MgMusicModel().searchWithDownload("陈奕迅", 10);
         MusicDownloadManager.getInstance().downloadHighestQuality(songBeans, downloadListener);
     }
 }
