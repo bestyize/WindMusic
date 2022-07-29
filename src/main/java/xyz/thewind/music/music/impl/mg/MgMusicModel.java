@@ -15,7 +15,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import static xyz.thewind.music.music.common.MusicCommonConfig.*;
-import static xyz.thewind.music.util.HttpUtil.get;
 
 
 public class MgMusicModel implements IMusicApiModel {
@@ -56,7 +55,7 @@ public class MgMusicModel implements IMusicApiModel {
         String key = null;
         key = URLEncoder.encode(keyword, StandardCharsets.UTF_8);
         String api = "https://app.c.nf.migu.cn/MIGUM3.0/v1.0/content/search_all.do?isCopyright=1&isCorrect=1&pageNo=1&pageSize=" + num + "&sort=0&text=" + key + "&searchSwitch={\"song\":1}";
-        return get(api, null);
+        return HttpUtil.get(api, null);
     }
 
     private List<SongBean> parseSearchResult(String response) {
@@ -115,7 +114,7 @@ public class MgMusicModel implements IMusicApiModel {
         Map<String, String> headerMap = new HashMap<>();
         headerMap.put("User-Agent", USER_AGENT_ANDROID);
         headerMap.put("Host", "m.music.migu.cn");
-        String response = get(link, headerMap);
+        String response = HttpUtil.get(link, headerMap);
         MgDownloadBean mgDownloadBean = new Gson().fromJson(response, MgDownloadBean.class);
         if (mgDownloadBean == null || mgDownloadBean.getResource() == null || mgDownloadBean.getResource().size() == 0) {
             return songBean;

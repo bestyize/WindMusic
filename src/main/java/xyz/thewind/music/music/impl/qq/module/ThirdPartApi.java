@@ -5,8 +5,6 @@ import xyz.thewind.music.util.Md5Encrypt;
 
 import java.util.*;
 
-import static xyz.thewind.music.util.HttpUtil.get;
-
 public class ThirdPartApi {
 
     public static String getPlayUrl(String songMid, String quality) {
@@ -30,7 +28,7 @@ public class ThirdPartApi {
             String requestLink = HOST + encrypt(qualityTag + songMid);
             Map<String, String> headerMap = new HashMap<>();
             headerMap.put("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36");
-            String response = get(requestLink, headerMap);
+            String response = HttpUtil.get(requestLink, headerMap);
             if (response.contains("\"link\":\"")) {
                 response = response.substring(response.indexOf("\"link\":\"") + "\"link\":\"".length());
                 if (response.contains("\",")) {
@@ -140,7 +138,7 @@ public class ThirdPartApi {
             headerMap.put("user-agent", "lx-music request");
             headerMap.put("lxm", "0b2fcf4ff7cc722cf7f5f0ac080bf62c76ce74ccf4cdf6340ecf84b25d1c2b80d81088339d730cca7d5d5c813814881d6d01&1005000");
             headerMap.put("wycheck", auth);
-            String response = get(sixYinHost + url, headerMap);
+            String response = HttpUtil.get(sixYinHost + url, headerMap);
             if (response.contains("\"data\":\"")) {
                 response = response.substring(response.indexOf("\"data\":\"") + "\"data\":\"".length());
                 if (response.contains("\"")) {

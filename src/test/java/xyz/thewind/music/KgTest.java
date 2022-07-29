@@ -6,7 +6,6 @@ import xyz.thewind.music.util.HttpUtil;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static xyz.thewind.music.util.HttpUtil.get;
 import static xyz.thewind.music.util.Md5Encrypt.convertToMd5;
 
 public class KgTest {
@@ -45,7 +44,7 @@ public class KgTest {
                 "&album_audio_id=32144418" +
                 "&with_res_tag=0";
         Map<String, String> headerMap = new HashMap<>();
-        String response = get(baseLink, headerMap);
+        String response = HttpUtil.get(baseLink, headerMap);
         System.out.println(response);
         String downloadLink = "";
         if (response.contains("\"url\":[\"")) {

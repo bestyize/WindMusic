@@ -25,8 +25,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import static xyz.thewind.music.music.common.MusicCommonConfig.*;
-import static xyz.thewind.music.util.HttpUtil.get;
-import static xyz.thewind.music.util.HttpUtil.post;
 
 
 public class QqMusicModel implements IMusicApiModel {
@@ -92,7 +90,7 @@ public class QqMusicModel implements IMusicApiModel {
             String link = "https://u.y.qq.com/cgi-bin/musicu.fcg?data=" + URLEncoder.encode("{\"comm\":{\"ct\":\"19\",\"cv\":\"1873\",\"wid\":\"0\"},\"data\":{\"method\":\"DoSearchForQQMusicDesktop\",\"module\":\"music.search.SearchCgiService\",\"param\":{\"grp\":1,\"num_per_page\":" + num + ",\"page_num\":1,\"query\":\"" + keyword + "\",\"search_type\":0}}}");
             Map<String, String> headerMap = new HashMap<>();
             headerMap.put("User-Agent", USER_AGENT_ANDROID);
-            response = get(link, headerMap);
+            response = HttpUtil.get(link, headerMap);
         } catch (Exception e) {
             logger.error("encode failed");
         }
@@ -256,7 +254,7 @@ public class QqMusicModel implements IMusicApiModel {
         headerMap.put("Host", "u.y.qq.com");
         headerMap.put("Connection", "Keep-Alive");
         headerMap.put("Accept", "application/json");
-        return post("https://u.y.qq.com/cgi-bin/musicu.fcg", params, headerMap);
+        return HttpUtil.post("https://u.y.qq.com/cgi-bin/musicu.fcg", params, headerMap);
     }
 
 }

@@ -16,7 +16,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import static xyz.thewind.music.music.common.MusicCommonConfig.*;
-import static xyz.thewind.music.util.HttpUtil.get;
 
 
 public class KwMusicModel implements IMusicApiModel {
@@ -107,7 +106,7 @@ public class KwMusicModel implements IMusicApiModel {
             String encParams = KwEncrypt.encrypt("&type=convert_url_with_sign" + qualityMap.get(quality) + "&sig=0&ss=ss&rid=" + songid + "&network=wifi");
             Map<String, String> headerMap = new HashMap<>();
             headerMap.put("User-Agent", USER_AGENT_ANDROID);
-            String response = get(link + encParams, headerMap);
+            String response = HttpUtil.get(link + encParams, headerMap);
             DownloadResp resp = GsonUtil.fromJson(response, DownloadResp.class);
             if (resp == null) {
                 return null;
@@ -182,7 +181,7 @@ public class KwMusicModel implements IMusicApiModel {
     @Override
     public String searchMvUrl(String mvId) {
         String link = "http://www.kuwo.cn/url?response=url&format=mp4&type=convert_url&rid=" + mvId;
-        String url = get(link, null);
+        String url = HttpUtil.get(link, null);
         return (!url.startsWith("http")) ? "" : url;
     }
 
@@ -198,7 +197,7 @@ public class KwMusicModel implements IMusicApiModel {
         String encParams = KwEncrypt.encrypt("&type=convert_mv_url2&format=mp4&quality=" + mvQualityMap.get(quality) + "&sig=0&rid=" + mvId + "&network=wifi");
         Map<String, String> headerMap = new HashMap<>();
         headerMap.put("User-Agent", USER_AGENT_ANDROID);
-        String response = get(link + encParams, headerMap);
+        String response = HttpUtil.get(link + encParams, headerMap);
         if (response.contains("url=") && response.contains("sig=")) {
             return response.substring(response.indexOf("url=") + 4, response.indexOf("sig="));
         }
@@ -213,7 +212,7 @@ public class KwMusicModel implements IMusicApiModel {
         headerMap.put("csrf", "62COOIBCS34");
         //headerMap.put("Referer","https://kuwo.cn/search/list?key="+key);
         headerMap.put("Keep-Alive", "close");
-        String response = get(requestLink, headerMap);
+        String response = HttpUtil.get(requestLink, headerMap);
         SongBean songBean = new SongBean("KW", songId);
         try {
             MusicDetail detail = GsonUtil.fromJson(response, MusicDetail.class);

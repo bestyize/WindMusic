@@ -18,7 +18,6 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-import static xyz.thewind.music.util.HttpUtil.get;
 import static xyz.thewind.music.util.Md5Encrypt.convertToMd5;
 import static xyz.thewind.music.music.common.MusicCommonConfig.*;
 
@@ -108,7 +107,7 @@ public class MusicSourceTest {
         headerMap.put("csrf", "62COOIBCS34");
         //headerMap.put("Referer","https://kuwo.cn/search/list?key="+key);
         headerMap.put("Keep-Alive", "close");
-        System.out.print(get(requestLink, headerMap));
+        System.out.print(HttpUtil.get(requestLink, headerMap));
     }
 
     @Test
@@ -140,7 +139,7 @@ public class MusicSourceTest {
         String encParams = KwEncrypt.encrypt("&type=convert_mv_url2&format=mp4&quality=MP4UL&sig=0&rid=" + mvId + "&network=wifi");
         Map<String, String> headerMap = new HashMap<>();
         headerMap.put("User-Agent", USER_AGENT_ANDROID);
-        String response = get(link + encParams, headerMap);
+        String response = HttpUtil.get(link + encParams, headerMap);
         if (response.contains("url=") && response.contains("sig=")) {
             response = response.substring(response.indexOf("url=") + 4, response.indexOf("sig="));
             System.out.println(response);
@@ -184,7 +183,7 @@ public class MusicSourceTest {
         String requestUrl = "https://app.c.nf.migu.cn/MIGUM2.0/v2.1/content/listen-url?albumId=1133602125&contentId=600913000009295303&copyrightId=69926100937&netType=01&resourceType=2&toneFlag=SQ";
         Map<String, String> headerMap = new HashMap<>();
         headerMap.put("channel", "0146951");
-        System.out.println(get(requestUrl, headerMap));
+        System.out.println(HttpUtil.get(requestUrl, headerMap));
     }
 
     private static class KwEncrypt {
