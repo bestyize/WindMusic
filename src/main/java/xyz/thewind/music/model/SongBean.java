@@ -40,47 +40,20 @@ public class SongBean implements Serializable {
         this.quality = quality;
     }
 
-    //搜索完成后应该具备这一些特征
-    public SongBean(String songName, List<String> singersName, String albumName, String songLink) {
-        this.songName = songName;
-        this.singersName = singersName;
-        this.albumName = albumName;
-        this.songLink = songLink;
-    }
-
-    public SongBean(String picUrl, String lrcUrl, String mvUrl, Map<String, String> downloadLinkMap) {
-        this.picUrl = picUrl;
-        this.lrcUrl = lrcUrl;
-        this.mvUrl = mvUrl;
-        this.downloadLinkMap = downloadLinkMap;
-    }
-
-    public SongBean(String songSrc, String songId, String songName, List<String> singersId, List<String> singersName, String albumId, String albumName, String quality, String picUrl, String lrcUrl, String mvUrl) {
-        this.songSrc = songSrc;
-        this.songId = songId;
-        this.songName = songName;
-        this.singersId = singersId;
-        this.singersName = singersName;
-        this.albumId = albumId;
-        this.albumName = albumName;
-        this.quality = quality;
-        this.picUrl = picUrl;
-        this.lrcUrl = lrcUrl;
-        this.mvUrl = mvUrl;
-    }
-
-    public SongBean(String songSrc, String songId, String songName, List<String> singersName, String albumName, String picUrl, String lrcUrl, String mvUrl, String songLink, String quality, Map<String, String> downloadLinkMap) {
-        this.songSrc = songSrc;
-        this.songId = songId;
-        this.songName = songName;
-        this.singersName = singersName;
-        this.albumName = albumName;
-        this.picUrl = picUrl;
-        this.lrcUrl = lrcUrl;
-        this.mvUrl = mvUrl;
-        this.songLink = songLink;
-        this.quality = quality;
-        this.downloadLinkMap = downloadLinkMap;
+    private SongBean(Builder builder) {
+        setSongSrc(builder.songSrc);
+        setSongId(builder.songId);
+        setSongName(builder.songName);
+        setSingersId(builder.singersId);
+        setSingersName(builder.singersName);
+        setAlbumId(builder.albumId);
+        setAlbumName(builder.albumName);
+        setPicUrl(builder.picUrl);
+        setLrcUrl(builder.lrcUrl);
+        setMvUrl(builder.mvUrl);
+        setSongLink(builder.songLink);
+        setQuality(builder.quality);
+        setDownloadLinkMap(builder.downloadLinkMap);
     }
 
     public static long getSerialVersionUID() {
@@ -227,5 +200,93 @@ public class SongBean implements Serializable {
                 ", quality='" + quality + '\'' +
                 ", downloadLinkMap=" + downloadLinkMap +
                 '}';
+    }
+
+    public static final class Builder {
+        private String songSrc;
+        private String songId;
+        private String songName;
+        private List<String> singersId;
+        private List<String> singersName;
+        private String albumId;
+        private String albumName;
+        private String picUrl;
+        private String lrcUrl;
+        private String mvUrl;
+        private String songLink;
+        private String quality;
+        private Map<String, String> downloadLinkMap;
+
+        public Builder() {
+        }
+
+        public Builder songSrc(String val) {
+            songSrc = val;
+            return this;
+        }
+
+        public Builder songId(String val) {
+            songId = val;
+            return this;
+        }
+
+        public Builder songName(String val) {
+            songName = val;
+            return this;
+        }
+
+        public Builder singersId(List<String> val) {
+            singersId = val;
+            return this;
+        }
+
+        public Builder singersName(List<String> val) {
+            singersName = val;
+            return this;
+        }
+
+        public Builder albumId(String val) {
+            albumId = val;
+            return this;
+        }
+
+        public Builder albumName(String val) {
+            albumName = val;
+            return this;
+        }
+
+        public Builder picUrl(String val) {
+            picUrl = val;
+            return this;
+        }
+
+        public Builder lrcUrl(String val) {
+            lrcUrl = val;
+            return this;
+        }
+
+        public Builder mvUrl(String val) {
+            mvUrl = val;
+            return this;
+        }
+
+        public Builder songLink(String val) {
+            songLink = val;
+            return this;
+        }
+
+        public Builder quality(String val) {
+            quality = val;
+            return this;
+        }
+
+        public Builder downloadLinkMap(Map<String, String> val) {
+            downloadLinkMap = val;
+            return this;
+        }
+
+        public SongBean build() {
+            return new SongBean(this);
+        }
     }
 }

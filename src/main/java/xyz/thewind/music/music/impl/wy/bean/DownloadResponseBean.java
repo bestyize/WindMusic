@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DownloadResponseBean {
-    int code;
-    List<Data> data = new ArrayList<>();
+    public int code;
+    public List<Data> data = new ArrayList<>();
 
     public int getCode() {
         return code;
@@ -24,12 +24,12 @@ public class DownloadResponseBean {
         this.data = data;
     }
 
-    public class Data {
-        long id;
-        String url;
-        int br;
-        long size;
-        String type;
+    public static class Data {
+        public long id;
+        public String url;
+        public int br;
+        public long size;
+        public String type;
 
         public long getId() {
             return id;

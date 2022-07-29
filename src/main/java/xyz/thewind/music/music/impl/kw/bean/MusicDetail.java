@@ -2,7 +2,7 @@ package xyz.thewind.music.music.impl.kw.bean;
 
 import com.google.gson.annotations.SerializedName;
 
-public class WebSongDetail {
+public class MusicDetail {
     int code;
     Data data;
 

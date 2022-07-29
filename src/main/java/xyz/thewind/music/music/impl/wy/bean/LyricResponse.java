@@ -1,10 +1,11 @@
 package xyz.thewind.music.music.impl.wy.bean;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class LyricResponse {
-    int code;
-    Map<String, Object> lrc;
+    public int code;
+    public Map<String, Object> lrc = new HashMap<>();
 
     public int getCode() {
         return code;

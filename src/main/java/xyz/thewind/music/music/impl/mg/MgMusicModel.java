@@ -12,6 +12,7 @@ import xyz.thewind.music.util.HttpRequestHelper;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import static xyz.thewind.music.music.common.MusicCommonConfig.*;
@@ -54,11 +55,7 @@ public class MgMusicModel implements IMusicApiModel {
 
     private String doSearchMusic(String keyword, int num) {
         String key = null;
-        try {
-            key = URLEncoder.encode(keyword, "utf-8");
-        } catch (UnsupportedEncodingException e) {
-            return "";
-        }
+        key = URLEncoder.encode(keyword, StandardCharsets.UTF_8);
         String api = "https://app.c.nf.migu.cn/MIGUM3.0/v1.0/content/search_all.do?isCopyright=1&isCorrect=1&pageNo=1&pageSize=" + num + "&sort=0&text=" + key + "&searchSwitch={\"song\":1}";
         return downloadWebSiteUseGet(api, null);
     }
@@ -71,10 +68,19 @@ public class MgMusicModel implements IMusicApiModel {
         }
         for (List<SongDetail> details : resp.songResultData.resultList) {
             SongDetail detail = details.get(0);
-            SongBean songBean = new SongBean(SRC_MG, detail.getSongId(), detail.getSongName(), detail.getSingersId(),
-                    detail.getSingersName(), detail.getAlbumId(), detail.getAlbumName(), detail.getQuality(),
-                    detail.getPicUrl(), detail.getLyricUrl(), detail.getMvId());
-            songBeanList.add(songBean);
+            SongBean song = new SongBean.Builder()
+                    .songSrc(SRC_MG)
+                    .songId(detail.getSongId())
+                    .songName(detail.getSongName())
+                    .singersId(detail.getSingersId())
+                    .albumId(detail.getAlbumId())
+                    .albumName(detail.getAlbumName())
+                    .quality(detail.getQuality())
+                    .picUrl(detail.getPicUrl())
+                    .lrcUrl(detail.getLyricUrl())
+                    .mvUrl(detail.getMvId())
+                    .build();
+            songBeanList.add(song);
         }
         return songBeanList;
     }

@@ -5,6 +5,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xyz.thewind.music.model.SongBean;
 import xyz.thewind.music.music.IMusicApiModel;
+import xyz.thewind.music.music.common.MusicConfigManager;
 import xyz.thewind.music.music.impl.kg.bean.LyricData;
 import xyz.thewind.music.music.impl.kg.bean.LyricSearchResponseBean;
 import xyz.thewind.music.music.impl.kg.bean.search.MobSongDetail;
@@ -23,8 +24,6 @@ import static xyz.thewind.music.music.common.MusicCommonConfig.*;
 public class KgMusicModel implements IMusicApiModel {
     private static final Logger logger = LogManager.getLogger(KgMusicModel.class);
 
-    private static final Map<String, String> configMap = new HashMap<>();
-
     public static String searchRequest(String keyword, int num) {
         String response = "";
         try {
@@ -40,8 +39,8 @@ public class KgMusicModel implements IMusicApiModel {
     }
 
     private static String downloadRequest(String hash) {
-        String userid = configMap.getOrDefault("kg_uid", "1787523514");
-        String token = configMap.getOrDefault("kg_token", "DDA41E0AA52C263D7ECAB85782AAEB03");
+        String userid = MusicConfigManager.getInstance().getKgUid();
+        String token = MusicConfigManager.getInstance().getKgToken();
         String reqLink = RequestModule.buildDownloadRequestUrl(hash, userid, token);
         Map<String, String> headerMap = new HashMap<>();
         headerMap.put("x-router", "tracker.kugou.com");
@@ -54,14 +53,6 @@ public class KgMusicModel implements IMusicApiModel {
         }
         return response;
 
-    }
-
-    @Override
-    public void setConfigMap(Map<String, String> configMaps) {
-        if (configMaps != null) {
-            configMap.clear();
-            configMap.putAll(configMaps);
-        }
     }
 
     @Override
@@ -115,9 +106,17 @@ public class KgMusicModel implements IMusicApiModel {
         SearchResponse responseBean = GsonConverter.fromJson(response, SearchResponse.class);
         List<SongDetail> songDetailList = responseBean.data.lists;
         for (SongDetail detail : songDetailList) {
-            SongBean songBean = new SongBean(SRC_KG, detail.getSongId(), detail.getSongName(), detail.getSingersId(), detail.getSingersName(),
-                    detail.getAlbumId(), detail.getAlbumName(), detail.getQuality(), "", "", detail.getMvId());
-            list.add(songBean);
+            SongBean song = new SongBean.Builder()
+                    .songSrc(SRC_MG)
+                    .songId(detail.getSongId())
+                    .songName(detail.getSongName())
+                    .singersId(detail.getSingersId())
+                    .albumId(detail.getAlbumId())
+                    .albumName(detail.getAlbumName())
+                    .quality(detail.getQuality())
+                    .mvUrl(detail.getMvId())
+                    .build();
+            list.add(song);
         }
         return list;
     }

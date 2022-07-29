@@ -1,19 +1,16 @@
 package xyz.thewind.music.music.impl.kw;
 
-import com.sun.jdi.PathSearchingVirtualMachine;
 import xyz.thewind.music.model.SongBean;
 import xyz.thewind.music.music.IMusicApiModel;
 import xyz.thewind.music.music.impl.kw.bean.LyricResponseBean;
-import xyz.thewind.music.music.impl.kw.bean.SearchResponseBean;
-import xyz.thewind.music.music.impl.kw.bean.WebSongDetail;
+import xyz.thewind.music.music.impl.kw.bean.MusicDetail;
 import xyz.thewind.music.music.impl.kw.bean.download.DownloadResp;
 import xyz.thewind.music.music.impl.kw.bean.search.SongDetail;
-import xyz.thewind.music.music.impl.kw.bean.search.SearchResp;
+import xyz.thewind.music.music.impl.kw.bean.search.SearchResponse;
 import xyz.thewind.music.music.impl.kw.enc.KwEncrypt;
 import xyz.thewind.music.util.GsonConverter;
 import xyz.thewind.music.util.HttpRequestHelper;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -78,15 +75,23 @@ public class KwMusicModel implements IMusicApiModel {
         if (response.length() == 0) {
             return list;
         }
-        SearchResp resp = GsonConverter.fromJson(response, SearchResp.class);
+        SearchResponse resp = GsonConverter.fromJson(response, SearchResponse.class);
         if (resp == null) {
             return list;
         }
         List<SongDetail> songDetailList = resp.songList;
         for (SongDetail detail : songDetailList) {
-            SongBean songBean = new SongBean(SRC_KW, detail.getSongId(), detail.getSongName(), detail.getSingersId(), detail.getSingersName(),
-                    detail.getAlbumId(), detail.getAlbumName(), detail.getQuality(), detail.getPicUrl(), "", "");
-            list.add(songBean);
+            SongBean song = new SongBean.Builder()
+                    .songSrc(SRC_MG)
+                    .songId(detail.getSongId())
+                    .songName(detail.getSongName())
+                    .singersId(detail.getSingersId())
+                    .albumId(detail.getAlbumId())
+                    .albumName(detail.getAlbumName())
+                    .quality(detail.getQuality())
+                    .picUrl(detail.getPicUrl())
+                    .build();
+            list.add(song);
         }
         return list;
     }
@@ -211,8 +216,8 @@ public class KwMusicModel implements IMusicApiModel {
         String response = downloadWebSiteUseGet(requestLink, headerMap);
         SongBean songBean = new SongBean("KW", songId);
         try {
-            WebSongDetail detail = GsonConverter.fromJson(response, WebSongDetail.class);
-            WebSongDetail.Data data = detail.getData();
+            MusicDetail detail = GsonConverter.fromJson(response, MusicDetail.class);
+            MusicDetail.Data data = detail.getData();
             if (data != null) {
                 songBean.setSongName(data.getSongName());
                 songBean.setSingersId(Collections.singletonList(data.getSingerId() + ""));

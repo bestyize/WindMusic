@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SearchResp {
+public class SearchResponse {
     @SerializedName("abslist")
     public List<SongDetail> songList = new ArrayList<>();
 

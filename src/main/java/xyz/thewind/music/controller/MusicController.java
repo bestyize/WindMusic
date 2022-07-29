@@ -13,10 +13,7 @@ import xyz.thewind.music.music.MusicDispatcher;
 import xyz.thewind.music.music.common.MusicConfigManager;
 import xyz.thewind.music.music.common.MusicRedisConfig;
 import xyz.thewind.music.service.RedisService;
-import xyz.thewind.music.util.Base64Converter;
-import xyz.thewind.music.util.GsonConverter;
-import xyz.thewind.music.util.LyricHelper;
-import xyz.thewind.music.util.NumberHelper;
+import xyz.thewind.music.util.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,7 +24,7 @@ import java.util.Map;
 public class MusicController {
 
     private static final MusicDispatcher musicDispatcher = new MusicDispatcher();
-    public static List<String> configItemList = new ArrayList<>();
+//    public static List<String> configItemList = new ArrayList<>();
     @Autowired
     private RedisService redisService;
 
@@ -36,11 +33,10 @@ public class MusicController {
         String response;
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
-        String songSrc = loadConfig().get("songSrc");
+        String songSrc = MusicConfigManager.getInstance().getSongSrc();
         if (songSrc != null && songSrc.length() > 0) {
             src = songSrc;
         }
-        musicDispatcher.setConfigMap(loadConfig());
         if (batch == null) {
             SongBean songBean = musicDispatcher.downloadDispatcher(src, songid, quality);
             response = GsonConverter.toJson(songBean);
@@ -53,28 +49,26 @@ public class MusicController {
 
     @RequestMapping("/api/search")
     public ResponseEntity<List<SongBean>> search(String keyword, String num, String src) {
-        String songSrc = loadConfig().get("songSrc");
+        String songSrc = MusicConfigManager.getInstance().getSongSrc();
         if (songSrc != null && songSrc.length() > 0) {
             src = songSrc;
         }
-        musicDispatcher.setConfigMap(loadConfig());
         return new ResponseEntity<>(musicDispatcher.searchDispatcher(src, keyword, NumberHelper.parseNumber(num, 10)), HttpStatus.OK);
     }
 
     @RequestMapping("/api/searchdown")
     public ResponseEntity<List<SongBean>> searchDown(String keyword, String num, String src) {
-        String songSrc = loadConfig().get("songSrc");
+        String songSrc = MusicConfigManager.getInstance().getSongSrc();
         if (songSrc != null && songSrc.length() > 0) {
             src = songSrc;
         }
-        musicDispatcher.setConfigMap(loadConfig());
         List<SongBean> songBeanList = musicDispatcher.searchDownDispatcher(src, keyword, NumberHelper.parseNumber(num, 10));
         return new ResponseEntity<>(songBeanList, HttpStatus.OK);
     }
 
     @RequestMapping("/api/getlyric")
     public ResponseEntity<String> searchLyric(String songid, String src) {
-        String songSrc = loadConfig().get("songSrc");
+        String songSrc = MusicConfigManager.getInstance().getSongSrc();
         if (songSrc != null && songSrc.length() > 0) {
             src = songSrc;
         }
@@ -93,7 +87,6 @@ public class MusicController {
         }
         String songSrc = pair[0];
         String songId = pair[1];
-        musicDispatcher.setConfigMap(loadConfig());
         SongBean bean = musicDispatcher.downloadDispatcher(songSrc, songId, "PQ");
         if (bean == null) {
             return new ResponseEntity<>(playerBeanList, HttpStatus.OK);
@@ -153,7 +146,11 @@ public class MusicController {
     public ResponseEntity<CommonResp> getConfig() {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
-        return new ResponseEntity<>(new CommonResp().code(0).msg("拉取成功").obj(loadConfig()), headers, HttpStatus.OK);
+        return new ResponseEntity<>(new CommonResp()
+                .code(0)
+                .msg("拉取成功")
+                .obj(MusicConfigManager.getInstance().loadConfig()),
+                headers, HttpStatus.OK);
     }
 
     //qqmusic_uin=3011429848;qqmusic_key=EDKSKDJFAO10919WFKJKQF;kg_uid=12345;kg_token=1234;kg_pid_secret=123456;wy_music_u=ba0a04e302da6a12399d1817fe4eae9dd7c6b7f4865bf4fd9b986b5c8c07893333a649814e309366
@@ -177,24 +174,6 @@ public class MusicController {
         return true;
     }
 
-    public Map<String, String> loadConfig() {
-        if (configItemList.size() == 0) {
-            configItemList.add(MusicRedisConfig.REDIS_KGMUSIC_UID);
-            configItemList.add(MusicRedisConfig.REDIS_KGMUSIC_TOKEN);
-            configItemList.add(MusicRedisConfig.REDIS_WYMUSIC_TOKEN_KEY);
-            configItemList.add(MusicRedisConfig.REDIS_MUSIC_SRC);
-            configItemList.add(MusicRedisConfig.REDIS_QQMUSIC_WX_LOGIN_INFO);
-        }
-        Map<String, String> configMap = new HashMap<>();
-        if (!redisService.isRedisActive()) {
-            return configMap;
-        }
-        for (String key : configItemList) {
-            String val = redisService.get(key);
-            configMap.put(key, val);
-        }
-        return configMap;
-    }
 
     public CommonResp refreshToken() {
         MusicConfigManager.getInstance().refreshToken();

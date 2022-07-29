@@ -2,7 +2,15 @@ package xyz.thewind.music.music.impl.wy;
 
 import xyz.thewind.music.model.SongBean;
 import xyz.thewind.music.music.IMusicApiModel;
-import xyz.thewind.music.music.impl.wy.bean.*;
+import xyz.thewind.music.music.common.MusicConfigManager;
+import xyz.thewind.music.music.impl.wy.bean.DownloadResponseBean;
+import xyz.thewind.music.music.impl.wy.bean.LyricResponse;
+import xyz.thewind.music.music.impl.wy.bean.MusicDetail;
+import xyz.thewind.music.music.impl.wy.bean.MvDownloadBean;
+import xyz.thewind.music.music.impl.wy.bean.search.Album;
+import xyz.thewind.music.music.impl.wy.bean.search.SearchResponse;
+import xyz.thewind.music.music.impl.wy.bean.search.Singer;
+import xyz.thewind.music.music.impl.wy.bean.search.SongDetail;
 import xyz.thewind.music.util.GsonConverter;
 import xyz.thewind.music.util.HttpRequestHelper;
 import xyz.thewind.music.util.IpHelper;
@@ -21,8 +29,7 @@ public class WyMusicModel implements IMusicApiModel {
     //我的Cookie
     //private static final String userCookie="MUSIC_U=ba0a04e302da6a12399d1817fe4eae9dd7c6b7f4865bf4fd9b986b5c8c07893333a649814e309366;";
     //MusicDownloadUI的Cookie
-    //private static final String userCookie="MUSIC_U=7cc06a93dda8951677088ae1cf97bd05986585c17ccea94bc1cbb455ef45f69533a649814e309366";
-    private static final Map<String, String> configMap = new HashMap<>();
+    //private static final String userCookie="MUSIC_U=7cc06a93dda8951677088ae1cf97bd05986585c17ccea94bc1cbb455ef45f69533a649814e309366"
 
     static {
         qualityMap = new HashMap<>();
@@ -31,14 +38,6 @@ public class WyMusicModel implements IMusicApiModel {
         qualityMap.put(QUALITY_HQ, "320000");
         qualityMap.put(QUALITY_PQ, "192000");
         qualityMap.put(QUALITY_LQ, "128000");
-    }
-
-    @Override
-    public void setConfigMap(Map<String, String> configMaps) {
-        if (configMaps != null) {
-            configMap.clear();
-            configMap.putAll(configMaps);
-        }
     }
 
     @Override
@@ -53,7 +52,7 @@ public class WyMusicModel implements IMusicApiModel {
         Map<String, String> headerMap = new HashMap<>();
         headerMap.put("X-Real-IP", IpHelper.getRandomIp());
         String response = HttpRequestHelper.downloadWebSiteUseGet(searchLink, headerMap);
-        return wySongSearchRespProcess(response);
+        return parseSearchResult(response);
     }
 
     //目前仅仅支持网易普通格式
@@ -86,58 +85,34 @@ public class WyMusicModel implements IMusicApiModel {
      * @param response
      * @return
      */
-    private List<SongBean> wySongSearchRespProcess(String response) {
+    private List<SongBean> parseSearchResult(String response) {
         List<SongBean> songBeanList = new LinkedList<>();
         try {
-            SearchResponseBean searchResponseBean = GsonConverter.fromJson(response, SearchResponseBean.class);
-            if (searchResponseBean != null && searchResponseBean.result != null) {
-                List<SearchResponseBean.Data.SongDetail> songsDetailList = searchResponseBean.result.getSongsList();
-                for (SearchResponseBean.Data.SongDetail detail : songsDetailList) {
-                    SongBean songBean = new SongBean(SRC_WY,
-                            String.valueOf(detail.getSongId()),
-                            detail.getSongName(),
-                            parseSingersId(detail.getAr()),
-                            parseSingers(detail.getAr()),
-                            String.valueOf(detail.getAl().getAlbumId()),
-                            detail.getAl().getAlbumName(),
-                            getMaxQuality(detail),
-                            detail.getAl().getAlbumPicUrl(),
-                            "",
-                            String.valueOf(detail.getMvId())
-                    );
-                    songBeanList.add(songBean);
-                }
+            SearchResponse searchResponseBean = GsonConverter.fromJson(response, SearchResponse.class);
+            if (searchResponseBean == null || searchResponseBean.result == null) {
+                return songBeanList;
+            }
+            List<SongDetail> songsDetailList = searchResponseBean.result.getSongsList();
+            for (SongDetail detail : songsDetailList) {
+                SongBean song = new SongBean.Builder()
+                        .songSrc(SRC_WY)
+                        .songId(detail.getSongId() + "")
+                        .songName(detail.getSongName())
+                        .singersName(detail.getSingersName())
+                        .singersId(detail.getSingersId())
+                        .albumId(detail.getAlbum().getAlbumId() + "")
+                        .albumName(detail.getAlbum().getAlbumName())
+                        .picUrl(detail.getAlbum().albumPicUrl)
+                        .quality(detail.getQuality())
+                        .quality(detail.getQuality())
+                        .mvUrl(detail.getMvId() + "")
+                        .build();
+                songBeanList.add(song);
             }
         } catch (Exception ignored) {
 
         }
         return songBeanList;
-    }
-
-    private String getMaxQuality(SearchResponseBean.Data.SongDetail detail) {
-        if (detail.getPrivilege().maxbr < 999000) {
-            return QUALITY_HQ;
-        }
-        if (detail.getZqQuality() != null) {
-            return QUALITY_ZQ;
-        }
-        return QUALITY_SQ;
-    }
-
-    private List<String> parseSingers(List<SearchResponseBean.Data.SongDetail.Singer> singers) {
-        List<String> singerList = new LinkedList<>();
-        for (SearchResponseBean.Data.SongDetail.Singer singer : singers) {
-            singerList.add(singer.getSingerName());
-        }
-        return singerList;
-    }
-
-    private List<String> parseSingersId(List<SearchResponseBean.Data.SongDetail.Singer> singers) {
-        List<String> singerIdList = new LinkedList<>();
-        for (SearchResponseBean.Data.SongDetail.Singer singer : singers) {
-            singerIdList.add(singer.getSingerId() + "");
-        }
-        return singerIdList;
     }
 
     private String getPlayUrl(String id, String quality) {
@@ -154,7 +129,7 @@ public class WyMusicModel implements IMusicApiModel {
             e.printStackTrace();
         }
         Map<String, String> headerMap = new HashMap<>();
-        String cookie = "MUSIC_U=" + configMap.get("wy_music_u");
+        String cookie = "MUSIC_U=" + MusicConfigManager.getInstance().getWyMusicToken();
         headerMap.put("X-Real-IP", IpHelper.getRandomIp());
         headerMap.put("Cookie", cookie.length() == 8 ? userCookie : cookie);
         String response = HttpRequestHelper.downloadWebSiteUseGet(url, headerMap);
@@ -205,24 +180,24 @@ public class WyMusicModel implements IMusicApiModel {
         headerMap.put("X-Real-IP", IpHelper.getRandomIp());
         String response = HttpRequestHelper.downloadWebSiteUseGet(api, headerMap);
         try {
-            SongDetail songDetail = GsonConverter.fromJson(response, SongDetail.class);
+            MusicDetail songDetail = GsonConverter.fromJson(response, MusicDetail.class);
             SongBean songBean = new SongBean("WY", songId);
             if (songDetail.getSongs().size() > 0 && songDetail.getSongs().get(0).getArtists().size() > 0) {
-                SongDetail.Song song = songDetail.getSongs().get(0);
-                List<SongDetail.Song.Artist> artists = song.getArtists();
-                SongDetail.Song.Album album = song.getAlbum();
+                MusicDetail.Song song = songDetail.getSongs().get(0);
+                List<Singer> artists = song.getArtists();
+                Album album = song.getAlbum();
                 songBean.setSongName(song.getName());
                 if (album != null) {
-                    String picUrl = album.getPicUrl().replace("http://", "https://");
+                    String picUrl = album.getAlbumPicUrl().replace("http://", "https://");
                     songBean.setPicUrl(picUrl);
-                    songBean.setAlbumId(album.getId() + "");
-                    songBean.setAlbumName(album.getName());
+                    songBean.setAlbumId(album.getAlbumId() + "");
+                    songBean.setAlbumName(album.getAlbumName());
                 }
                 List<String> singerNames = new ArrayList<>();
                 List<String> singerIds = new ArrayList<>();
-                for (SongDetail.Song.Artist artist : artists) {
-                    singerIds.add(artist.getId() + "");
-                    singerNames.add(artist.getName());
+                for (Singer artist : artists) {
+                    singerIds.add(artist.getSingerId()+ "");
+                    singerNames.add(artist.getSingerName());
                 }
                 songBean.setSingersId(singerIds);
                 songBean.setSingersName(singerNames);

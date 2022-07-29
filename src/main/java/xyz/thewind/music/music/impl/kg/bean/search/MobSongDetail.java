@@ -5,8 +5,8 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 public class MobSongDetail {
-    int status;
-    Data data = new Data();
+    public int status;
+    public Data data = new Data();
 
     public int getStatus() {
         return status;

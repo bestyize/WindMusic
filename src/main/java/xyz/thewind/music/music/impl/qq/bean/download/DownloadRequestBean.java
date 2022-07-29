@@ -1,4 +1,4 @@
-package xyz.thewind.music.music.impl.qq.bean;
+package xyz.thewind.music.music.impl.qq.bean.download;
 
 import java.util.List;
 
@@ -15,9 +15,9 @@ public class DownloadRequestBean {
         this.queryvkey = queryvkey;
     }
 
-    public  class Queryvkey {
-        String method = "CgiGetVkey";
-        String module = "vkey.GetVkeyServer";
+    public static class Queryvkey {
+        public String method = "CgiGetVkey";
+        public String module = "vkey.GetVkeyServer";
         public Queryvkey.Param param = new Queryvkey.Param();
 
         public String getMethod() {
@@ -36,20 +36,20 @@ public class DownloadRequestBean {
             this.module = module;
         }
 
-        public  class Param {
-            int checklimit = 0;
-            int ctx = 1;
-            int downloadfrom = 0;
-            List<String> filename;
-            String guid = "810BA5E07103080839C18EE1FD2EE9B5";
-            List<String> musicfile;
-            String nettype = "";
-            String referer = "y.qq.com";
-            int scene = 0;
-            List<String> songmid;
-            List<Integer> songtype;
+        public static class Param {
+            public int checklimit = 0;
+            public int ctx = 1;
+            public int downloadfrom = 0;
+            public List<String> filename;
+            public String guid = "810BA5E07103080839C18EE1FD2EE9B5";
+            public List<String> musicfile;
+            public String nettype = "";
+            public String referer = "y.qq.com";
+            public int scene = 0;
+            public List<String> songmid;
+            public List<Integer> songtype;
 
-            String uin;
+            public String uin;
 
             public int getChecklimit() {
                 return checklimit;

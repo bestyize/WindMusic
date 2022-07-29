@@ -30,16 +30,6 @@ public class MusicDispatcher {
         srcMap.put(SRC_KG, new KgMusicModel());
     }
 
-    private Map<String, String> configMap;
-
-    public Map<String, String> getConfigMap() {
-        return configMap;
-    }
-
-    public void setConfigMap(Map<String, String> configMap) {
-        this.configMap = configMap;
-    }
-
     //关键词搜索
     public List<SongBean> searchDispatcher(String songSrc, String keyword, int num) {
         List<SongBean> songList = new LinkedList<>();
@@ -47,7 +37,6 @@ public class MusicDispatcher {
             return songList;
         }
         IMusicApiModel IMusicApiModel = srcMap.get(songSrc);
-        IMusicApiModel.setConfigMap(getConfigMap());
         songList = IMusicApiModel.searchMusic(keyword, num);
         return songList;
     }
@@ -59,7 +48,6 @@ public class MusicDispatcher {
             return songBean;
         }
         IMusicApiModel IMusicApiModel = srcMap.get(songSrc);
-        IMusicApiModel.setConfigMap(getConfigMap());
         return IMusicApiModel.searchDownloadLink(songBean, quality);
     }
 
@@ -86,7 +74,6 @@ public class MusicDispatcher {
             return songList;
         }
         IMusicApiModel IMusicApiModel = srcMap.get(songSrc);
-        IMusicApiModel.setConfigMap(getConfigMap());
         songList = IMusicApiModel.searchWithDownload(keyword, num);
         return songList;
     }

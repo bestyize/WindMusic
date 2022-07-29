@@ -1,8 +1,8 @@
 package xyz.thewind.music.music.impl.wy.bean;
 
 public class MvDownloadBean {
-    int code;
-    Data data = new Data();
+    public int code;
+    public Data data = new Data();
 
     public int getCode() {
         return code;
@@ -21,8 +21,8 @@ public class MvDownloadBean {
     }
 
     public static class Data {
-        int id;
-        String url;
+        public int id;
+        public String url;
 
         public int getId() {
             return id;
