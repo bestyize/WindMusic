@@ -1,13 +1,12 @@
 package xyz.thewind.music;
 
 import org.junit.Test;
-import xyz.thewind.music.util.HttpRequestHelper;
-import xyz.thewind.music.util.Md5Encrypt;
+import xyz.thewind.music.util.HttpUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static xyz.thewind.music.util.HttpRequestHelper.downloadWebSiteUseGet;
+import static xyz.thewind.music.util.HttpUtil.get;
 import static xyz.thewind.music.util.Md5Encrypt.convertToMd5;
 
 public class KgTest {
@@ -46,7 +45,7 @@ public class KgTest {
                 "&album_audio_id=32144418" +
                 "&with_res_tag=0";
         Map<String, String> headerMap = new HashMap<>();
-        String response = downloadWebSiteUseGet(baseLink, headerMap);
+        String response = get(baseLink, headerMap);
         System.out.println(response);
         String downloadLink = "";
         if (response.contains("\"url\":[\"")) {
@@ -75,7 +74,7 @@ public class KgTest {
         String signature = encrypt(mapToStr(paramMap) + data);
         paramMap.put("signature", signature);
         String link = "https://youth.kugou.com/api/tracker/v1/get_tracker_list?appid=3116&dfid=0&mid=0&clientver=10422&signature=" + signature + "&clienttime=" + timestamp + "&uuid=0";
-        String response = HttpRequestHelper.downloadWebSiteUsePost(link, data, headerMap);
+        String response = HttpUtil.post(link, data, headerMap);
         String auth = "";
         if (response.contains("\"auth\":\"")) {
             auth = response.substring(response.indexOf("\"auth\":\"") + "\"auth\":\"".length());

@@ -3,7 +3,7 @@ package xyz.thewind.music.util;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
-public class Base64Converter {
+public class Base64Util {
 
     final static Base64.Encoder encoder = Base64.getEncoder();
     final static Base64.Decoder decoder = Base64.getDecoder();

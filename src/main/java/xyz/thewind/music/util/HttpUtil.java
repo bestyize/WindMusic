@@ -11,13 +11,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class HttpRequestHelper {
+public class HttpUtil {
 
-    public static String downloadWebSiteUseGet(String link) {
-        return downloadWebSiteUseGet(link, null);
+    public static String get(String link) {
+        return get(link, null);
     }
 
-    public static String downloadWebSiteUseGet(String link, Map<String, String> headerMap) {
+    public static String get(String link, Map<String, String> headerMap) {
         if (link == null || !link.startsWith("http")) {
             return "";
         }
@@ -54,7 +54,7 @@ public class HttpRequestHelper {
      * @param headerMap 请求头
      * @return 请求结果
      */
-    public static String downloadWebSiteUsePost(String link, String params, Map<String, String> headerMap) {
+    public static String post(String link, String params, Map<String, String> headerMap) {
         if (link == null || !link.startsWith("http")) {
             return "";
         }
@@ -91,7 +91,7 @@ public class HttpRequestHelper {
         return response;
     }
 
-    public static Map<String, List<String>> downloadHeaderUseGet(String link) {
+    public static Map<String, List<String>> getHeader(String link) {
         Map<String, List<String>> headerMap = new HashMap<>();
         if (link == null || !link.startsWith("http")) {
             return headerMap;
@@ -111,8 +111,12 @@ public class HttpRequestHelper {
         }
         return headerMap;
     }
+    
+    public static String buildGetUrl(String baseUrl, Map<String, Object> map) {
+        return baseUrl + buildGetBody(map);
+    }
 
-    public static String buildRequestBodyFromMap(Map<String, Object> map) {
+    public static String buildGetBody(Map<String, Object> map) {
         if (map == null) {
             return "";
         }

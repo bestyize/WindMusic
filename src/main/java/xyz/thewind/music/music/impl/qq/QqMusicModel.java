@@ -16,17 +16,17 @@ import xyz.thewind.music.music.impl.qq.bean.search.Album;
 import xyz.thewind.music.music.impl.qq.bean.search.SearchResponse;
 import xyz.thewind.music.music.impl.qq.bean.search.Singer;
 import xyz.thewind.music.music.impl.qq.bean.search.SongDetail;
-import xyz.thewind.music.util.Base64Converter;
-import xyz.thewind.music.util.GsonConverter;
-import xyz.thewind.music.util.HttpRequestHelper;
+import xyz.thewind.music.util.Base64Util;
+import xyz.thewind.music.util.GsonUtil;
+import xyz.thewind.music.util.HttpUtil;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import static xyz.thewind.music.music.common.MusicCommonConfig.*;
-import static xyz.thewind.music.util.HttpRequestHelper.downloadWebSiteUseGet;
-import static xyz.thewind.music.util.HttpRequestHelper.downloadWebSiteUsePost;
+import static xyz.thewind.music.util.HttpUtil.get;
+import static xyz.thewind.music.util.HttpUtil.post;
 
 
 public class QqMusicModel implements IMusicApiModel {
@@ -92,7 +92,7 @@ public class QqMusicModel implements IMusicApiModel {
             String link = "https://u.y.qq.com/cgi-bin/musicu.fcg?data=" + URLEncoder.encode("{\"comm\":{\"ct\":\"19\",\"cv\":\"1873\",\"wid\":\"0\"},\"data\":{\"method\":\"DoSearchForQQMusicDesktop\",\"module\":\"music.search.SearchCgiService\",\"param\":{\"grp\":1,\"num_per_page\":" + num + ",\"page_num\":1,\"query\":\"" + keyword + "\",\"search_type\":0}}}");
             Map<String, String> headerMap = new HashMap<>();
             headerMap.put("User-Agent", USER_AGENT_ANDROID);
-            response = downloadWebSiteUseGet(link, headerMap);
+            response = get(link, headerMap);
         } catch (Exception e) {
             logger.error("encode failed");
         }
@@ -111,7 +111,7 @@ public class QqMusicModel implements IMusicApiModel {
         }
         SearchResponse searchResponse = null;
         try {
-            searchResponse = GsonConverter.fromJson(response, SearchResponse.class);
+            searchResponse = GsonUtil.fromJson(response, SearchResponse.class);
         } catch (Exception e) {
             logger.error(e.getMessage());
         }
@@ -143,10 +143,10 @@ public class QqMusicModel implements IMusicApiModel {
         String baseLink = "https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_new.fcg?g_tk=5381&format=json&songmid=" + lyricId.split(SPLIT_MID)[0];
         Map<String, String> headerMap = new HashMap<>();
         headerMap.put("Referer", "https://y.qq.com/portal/player.html");
-        String encodeLyric = HttpRequestHelper.downloadWebSiteUseGet(baseLink, headerMap);
+        String encodeLyric = HttpUtil.get(baseLink, headerMap);
         try {
-            LyricResponseBean bean = GsonConverter.fromJson(encodeLyric, LyricResponseBean.class);
-            return Base64Converter.decode(bean.getLyric());
+            LyricResponseBean bean = GsonUtil.fromJson(encodeLyric, LyricResponseBean.class);
+            return Base64Util.decode(bean.getLyric());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -159,8 +159,8 @@ public class QqMusicModel implements IMusicApiModel {
         String encode;
         encode = URLEncoder.encode(data, StandardCharsets.UTF_8);
         String api = "https://u.y.qq.com/cgi-bin/musicu.fcg";
-        String response = HttpRequestHelper.downloadWebSiteUseGet(api + "?data=" + encode, null);
-        MusicDetail detail = GsonConverter.fromJson(response, MusicDetail.class);
+        String response = HttpUtil.get(api + "?data=" + encode, null);
+        MusicDetail detail = GsonUtil.fromJson(response, MusicDetail.class);
         SongDetail trackInfo = detail.songinfo.data.getSongDetail();
         SongBean songBean = new SongBean("QQ", songId);
         songBean.setSongId(trackInfo.getMid());
@@ -227,7 +227,7 @@ public class QqMusicModel implements IMusicApiModel {
         String requestParams = downloadLinkRequestParamsBuilder(downloadInfoList);
         String response = downloadRequest(requestParams);
         String downloadLink = "";
-        DownloadResponse downloadResponse = GsonConverter.fromJson(response, DownloadResponse.class);
+        DownloadResponse downloadResponse = GsonUtil.fromJson(response, DownloadResponse.class);
         if (downloadResponse != null && downloadResponse.data.dataInfo.songDetailList.size() > 0) {
             List<DownloadDetail> songDetailList = downloadResponse.data.dataInfo.songDetailList;
             DownloadDetail songDetail = songDetailList.get(0);
@@ -239,7 +239,7 @@ public class QqMusicModel implements IMusicApiModel {
     public static List<SongBean> getDownloadLinkBySongIdList(List<SongBean> downloadInfoList) {
         String requestParams = downloadLinkRequestParamsBuilder(downloadInfoList);
         String response = downloadRequest(requestParams);
-        DownloadResponse downloadBean = GsonConverter.fromJson(response, DownloadResponse.class);
+        DownloadResponse downloadBean = GsonUtil.fromJson(response, DownloadResponse.class);
         if (downloadBean != null && downloadBean.data != null && downloadBean.data.dataInfo.songDetailList.size() > 0) {
             List<DownloadDetail> songDetailList = downloadBean.data.dataInfo.songDetailList;
             for (int i = 0; i < songDetailList.size(); i++) {
@@ -256,7 +256,7 @@ public class QqMusicModel implements IMusicApiModel {
         headerMap.put("Host", "u.y.qq.com");
         headerMap.put("Connection", "Keep-Alive");
         headerMap.put("Accept", "application/json");
-        return downloadWebSiteUsePost("https://u.y.qq.com/cgi-bin/musicu.fcg", params, headerMap);
+        return post("https://u.y.qq.com/cgi-bin/musicu.fcg", params, headerMap);
     }
 
 }

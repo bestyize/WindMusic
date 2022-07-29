@@ -11,14 +11,11 @@ import xyz.thewind.music.model.PlayerBean;
 import xyz.thewind.music.model.SongBean;
 import xyz.thewind.music.music.MusicDispatcher;
 import xyz.thewind.music.music.common.MusicConfigManager;
-import xyz.thewind.music.music.common.MusicRedisConfig;
 import xyz.thewind.music.service.RedisService;
 import xyz.thewind.music.util.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 public class MusicController {
@@ -39,10 +36,10 @@ public class MusicController {
         }
         if (batch == null) {
             SongBean songBean = musicDispatcher.downloadDispatcher(src, songid, quality);
-            response = GsonConverter.toJson(songBean);
+            response = GsonUtil.toJson(songBean);
         } else {
             List<SongBean> songBeanList = musicDispatcher.downloadDispatcher(src, batch);
-            response = GsonConverter.toJson(songBeanList);
+            response = GsonUtil.toJson(songBeanList);
         }
         return new ResponseEntity<>(response, headers, HttpStatus.OK);
     }
@@ -159,7 +156,7 @@ public class MusicController {
             return false;
         }
         try {
-            String clearContent = Base64Converter.decode(params);
+            String clearContent = Base64Util.decode(params);
             String[] cookies = clearContent.split(";");
             for (String c : cookies) {
                 String[] splice = c.split("=");

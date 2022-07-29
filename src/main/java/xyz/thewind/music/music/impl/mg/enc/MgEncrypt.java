@@ -1,6 +1,6 @@
 package xyz.thewind.music.music.impl.mg.enc;
 
-import xyz.thewind.music.util.HttpRequestHelper;
+import xyz.thewind.music.util.HttpUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -16,7 +16,7 @@ public class MgEncrypt {
             String userPhoneNum = Base64.getEncoder().encodeToString(genPhoneNumber().getBytes(StandardCharsets.UTF_8));
             String requestUrl = requestUrl(keyword, num, page);
             Map<String, String> requestHeader = requestHeader(keyword, userPhoneNum);
-            return HttpRequestHelper.downloadWebSiteUseGet(requestUrl, requestHeader).trim();
+            return HttpUtil.get(requestUrl, requestHeader).trim();
         } catch (Exception e) {
             e.printStackTrace();
         }

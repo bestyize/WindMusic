@@ -9,7 +9,7 @@ import xyz.thewind.music.music.impl.qq.bean.login.QQMusicLoginToken;
 import xyz.thewind.music.music.impl.qq.module.RequestModule;
 import xyz.thewind.music.service.RedisService;
 import xyz.thewind.music.util.ApplicationUtils;
-import xyz.thewind.music.util.GsonConverter;
+import xyz.thewind.music.util.GsonUtil;
 
 @Component
 @EnableScheduling
@@ -26,16 +26,16 @@ public class RefreshTokenTask {
             return "redis closed";
         }
         String oldLoginInfo = redisService.get(MusicRedisConfig.REDIS_QQMUSIC_WX_LOGIN_INFO);
-        QQMusicLoginToken oldToken = GsonConverter.fromJson(oldLoginInfo, QQMusicLoginToken.class);
+        QQMusicLoginToken oldToken = GsonUtil.fromJson(oldLoginInfo, QQMusicLoginToken.class);
         if (oldToken == null) {
             return "old token missed";
         }
         String newLoginInfo = RequestModule.login(oldToken);
-        QQMusicLoginResp resp = GsonConverter.fromJson(newLoginInfo, QQMusicLoginResp.class);
+        QQMusicLoginResp resp = GsonUtil.fromJson(newLoginInfo, QQMusicLoginResp.class);
         if (resp == null) {
             return "new token missed";
         }
-        String newToken = GsonConverter.toJson(resp.data.token);
+        String newToken = GsonUtil.toJson(resp.data.token);
         redisService.set(MusicRedisConfig.REDIS_QQMUSIC_WX_LOGIN_INFO, newToken);
         return "update token success";
     }

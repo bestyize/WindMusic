@@ -7,16 +7,15 @@ import xyz.thewind.music.music.impl.mg.bean.LyricResponseBean;
 import xyz.thewind.music.music.impl.mg.bean.MgDownloadBean;
 import xyz.thewind.music.music.impl.mg.bean.search.MgSearchResp;
 import xyz.thewind.music.music.impl.mg.bean.search.SongDetail;
-import xyz.thewind.music.util.GsonConverter;
-import xyz.thewind.music.util.HttpRequestHelper;
+import xyz.thewind.music.util.GsonUtil;
+import xyz.thewind.music.util.HttpUtil;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import static xyz.thewind.music.music.common.MusicCommonConfig.*;
-import static xyz.thewind.music.util.HttpRequestHelper.downloadWebSiteUseGet;
+import static xyz.thewind.music.util.HttpUtil.get;
 
 
 public class MgMusicModel implements IMusicApiModel {
@@ -50,19 +49,19 @@ public class MgMusicModel implements IMusicApiModel {
 
     public static void main(String[] args) {
         MgMusicModel mgMusic = new MgMusicModel();
-        System.out.println(GsonConverter.toJson(mgMusic.searchMusic("周杰伦", 1)));
+        System.out.println(GsonUtil.toJson(mgMusic.searchMusic("周杰伦", 1)));
     }
 
     private String doSearchMusic(String keyword, int num) {
         String key = null;
         key = URLEncoder.encode(keyword, StandardCharsets.UTF_8);
         String api = "https://app.c.nf.migu.cn/MIGUM3.0/v1.0/content/search_all.do?isCopyright=1&isCorrect=1&pageNo=1&pageSize=" + num + "&sort=0&text=" + key + "&searchSwitch={\"song\":1}";
-        return downloadWebSiteUseGet(api, null);
+        return get(api, null);
     }
 
     private List<SongBean> parseSearchResult(String response) {
         List<SongBean> songBeanList = new LinkedList<>();
-        MgSearchResp resp = GsonConverter.fromJson(response, MgSearchResp.class);
+        MgSearchResp resp = GsonUtil.fromJson(response, MgSearchResp.class);
         if (resp == null) {
             return songBeanList;
         }
@@ -90,9 +89,9 @@ public class MgMusicModel implements IMusicApiModel {
         String url = "https://m.music.migu.cn/migu/remoting/cms_detail_tag?cpid=" + lyricId;
         Map<String, String> headerMap = new HashMap<>();
         headerMap.put("Referer", "https://m.music.migu.cn/v3/music/song/" + lyricId);
-        String response = HttpRequestHelper.downloadWebSiteUseGet(url, headerMap);
+        String response = HttpUtil.get(url, headerMap);
         try {
-            LyricResponseBean bean = GsonConverter.fromJson(response, LyricResponseBean.class);
+            LyricResponseBean bean = GsonUtil.fromJson(response, LyricResponseBean.class);
             if (bean.getData().getLyricLrc() != null) {
                 return bean.getData().getLyricLrc();
             }
@@ -116,7 +115,7 @@ public class MgMusicModel implements IMusicApiModel {
         Map<String, String> headerMap = new HashMap<>();
         headerMap.put("User-Agent", USER_AGENT_ANDROID);
         headerMap.put("Host", "m.music.migu.cn");
-        String response = downloadWebSiteUseGet(link, headerMap);
+        String response = get(link, headerMap);
         MgDownloadBean mgDownloadBean = new Gson().fromJson(response, MgDownloadBean.class);
         if (mgDownloadBean == null || mgDownloadBean.getResource() == null || mgDownloadBean.getResource().size() == 0) {
             return songBean;

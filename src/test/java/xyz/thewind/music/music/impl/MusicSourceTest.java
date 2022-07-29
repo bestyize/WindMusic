@@ -10,15 +10,15 @@ import xyz.thewind.music.music.impl.mg.MgMusicModel;
 import xyz.thewind.music.music.impl.qq.QqMusicModel;
 import xyz.thewind.music.music.impl.wy.WyMusicModel;
 
-import xyz.thewind.music.util.GsonConverter;
-import xyz.thewind.music.util.HttpRequestHelper;
+import xyz.thewind.music.util.GsonUtil;
+import xyz.thewind.music.util.HttpUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-import static xyz.thewind.music.util.HttpRequestHelper.downloadWebSiteUseGet;
+import static xyz.thewind.music.util.HttpUtil.get;
 import static xyz.thewind.music.util.Md5Encrypt.convertToMd5;
 import static xyz.thewind.music.music.common.MusicCommonConfig.*;
 
@@ -39,13 +39,13 @@ public class MusicSourceTest {
     public void test() {
 
         List<SongBean> songBeanList = dispatcher.searchDownDispatcher("WY", "蔡徐坤", 5);
-        System.out.println(GsonConverter.toJson(songBeanList));
+        System.out.println(GsonUtil.toJson(songBeanList));
     }
 
     @Test
     public void cloudMusicTest() {
         List<SongBean> songBean = dispatcher.searchDownDispatcher("KG", "周杰伦", 5);
-        System.out.println(GsonConverter.toJson(songBean));
+        System.out.println(GsonUtil.toJson(songBean));
     }
 
     @Test
@@ -61,7 +61,7 @@ public class MusicSourceTest {
         System.out.println(url);
         Map<String, String> headerMap = new HashMap<>();
         headerMap.put("Cookie", "MUSIC_U=ba0a04e302da6a12399d1817fe4eae9dd7c6b7f4865bf4fd9b986b5c8c07893333a649814e309366;");
-        return HttpRequestHelper.downloadWebSiteUseGet(url, headerMap);
+        return HttpUtil.get(url, headerMap);
     }
 
     @Test
@@ -82,7 +82,7 @@ public class MusicSourceTest {
     public void convertTimeTest() {
         IMusicApiModel helper = new KgMusicModel();
         List<SongBean> list = helper.searchWithDownload("薛之谦", 5);
-        System.out.println(GsonConverter.toJson(list));
+        System.out.println(GsonUtil.toJson(list));
         String lyric = helper.getLyric("a2544e395c12de34f6d3f6c75e8de955-1f2abb109cd8585eb9635bbb213e5f8d-23214810a242765c9e721150593a2992");
         System.out.println(lyric);
 
@@ -94,7 +94,7 @@ public class MusicSourceTest {
         String songId = "65766";
         SongBean songBean = new SongBean(songSrc, songId);
         SongBean bean = dispatcher.downloadDispatcher(songSrc, songId, "PQ");
-        System.out.println(GsonConverter.toJson(bean));
+        System.out.println(GsonUtil.toJson(bean));
 
 
     }
@@ -108,7 +108,7 @@ public class MusicSourceTest {
         headerMap.put("csrf", "62COOIBCS34");
         //headerMap.put("Referer","https://kuwo.cn/search/list?key="+key);
         headerMap.put("Keep-Alive", "close");
-        System.out.print(downloadWebSiteUseGet(requestLink, headerMap));
+        System.out.print(get(requestLink, headerMap));
     }
 
     @Test
@@ -119,7 +119,7 @@ public class MusicSourceTest {
         String data = "{\"songinfo\":{\"module\":\"music.pf_song_detail_svr\",\"method\":\"get_song_detail\",\"param\":{\"song_mid\":\"" + songId + "\"}}}";
         String encode = URLEncoder.encode(data, "UTF-8");
         String api = "https://u.y.qq.com/cgi-bin/musicu.fcg";
-        String response = HttpRequestHelper.downloadWebSiteUseGet(api + "?data=" + encode, null);
+        String response = HttpUtil.get(api + "?data=" + encode, null);
         System.out.println(response);
     }
 
@@ -140,7 +140,7 @@ public class MusicSourceTest {
         String encParams = KwEncrypt.encrypt("&type=convert_mv_url2&format=mp4&quality=MP4UL&sig=0&rid=" + mvId + "&network=wifi");
         Map<String, String> headerMap = new HashMap<>();
         headerMap.put("User-Agent", USER_AGENT_ANDROID);
-        String response = downloadWebSiteUseGet(link + encParams, headerMap);
+        String response = get(link + encParams, headerMap);
         if (response.contains("url=") && response.contains("sig=")) {
             response = response.substring(response.indexOf("url=") + 4, response.indexOf("sig="));
             System.out.println(response);
@@ -184,7 +184,7 @@ public class MusicSourceTest {
         String requestUrl = "https://app.c.nf.migu.cn/MIGUM2.0/v2.1/content/listen-url?albumId=1133602125&contentId=600913000009295303&copyrightId=69926100937&netType=01&resourceType=2&toneFlag=SQ";
         Map<String, String> headerMap = new HashMap<>();
         headerMap.put("channel", "0146951");
-        System.out.println(downloadWebSiteUseGet(requestUrl, headerMap));
+        System.out.println(get(requestUrl, headerMap));
     }
 
     private static class KwEncrypt {
@@ -346,7 +346,7 @@ public class MusicSourceTest {
                 String userPhoneNum = Base64.getEncoder().encodeToString(genPhoneNumber().getBytes(StandardCharsets.UTF_8));
                 String requestUrl = requestUrl(keyword, num, page);
                 Map<String, String> requestHeader = requestHeader(keyword, userPhoneNum);
-                return HttpRequestHelper.downloadWebSiteUseGet(requestUrl, requestHeader).trim();
+                return HttpUtil.get(requestUrl, requestHeader).trim();
             } catch (Exception e) {
                 e.printStackTrace();
             }

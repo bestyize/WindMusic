@@ -11,8 +11,8 @@ import xyz.thewind.music.music.impl.wy.bean.search.Album;
 import xyz.thewind.music.music.impl.wy.bean.search.SearchResponse;
 import xyz.thewind.music.music.impl.wy.bean.search.Singer;
 import xyz.thewind.music.music.impl.wy.bean.search.SongDetail;
-import xyz.thewind.music.util.GsonConverter;
-import xyz.thewind.music.util.HttpRequestHelper;
+import xyz.thewind.music.util.GsonUtil;
+import xyz.thewind.music.util.HttpUtil;
 import xyz.thewind.music.util.IpHelper;
 
 import java.io.UnsupportedEncodingException;
@@ -51,7 +51,7 @@ public class WyMusicModel implements IMusicApiModel {
         }
         Map<String, String> headerMap = new HashMap<>();
         headerMap.put("X-Real-IP", IpHelper.getRandomIp());
-        String response = HttpRequestHelper.downloadWebSiteUseGet(searchLink, headerMap);
+        String response = HttpUtil.get(searchLink, headerMap);
         return parseSearchResult(response);
     }
 
@@ -88,7 +88,7 @@ public class WyMusicModel implements IMusicApiModel {
     private List<SongBean> parseSearchResult(String response) {
         List<SongBean> songBeanList = new LinkedList<>();
         try {
-            SearchResponse searchResponseBean = GsonConverter.fromJson(response, SearchResponse.class);
+            SearchResponse searchResponseBean = GsonUtil.fromJson(response, SearchResponse.class);
             if (searchResponseBean == null || searchResponseBean.result == null) {
                 return songBeanList;
             }
@@ -132,8 +132,8 @@ public class WyMusicModel implements IMusicApiModel {
         String cookie = "MUSIC_U=" + MusicConfigManager.getInstance().getWyMusicToken();
         headerMap.put("X-Real-IP", IpHelper.getRandomIp());
         headerMap.put("Cookie", cookie.length() == 8 ? userCookie : cookie);
-        String response = HttpRequestHelper.downloadWebSiteUseGet(url, headerMap);
-        DownloadResponseBean responseBean = GsonConverter.fromJson(response, DownloadResponseBean.class);
+        String response = HttpUtil.get(url, headerMap);
+        DownloadResponseBean responseBean = GsonUtil.fromJson(response, DownloadResponseBean.class);
         if (responseBean != null && responseBean.getData() != null) {
             DownloadResponseBean.Data data = responseBean.getData().get(0);
             if (data != null) {
@@ -148,8 +148,8 @@ public class WyMusicModel implements IMusicApiModel {
         //https://music.163.com/api/song/enhance/play/mv/url?id=303140&r=1080;
         Map<String, String> headerMap = new HashMap<>();
         headerMap.put("X-Real-IP", IpHelper.getRandomIp());
-        String response = HttpRequestHelper.downloadWebSiteUseGet("https://music.163.com/api/song/enhance/play/mv/url?id=" + mvId + "&r=1080", headerMap);
-        MvDownloadBean bean = GsonConverter.fromJson(response, MvDownloadBean.class);
+        String response = HttpUtil.get("https://music.163.com/api/song/enhance/play/mv/url?id=" + mvId + "&r=1080", headerMap);
+        MvDownloadBean bean = GsonUtil.fromJson(response, MvDownloadBean.class);
         if (bean != null) {
             return bean.getData().getUrl();
         }
@@ -161,9 +161,9 @@ public class WyMusicModel implements IMusicApiModel {
         Map<String, String> headerMap = new HashMap<>();
         headerMap.put("X-Real-IP", IpHelper.getRandomIp());
         String baseUrl = "https://music.163.com/api/song/lyric?lv=0&kv=0&tv=0&id=" + lyricId;
-        String response = HttpRequestHelper.downloadWebSiteUseGet(baseUrl, headerMap);
+        String response = HttpUtil.get(baseUrl, headerMap);
         try {
-            LyricResponse bean = GsonConverter.fromJson(response, LyricResponse.class);
+            LyricResponse bean = GsonUtil.fromJson(response, LyricResponse.class);
             if (bean != null && bean.getLrc().get("lyric") != null) {
                 return bean.getLrc().get("lyric").toString();
             }
@@ -178,9 +178,9 @@ public class WyMusicModel implements IMusicApiModel {
         String api = "https://music.163.com/api/song/detail?ids=%5b" + songId + "%5d";
         Map<String, String> headerMap = new HashMap<>();
         headerMap.put("X-Real-IP", IpHelper.getRandomIp());
-        String response = HttpRequestHelper.downloadWebSiteUseGet(api, headerMap);
+        String response = HttpUtil.get(api, headerMap);
         try {
-            MusicDetail songDetail = GsonConverter.fromJson(response, MusicDetail.class);
+            MusicDetail songDetail = GsonUtil.fromJson(response, MusicDetail.class);
             SongBean songBean = new SongBean("WY", songId);
             if (songDetail.getSongs().size() > 0 && songDetail.getSongs().get(0).getArtists().size() > 0) {
                 MusicDetail.Song song = songDetail.getSongs().get(0);

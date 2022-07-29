@@ -5,10 +5,8 @@ import org.junit.Test;
 import xyz.thewind.music.music.impl.wy.enc.CryptoUtil;
 import xyz.thewind.music.music.impl.wy.enc.WyEncrypt;
 import xyz.thewind.music.music.impl.wy.module.RequestModule;
-import xyz.thewind.music.util.HttpRequestHelper;
+import xyz.thewind.music.util.HttpUtil;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -22,7 +20,7 @@ public class WyMusicTest {
         String params = CryptoUtil.weapiEncrypt(queryParams);
         Map<String, String> headerMap = new HashMap<>();
         headerMap.put("Content-Type", "application/x-www-form-urlencoded");
-        return HttpRequestHelper.downloadWebSiteUsePost(api, params, headerMap);
+        return HttpUtil.post(api, params, headerMap);
     }
 
     @Test
@@ -70,7 +68,7 @@ public class WyMusicTest {
         System.out.println(requestPath);
         System.out.println(queryParams);
         String param = WyEncrypt.eapiEncrypt(requestPath, queryParams);
-        String response = HttpRequestHelper.downloadWebSiteUsePost(requestPath, "params=" + param, headerMap);
+        String response = HttpUtil.post(requestPath, "params=" + param, headerMap);
         System.out.println(response);
     }
 

@@ -9,7 +9,7 @@ import xyz.thewind.music.music.impl.kw.KwMusicModel;
 import xyz.thewind.music.music.impl.mg.MgMusicModel;
 import xyz.thewind.music.music.impl.qq.QqMusicModel;
 import xyz.thewind.music.music.impl.wy.WyMusicModel;
-import xyz.thewind.music.util.Base64Converter;
+import xyz.thewind.music.util.Base64Util;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -58,7 +58,7 @@ public class MusicDispatcher {
         }
         Gson gson = new GsonBuilder().disableHtmlEscaping().create();
         try {
-            downloadInfoList = gson.fromJson(Base64Converter.decode(batch), new TypeToken<List<SongBean>>() {
+            downloadInfoList = gson.fromJson(Base64Util.decode(batch), new TypeToken<List<SongBean>>() {
             }.getType());
             downloadInfoList = srcMap.get(songSrc).searchDownloadLink(downloadInfoList);
         } catch (Exception ignored) {

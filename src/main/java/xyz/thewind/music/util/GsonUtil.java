@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 
-public class GsonConverter {
+public class GsonUtil {
     private static final Gson gson = new GsonBuilder().disableHtmlEscaping().create();
 
     public static String toJson(Object obj) {

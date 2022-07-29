@@ -1,6 +1,6 @@
 package xyz.thewind.music.music.impl.kg.module;
 
-import xyz.thewind.music.util.HttpRequestHelper;
+import xyz.thewind.music.util.HttpUtil;
 
 public class ThirdPartApi {
     public static String getPlayUrl(String songId,String quality){
@@ -14,7 +14,7 @@ public class ThirdPartApi {
                 return "";
             }
             String data="{\"hash\":\"" + songId + "\",\"album_id\":\"\",\"time\":" + System.currentTimeMillis() + "}";
-            String response= HttpRequestHelper.downloadWebSiteUseGet(baseApi+encrypt(data),null);
+            String response= HttpUtil.get(baseApi+encrypt(data),null);
             if(response.contains("http://")){
                 response=response.substring(response.indexOf("http://"));
                 response=response.substring(0,response.indexOf("\""));

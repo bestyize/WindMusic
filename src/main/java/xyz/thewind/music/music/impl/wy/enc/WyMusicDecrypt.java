@@ -1,6 +1,6 @@
 package xyz.thewind.music.music.impl.wy.enc;
 
-import xyz.thewind.music.util.HttpRequestHelper;
+import xyz.thewind.music.util.HttpUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -138,7 +138,7 @@ public class WyMusicDecrypt {
             return map;
         }
         String songId = fullName.substring(0, fullName.indexOf("-"));
-        String response = HttpRequestHelper.downloadWebSiteUseGet("https://music.163.com/api/song/detail?ids=%5b" + songId + "%5d", null);
+        String response = HttpUtil.get("https://music.163.com/api/song/detail?ids=%5b" + songId + "%5d", null);
         if (response.contains("\"songs\":[{\"name\":\"") && response.contains("\"album\":{\"name\":\"") && response.contains("\"artists\":[{\"name\":\"")) {
             response = response.substring(response.indexOf("\"songs\":[{\"name\":\"") + "\"songs\":[{\"name\":\"".length());
             map.put("songName", response.substring(0, response.indexOf("\"")));

@@ -5,7 +5,7 @@ import xyz.thewind.music.util.Md5Encrypt;
 import java.util.HashMap;
 import java.util.Map;
 
-import static xyz.thewind.music.util.HttpRequestHelper.downloadWebSiteUseGet;
+import static xyz.thewind.music.util.HttpUtil.get;
 
 public class ThirdPartApi {
     public static String getPlayUrl(String songMid, String quality) {
@@ -30,7 +30,7 @@ public class ThirdPartApi {
             headerMap.put("user-agent", "lx-music request");
             headerMap.put("lxm", "0b2fcf4ff7cc722cf7f5f0ac080bf62c76ce74ccf4cdf6340ecf84b25d1c2b80d81088339d730cca7d5d5c813814881d6d01&1005000");
             headerMap.put("wycheck", auth);
-            String response = downloadWebSiteUseGet(sixYinHost + url, headerMap);
+            String response = get(sixYinHost + url, headerMap);
             if (response.contains("\"data\":\"")) {
                 response = response.substring(response.indexOf("\"data\":\"") + "\"data\":\"".length());
                 if (response.contains("\"")) {

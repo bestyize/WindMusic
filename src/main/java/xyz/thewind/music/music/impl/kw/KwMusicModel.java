@@ -8,15 +8,15 @@ import xyz.thewind.music.music.impl.kw.bean.download.DownloadResp;
 import xyz.thewind.music.music.impl.kw.bean.search.SongDetail;
 import xyz.thewind.music.music.impl.kw.bean.search.SearchResponse;
 import xyz.thewind.music.music.impl.kw.enc.KwEncrypt;
-import xyz.thewind.music.util.GsonConverter;
-import xyz.thewind.music.util.HttpRequestHelper;
+import xyz.thewind.music.util.GsonUtil;
+import xyz.thewind.music.util.HttpUtil;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import static xyz.thewind.music.music.common.MusicCommonConfig.*;
-import static xyz.thewind.music.util.HttpRequestHelper.downloadWebSiteUseGet;
+import static xyz.thewind.music.util.HttpUtil.get;
 
 
 public class KwMusicModel implements IMusicApiModel {
@@ -67,7 +67,7 @@ public class KwMusicModel implements IMusicApiModel {
 
     private String doSearchMusic(String keyword, int num) {
         String reqLink = "http://search.kuwo.cn/r.s?user=0&all=" + URLEncoder.encode(keyword, StandardCharsets.UTF_8) + "&pn=0&rn=" + num + "&uid=0&ver=kwplayer_ar_10.1.5.0&vipver=1&newver=3&correct=1&ft=music&cluster=0&strategy=2012&encoding=utf8&rformat=json&vermerge=1&mobi=1&searchapi=5";
-        return HttpRequestHelper.downloadWebSiteUseGet(reqLink);
+        return HttpUtil.get(reqLink);
     }
 
     private List<SongBean> parseSearchResult(String response) {
@@ -75,7 +75,7 @@ public class KwMusicModel implements IMusicApiModel {
         if (response.length() == 0) {
             return list;
         }
-        SearchResponse resp = GsonConverter.fromJson(response, SearchResponse.class);
+        SearchResponse resp = GsonUtil.fromJson(response, SearchResponse.class);
         if (resp == null) {
             return list;
         }
@@ -107,8 +107,8 @@ public class KwMusicModel implements IMusicApiModel {
             String encParams = KwEncrypt.encrypt("&type=convert_url_with_sign" + qualityMap.get(quality) + "&sig=0&ss=ss&rid=" + songid + "&network=wifi");
             Map<String, String> headerMap = new HashMap<>();
             headerMap.put("User-Agent", USER_AGENT_ANDROID);
-            String response = downloadWebSiteUseGet(link + encParams, headerMap);
-            DownloadResp resp = GsonConverter.fromJson(response, DownloadResp.class);
+            String response = get(link + encParams, headerMap);
+            DownloadResp resp = GsonUtil.fromJson(response, DownloadResp.class);
             if (resp == null) {
                 return null;
             }
@@ -130,7 +130,7 @@ public class KwMusicModel implements IMusicApiModel {
         StringBuilder sb = new StringBuilder();
         try {
             String link = "http://m.kuwo.cn/newh5/singles/songinfoandlrc?musicId=" + lyricId;
-            LyricResponseBean bean = GsonConverter.fromJson(HttpRequestHelper.downloadWebSiteUseGet(link, null), LyricResponseBean.class);
+            LyricResponseBean bean = GsonUtil.fromJson(HttpUtil.get(link, null), LyricResponseBean.class);
 
             if (bean != null) {
                 List<LyricResponseBean.Data.Pair> pairList = bean.getData().getLrclist();
@@ -182,7 +182,7 @@ public class KwMusicModel implements IMusicApiModel {
     @Override
     public String searchMvUrl(String mvId) {
         String link = "http://www.kuwo.cn/url?response=url&format=mp4&type=convert_url&rid=" + mvId;
-        String url = downloadWebSiteUseGet(link, null);
+        String url = get(link, null);
         return (!url.startsWith("http")) ? "" : url;
     }
 
@@ -198,7 +198,7 @@ public class KwMusicModel implements IMusicApiModel {
         String encParams = KwEncrypt.encrypt("&type=convert_mv_url2&format=mp4&quality=" + mvQualityMap.get(quality) + "&sig=0&rid=" + mvId + "&network=wifi");
         Map<String, String> headerMap = new HashMap<>();
         headerMap.put("User-Agent", USER_AGENT_ANDROID);
-        String response = downloadWebSiteUseGet(link + encParams, headerMap);
+        String response = get(link + encParams, headerMap);
         if (response.contains("url=") && response.contains("sig=")) {
             return response.substring(response.indexOf("url=") + 4, response.indexOf("sig="));
         }
@@ -213,10 +213,10 @@ public class KwMusicModel implements IMusicApiModel {
         headerMap.put("csrf", "62COOIBCS34");
         //headerMap.put("Referer","https://kuwo.cn/search/list?key="+key);
         headerMap.put("Keep-Alive", "close");
-        String response = downloadWebSiteUseGet(requestLink, headerMap);
+        String response = get(requestLink, headerMap);
         SongBean songBean = new SongBean("KW", songId);
         try {
-            MusicDetail detail = GsonConverter.fromJson(response, MusicDetail.class);
+            MusicDetail detail = GsonUtil.fromJson(response, MusicDetail.class);
             MusicDetail.Data data = detail.getData();
             if (data != null) {
                 songBean.setSongName(data.getSongName());

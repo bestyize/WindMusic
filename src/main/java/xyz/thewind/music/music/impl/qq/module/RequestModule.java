@@ -4,7 +4,7 @@ import xyz.thewind.music.music.impl.qq.bean.RequestTemplate;
 import xyz.thewind.music.music.impl.qq.bean.RequestTemplateBuilder;
 import xyz.thewind.music.music.impl.qq.bean.login.QQMusicLoginToken;
 import xyz.thewind.music.music.impl.qq.enc.QqEncrypt;
-import xyz.thewind.music.util.HttpRequestHelper;
+import xyz.thewind.music.util.HttpUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -53,7 +53,7 @@ public class RequestModule {
         templateBuilder.add("singerList", template);
         String sign = QqEncrypt.getSign(templateBuilder.toString());
         Random ran = new Random(System.currentTimeMillis());
-        return HttpRequestHelper.downloadWebSiteUsePost(apiServer[ran.nextInt(apiServer.length)] + "sign=" + sign, templateBuilder.toString(), headerMap);
+        return HttpUtil.post(apiServer[ran.nextInt(apiServer.length)] + "sign=" + sign, templateBuilder.toString(), headerMap);
     }
 
     public static String getHotSingerList() {
@@ -71,13 +71,13 @@ public class RequestModule {
         templateBuilder.add("songdetail", template);
         String sign = QqEncrypt.getSign(templateBuilder.toString());
         Random ran = new Random(System.currentTimeMillis());
-        return HttpRequestHelper.downloadWebSiteUsePost(apiServer[ran.nextInt(apiServer.length)] + "sign=" + sign, templateBuilder.toString(), headerMap);
+        return HttpUtil.post(apiServer[ran.nextInt(apiServer.length)] + "sign=" + sign, templateBuilder.toString(), headerMap);
     }
 
     public static String login(QQMusicLoginToken token) {
         String requestBody = "{\"comm\":{\"tmeLoginType\":1,\"wid\":\"0\"},\"data\":{\"method\":\"Login\",\"module\":\"music.login.LoginServer\",\"param\":{\"access_token\":\"ACCESS_TOKEN\",\"musickey\":\"MUSIC_KEY\",\"expired_at\":1957831066,\"openid\":\"OPENID\",\"refresh_token\":\"REFRESH_TOKEN\",\"str_musicid\":\"MUSICID\",\"unionid\":\"UNIONID\"}}}";
         requestBody = requestBody.replace("ACCESS_TOKEN", token.accessToken).replace("MUSIC_KEY", token.musicKey).replace("OPENID", token.openid).replace("REFRESH_TOKEN", token.refreshToken).replace("MUSICID", token.musicId).replace("UNIONID", token.unionid);
-        return HttpRequestHelper.downloadWebSiteUsePost(apiServer[0], requestBody, null);
+        return HttpUtil.post(apiServer[0], requestBody, null);
     }
 
 }

@@ -4,7 +4,7 @@ import xyz.thewind.music.music.impl.qq.bean.login.QQMusicLoginToken;
 import xyz.thewind.music.music.impl.qq.task.RefreshTokenTask;
 import xyz.thewind.music.service.RedisService;
 import xyz.thewind.music.util.ApplicationUtils;
-import xyz.thewind.music.util.GsonConverter;
+import xyz.thewind.music.util.GsonUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,7 +37,7 @@ public class MusicConfigManager {
         if (service == null || !service.isRedisActive()) {
             return null;
         }
-        return GsonConverter.fromJson(
+        return GsonUtil.fromJson(
                 service.get(MusicRedisConfig.REDIS_QQMUSIC_WX_LOGIN_INFO),
                 QQMusicLoginToken.class);
     }

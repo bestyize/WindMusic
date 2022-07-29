@@ -1,11 +1,11 @@
 package xyz.thewind.music.music.impl.qq.module;
 
-import xyz.thewind.music.util.HttpRequestHelper;
+import xyz.thewind.music.util.HttpUtil;
 import xyz.thewind.music.util.Md5Encrypt;
 
 import java.util.*;
 
-import static xyz.thewind.music.util.HttpRequestHelper.downloadWebSiteUseGet;
+import static xyz.thewind.music.util.HttpUtil.get;
 
 public class ThirdPartApi {
 
@@ -30,7 +30,7 @@ public class ThirdPartApi {
             String requestLink = HOST + encrypt(qualityTag + songMid);
             Map<String, String> headerMap = new HashMap<>();
             headerMap.put("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36");
-            String response = downloadWebSiteUseGet(requestLink, headerMap);
+            String response = get(requestLink, headerMap);
             if (response.contains("\"link\":\"")) {
                 response = response.substring(response.indexOf("\"link\":\"") + "\"link\":\"".length());
                 if (response.contains("\",")) {
@@ -140,7 +140,7 @@ public class ThirdPartApi {
             headerMap.put("user-agent", "lx-music request");
             headerMap.put("lxm", "0b2fcf4ff7cc722cf7f5f0ac080bf62c76ce74ccf4cdf6340ecf84b25d1c2b80d81088339d730cca7d5d5c813814881d6d01&1005000");
             headerMap.put("wycheck", auth);
-            String response = downloadWebSiteUseGet(sixYinHost + url, headerMap);
+            String response = get(sixYinHost + url, headerMap);
             if (response.contains("\"data\":\"")) {
                 response = response.substring(response.indexOf("\"data\":\"") + "\"data\":\"".length());
                 if (response.contains("\"")) {
@@ -163,7 +163,7 @@ public class ThirdPartApi {
         }
 
         public static String requestUrl(String songMid, String quality) {
-            String response = HttpRequestHelper.downloadWebSiteUseGet(apiHost + "?id=" + songMid + "&type=" + qualityMap.get(quality), null);
+            String response = HttpUtil.get(apiHost + "?id=" + songMid + "&type=" + qualityMap.get(quality), null);
             if (response.contains("\"data\":\"")) {
                 response = response.substring(response.indexOf("\"data\":\"") + "\"data\":\"".length());
                 if (response.contains("\"")) {
@@ -190,7 +190,7 @@ public class ThirdPartApi {
         }
 
         public static String requestUrl(String songMid, String quality) {
-            String response = HttpRequestHelper.downloadWebSiteUseGet(apiHost + "?songid=" + songMid + "&type=" + qualityMap.get(quality) + "&skey=" + Md5Encrypt.convertToMd5(songMid + "&monster"), null);
+            String response = HttpUtil.get(apiHost + "?songid=" + songMid + "&type=" + qualityMap.get(quality) + "&skey=" + Md5Encrypt.convertToMd5(songMid + "&monster"), null);
             return response;
         }
     }

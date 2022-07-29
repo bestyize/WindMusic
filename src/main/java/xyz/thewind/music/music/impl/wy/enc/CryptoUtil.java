@@ -1,6 +1,6 @@
 package xyz.thewind.music.music.impl.wy.enc;
 
-import xyz.thewind.music.util.HttpRequestHelper;
+import xyz.thewind.music.util.HttpUtil;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
@@ -158,6 +158,6 @@ public class CryptoUtil {
         Map<String, String> headerMap = new HashMap<>();
         headerMap.put("Cookie", "MUSIC_U=ba0a04e302da6a12399d1817fe4eae9dd7c6b7f4865bf4fd9b986b5c8c07893333a649814e309366;");
         String postContentWebApi = weapiEncrypt(text);
-        System.out.println(HttpRequestHelper.downloadWebSiteUsePost("https://music.163.com/weapi/song/enhance/player/url", postContentWebApi, headerMap));
+        System.out.println(HttpUtil.post("https://music.163.com/weapi/song/enhance/player/url", postContentWebApi, headerMap));
     }
 }

@@ -12,9 +12,9 @@ import xyz.thewind.music.music.impl.kg.bean.search.MobSongDetail;
 import xyz.thewind.music.music.impl.kg.bean.search.SearchResponse;
 import xyz.thewind.music.music.impl.kg.bean.search.SongDetail;
 import xyz.thewind.music.music.impl.kg.module.RequestModule;
-import xyz.thewind.music.util.Base64Converter;
-import xyz.thewind.music.util.GsonConverter;
-import xyz.thewind.music.util.HttpRequestHelper;
+import xyz.thewind.music.util.Base64Util;
+import xyz.thewind.music.util.GsonUtil;
+import xyz.thewind.music.util.HttpUtil;
 
 import java.util.*;
 
@@ -27,7 +27,7 @@ public class KgMusicModel implements IMusicApiModel {
     public static String searchRequest(String keyword, int num) {
         String response = "";
         try {
-            response = HttpRequestHelper.downloadWebSiteUseGet(RequestModule.buildSearchUrl(keyword, num), null);
+            response = HttpUtil.get(RequestModule.buildSearchUrl(keyword, num), null);
         } catch (Exception e) {
             logger.error(e.toString());
         }
@@ -44,7 +44,7 @@ public class KgMusicModel implements IMusicApiModel {
         String reqLink = RequestModule.buildDownloadRequestUrl(hash, userid, token);
         Map<String, String> headerMap = new HashMap<>();
         headerMap.put("x-router", "tracker.kugou.com");
-        String response = HttpRequestHelper.downloadWebSiteUseGet(reqLink, headerMap);
+        String response = HttpUtil.get(reqLink, headerMap);
         if (response.contains("http:") && response.contains("\"")) {
             response = response.substring(response.indexOf("\"url\":[\"") + "\"url\":[\"".length());
             response = response.substring(0, response.indexOf("\"")).replaceAll("\\\\", "");
@@ -103,7 +103,7 @@ public class KgMusicModel implements IMusicApiModel {
         if (response.length() == 0) {
             return list;
         }
-        SearchResponse responseBean = GsonConverter.fromJson(response, SearchResponse.class);
+        SearchResponse responseBean = GsonUtil.fromJson(response, SearchResponse.class);
         List<SongDetail> songDetailList = responseBean.data.lists;
         for (SongDetail detail : songDetailList) {
             SongBean song = new SongBean.Builder()
@@ -123,7 +123,7 @@ public class KgMusicModel implements IMusicApiModel {
 
     private String getCoverByHash(String hash) {
         String link = "https://expendablekmrcdn.kugou.com/container/v1/image?data=%5B%7B%22hash%22%3A%22" + hash + "%22%7D%5D";
-        String response = HttpRequestHelper.downloadWebSiteUseGet(link, null);
+        String response = HttpUtil.get(link, null);
         if (response.contains("\"sizable_avatar\":\"")) {
             response = response.substring(response.indexOf("\"sizable_avatar\":\"") + "\"sizable_avatar\":\"".length());
             response = response.substring(0, response.indexOf("\""));
@@ -154,15 +154,15 @@ public class KgMusicModel implements IMusicApiModel {
         }
 
         String searchLink = "http://krcs.kugou.com/search?ver=1&hash=" + lyricId;
-        String searchResponse = HttpRequestHelper.downloadWebSiteUseGet(searchLink, null);
+        String searchResponse = HttpUtil.get(searchLink, null);
         try {
-            LyricSearchResponseBean bean = GsonConverter.fromJson(searchResponse, LyricSearchResponseBean.class);
+            LyricSearchResponseBean bean = GsonUtil.fromJson(searchResponse, LyricSearchResponseBean.class);
             if (bean != null && bean.getCandidates() != null && bean.getCandidates().size() > 0) {
                 LyricSearchResponseBean.Lyric lyric = bean.getCandidates().get(0);
                 String requestUrl = "http://lyrics.kugou.com/download?&fmt=lrc&ver=1&id=" + lyric.getId() + "&accesskey=" + lyric.getAccesskey();
-                LyricData lyricData = GsonConverter.fromJson(HttpRequestHelper.downloadWebSiteUseGet(requestUrl, null), LyricData.class);
+                LyricData lyricData = GsonUtil.fromJson(HttpUtil.get(requestUrl, null), LyricData.class);
                 if (lyricData != null) {
-                    return Base64Converter.decode(lyricData.getContent());
+                    return Base64Util.decode(lyricData.getContent());
                 }
 
             }
@@ -183,8 +183,8 @@ public class KgMusicModel implements IMusicApiModel {
         }
         String url = "https://wwwapi.kugou.com/yy/index.php?r=play/getdata&hash=" + songId.toUpperCase(Locale.ROOT) + "&mid=12345";
         try {
-            String response = HttpRequestHelper.downloadWebSiteUseGet(url, null);
-            MobSongDetail.Data data = GsonConverter.fromJson(response, MobSongDetail.class).getData();
+            String response = HttpUtil.get(url, null);
+            MobSongDetail.Data data = GsonUtil.fromJson(response, MobSongDetail.class).getData();
             if (data != null) {
                 SongBean bean = new SongBean(SRC_KG, sid);
                 bean.setSongName(data.getSongName());

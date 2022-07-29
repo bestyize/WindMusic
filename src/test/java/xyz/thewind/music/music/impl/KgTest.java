@@ -8,7 +8,7 @@ import org.junit.Test;
 import xyz.thewind.music.model.SongBean;
 import xyz.thewind.music.music.IMusicApiModel;
 import xyz.thewind.music.music.impl.kg.KgMusicModel;
-import xyz.thewind.music.util.HttpRequestHelper;
+import xyz.thewind.music.util.HttpUtil;
 import xyz.thewind.music.util.Md5Encrypt;
 
 import java.net.URLEncoder;
@@ -61,7 +61,7 @@ public class KgTest {
         element.add(resource);
         params.add("resource", element);
         String requestBody = params.toString();
-        String res = HttpRequestHelper.downloadWebSiteUsePost(storeApi, requestBody, null);
+        String res = HttpUtil.post(storeApi, requestBody, null);
         System.out.println(res);
         try {
             JsonParser parse = new JsonParser();  //创建json解析器
@@ -152,7 +152,7 @@ public class KgTest {
         String reqLink = "https://gateway.kugou.com/v3/url" + getGetRequestParams(map);
         Map<String, String> headerMap = new HashMap<>();
         headerMap.put("x-router", "tracker.kugou.com");
-        String response = HttpRequestHelper.downloadWebSiteUseGet(reqLink, headerMap);
+        String response = HttpUtil.get(reqLink, headerMap);
         if (response.contains("http:") && response.contains("\"")) {
             response = response.substring(response.indexOf("\"url\":[\"") + "\"url\":[\"".length());
             response = response.substring(0, response.indexOf("\"")).replaceAll("\\\\", "");
@@ -188,7 +188,7 @@ public class KgTest {
 
     private String doSearchMusic(String keyword, int num) {
         String url = buildSearchUrl(keyword, num);
-        String resp = HttpRequestHelper.downloadWebSiteUseGet(url, null);
+        String resp = HttpUtil.get(url, null);
         System.out.println(resp);
         return resp;
     }

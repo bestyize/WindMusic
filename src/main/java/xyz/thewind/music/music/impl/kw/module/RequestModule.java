@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static xyz.thewind.music.music.common.MusicCommonConfig.*;
-import static xyz.thewind.music.util.HttpRequestHelper.downloadWebSiteUseGet;
+import static xyz.thewind.music.util.HttpUtil.get;
 
 public class RequestModule {
     private static final Map<String, String> songQualityMap = new HashMap<>() {{
@@ -50,7 +50,7 @@ public class RequestModule {
 
         Map<String, String> headerMap = new HashMap<>();
         headerMap.put("User-Agent", USER_AGENT_ANDROID);
-        String response = downloadWebSiteUseGet(getPlayUrl("226543302", QUALITY_ZQ), headerMap);
+        String response = get(getPlayUrl("226543302", QUALITY_ZQ), headerMap);
         System.out.println(response);
     }
 

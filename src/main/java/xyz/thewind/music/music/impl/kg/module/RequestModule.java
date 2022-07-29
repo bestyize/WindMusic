@@ -1,7 +1,7 @@
 package xyz.thewind.music.music.impl.kg.module;
 
 import xyz.thewind.music.music.impl.qq.module.ThirdPartApi;
-import xyz.thewind.music.util.HttpRequestHelper;
+import xyz.thewind.music.util.HttpUtil;
 import xyz.thewind.music.util.Md5Encrypt;
 
 import java.util.*;
@@ -32,7 +32,7 @@ public class RequestModule {
         map.put("clientver", "99999");
         map.put("platform", "AndroidFilter");
         map.put("signature", getSignature(appkey, map));
-        return searchUrl + HttpRequestHelper.buildRequestBodyFromMap(map);
+        return HttpUtil.buildGetUrl(searchUrl, map);
     }
 
     public static String buildDownloadRequestUrl(String hash, String userId, String userToken) {
@@ -86,7 +86,7 @@ public class RequestModule {
         map.put("key", Md5Encrypt.convertToMd5(hash + pidVersionSecret + appid + mid + userId));
         String appkey = "OIlwieks28dk2k092lksi2UIkp";
         map.put("signature", getSignature(appkey, map));
-        return "https://gateway.kugou.com/v3/url" + HttpRequestHelper.buildRequestBodyFromMap(map);
+        return HttpUtil.buildGetUrl("https://gateway.kugou.com/v3/url" , map);
     }
 
     public static String getSignature(String str, Map<String, Object> map) {

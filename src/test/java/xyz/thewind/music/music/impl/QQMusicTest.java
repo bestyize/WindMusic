@@ -5,7 +5,7 @@ import org.junit.Test;
 import xyz.thewind.music.music.impl.qq.bean.login.QQMusicLoginResp;
 import xyz.thewind.music.music.impl.qq.bean.login.QQMusicLoginToken;
 import xyz.thewind.music.music.impl.qq.module.RequestModule;
-import xyz.thewind.music.util.GsonConverter;
+import xyz.thewind.music.util.GsonUtil;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -41,8 +41,8 @@ public class QQMusicTest {
                 .unionid(unionid)
                 .build();
         String resp = RequestModule.login(token);
-        QQMusicLoginResp loginResp = GsonConverter.fromJson(resp, QQMusicLoginResp.class);
-        System.out.println(GsonConverter.toJson(loginResp.data.token));
+        QQMusicLoginResp loginResp = GsonUtil.fromJson(resp, QQMusicLoginResp.class);
+        System.out.println(GsonUtil.toJson(loginResp.data.token));
     }
 
     @Test
