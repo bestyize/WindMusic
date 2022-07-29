@@ -18,7 +18,9 @@ public class DownloadHelper {
             conn.setDoInput(true);
             conn.setDoOutput(true);
         } catch (Exception e) {
-            conn.disconnect();
+            if (conn != null) {
+                conn.disconnect();
+            }
             listener.onFailed(params);
             return;
         }
@@ -71,7 +73,9 @@ public class DownloadHelper {
             reader.close();
         } catch (Exception ignored) {}
         conn.disconnect();
-        listener.onSuccess(params);
+        if (listener != null) {
+            listener.onSuccess(params);
+        }
 
     }
 }
