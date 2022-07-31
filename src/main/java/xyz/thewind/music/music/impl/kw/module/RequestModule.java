@@ -1,7 +1,5 @@
 package xyz.thewind.music.music.impl.kw.module;
 
-import org.springframework.boot.configurationprocessor.json.JSONException;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
 import xyz.thewind.music.music.common.MusicCommonConfig;
 import xyz.thewind.music.music.impl.kw.bean.download.DownloadResp;
 import xyz.thewind.music.music.impl.kw.enc.KwEncrypt;
@@ -71,20 +69,11 @@ public class RequestModule {
     }
 
     private static String parseDownloadLink(String resp){
-        if (resp == null) {
+        DownloadResp downloadResp = GsonUtil.fromJson(resp, DownloadResp.class);
+        if (downloadResp == null) {
             return null;
         }
-        JSONObject obj;
-        try {
-            obj = new JSONObject(resp);
-        } catch (JSONException e) {
-            return null;
-        }
-        JSONObject data = obj.optJSONObject("data");
-        if (data == null) {
-            return null;
-        }
-        return data.optString("url");
+        return downloadResp.data.url;
     }
 
     private static StringBuilder createCommonParams() {

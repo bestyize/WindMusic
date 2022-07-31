@@ -101,6 +101,7 @@ public class KgMusicModel implements IMusicApiModel {
 
         List<SongBean> list = new ArrayList<>();
         if (response.length() == 0) {
+            System.out.println("parseSearchResult, length = 0");
             return list;
         }
         SearchResponse responseBean = GsonUtil.fromJson(response, SearchResponse.class);
@@ -118,6 +119,9 @@ public class KgMusicModel implements IMusicApiModel {
                     .mvUrl(detail.getMvId())
                     .build();
             list.add(song);
+        }
+        if (list.isEmpty()) {
+            System.out.println("parseSearchResult, error resp = " + response);
         }
         return list;
     }
