@@ -25,7 +25,7 @@ public class MusicController {
     @Autowired
     private RedisService redisService;
 
-    @RequestMapping("/api/download")
+    @RequestMapping("/api/new/download")
     public ResponseEntity<String> download(String songid, String quality, String src, String batch) {
         String response;
         HttpHeaders headers = new HttpHeaders();
@@ -44,16 +44,17 @@ public class MusicController {
         return new ResponseEntity<>(response, headers, HttpStatus.OK);
     }
 
-    @RequestMapping("/api/search")
+    @RequestMapping("/api/new/search")
     public ResponseEntity<List<SongBean>> search(String keyword, String num, String src) {
         String songSrc = MusicConfigManager.getInstance().getSongSrc();
         if (songSrc != null && songSrc.length() > 0) {
             src = songSrc;
         }
+
         return new ResponseEntity<>(musicDispatcher.searchDispatcher(src, keyword, NumberHelper.parseNumber(num, 10)), HttpStatus.OK);
     }
 
-    @RequestMapping("/api/searchdown")
+    @RequestMapping("/api/new/searchdown")
     public ResponseEntity<List<SongBean>> searchDown(String keyword, String num, String src) {
         String songSrc = MusicConfigManager.getInstance().getSongSrc();
         if (songSrc != null && songSrc.length() > 0) {
@@ -72,7 +73,7 @@ public class MusicController {
         return new ResponseEntity<>(musicDispatcher.searchLyricDispatcher(src, songid), HttpStatus.OK);
     }
 
-    @RequestMapping("/api/player")
+    @RequestMapping("/api/new/player")
     public ResponseEntity<List<PlayerBean>> player(String shareId) {
         List<PlayerBean> playerBeanList = new ArrayList<>();
         if (shareId == null) {

@@ -196,7 +196,7 @@
         formData.append('src', songSrc);
         formData.append('quality', quality);
         $.ajax({
-            url: '/api/download',
+            url: '/api/new/download',
             type: 'POST',
             cache: false,
             data: formData,
@@ -215,7 +215,7 @@
         formData.append('src', songSrc);
         formData.append('quality', quality);
         $.ajax({
-            url: '/api/download',
+            url: '/api/new/download',
             type: 'POST',
             cache: false,
             data: formData,
@@ -283,7 +283,7 @@
         formData.append('keyword', keyword);
         formData.append('num', num);
         $.ajax({
-            url: '/api/search',
+            url: '/api/new/search',
             type: 'POST',
             cache: false,
             data: formData,
