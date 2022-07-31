@@ -261,6 +261,9 @@
             div_user_wx.click()
             return
         }
+        if (downloadLink.indexOf("http://") === 0) {
+            downloadLink = downloadLink.replace("http://", "https://");
+        }
         location.href = downloadLink;
     }
 
