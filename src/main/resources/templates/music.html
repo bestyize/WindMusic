@@ -256,9 +256,12 @@
 
     function parseDownloadInfo(params, quality) {
         let downloadLink = params.downloadLinkMap[quality];
-        if (downloadLink != null) {
-            location.href = downloadLink;
+        if (downloadLink == null || (downloadLink.indexOf("flac") === -1 && downloadLink.indexOf("mp3") === -1)) {
+            alert("暂无音源，请关注公众号查看最新动态")
+            div_user_wx.click()
+            return
         }
+        location.href = downloadLink;
     }
 
     function refreshPage() {
@@ -297,6 +300,11 @@
     }
 
     function parseSearchInfo(params) {
+        if (params.length === 0) {
+            alert("暂无搜索结果，请关注公众号查看最新动态")
+            div_user_wx.click()
+            return
+        }
         //div_music_search_area.html('');
         for (let i = 0; i < params.length; i++) {
             let musicInfo = params[i];

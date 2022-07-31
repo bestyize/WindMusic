@@ -3,6 +3,7 @@ package xyz.thewind.music.music.impl.mg;
 import com.google.gson.Gson;
 import xyz.thewind.music.model.SongBean;
 import xyz.thewind.music.music.IMusicApiModel;
+import xyz.thewind.music.music.common.MusicCommonConfig;
 import xyz.thewind.music.music.impl.mg.bean.LyricResponseBean;
 import xyz.thewind.music.music.impl.mg.bean.MgDownloadBean;
 import xyz.thewind.music.music.impl.mg.bean.search.MgSearchResp;
@@ -46,11 +47,6 @@ public class MgMusicModel implements IMusicApiModel {
         return songBeanList;
     }
 
-    public static void main(String[] args) {
-        MgMusicModel mgMusic = new MgMusicModel();
-        System.out.println(GsonUtil.toJson(mgMusic.searchMusic("周杰伦", 1)));
-    }
-
     private String doSearchMusic(String keyword, int num) {
         String key = null;
         key = URLEncoder.encode(keyword, StandardCharsets.UTF_8);
@@ -69,6 +65,7 @@ public class MgMusicModel implements IMusicApiModel {
             SongBean song = new SongBean.Builder()
                     .songSrc(SRC_MG)
                     .songId(detail.getSongId())
+                    .singersName(detail.getSingersName())
                     .songName(detail.getSongName())
                     .singersId(detail.getSingersId())
                     .albumId(detail.getAlbumId())
@@ -109,7 +106,7 @@ public class MgMusicModel implements IMusicApiModel {
     }
 
     private SongBean getDownloadLinkById(String songid, String quality) {
-        SongBean songBean = new SongBean("MG", songid);
+        SongBean songBean = new SongBean(SRC_MG, songid);
         String link = baseContentLink + songid;
         Map<String, String> headerMap = new HashMap<>();
         headerMap.put("User-Agent", USER_AGENT_ANDROID);

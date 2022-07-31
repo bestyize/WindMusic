@@ -85,6 +85,7 @@ public class KwMusicModel implements IMusicApiModel {
                     .songId(detail.getSongId())
                     .songName(detail.getSongName())
                     .singersId(detail.getSingersId())
+                    .singersName(detail.getSingersName())
                     .albumId(detail.getAlbumId())
                     .albumName(detail.getAlbumName())
                     .quality(detail.getQuality())

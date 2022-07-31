@@ -107,10 +107,11 @@ public class KgMusicModel implements IMusicApiModel {
         List<SongDetail> songDetailList = responseBean.data.lists;
         for (SongDetail detail : songDetailList) {
             SongBean song = new SongBean.Builder()
-                    .songSrc(SRC_MG)
+                    .songSrc(SRC_KG)
                     .songId(detail.getSongId())
                     .songName(detail.getSongName())
                     .singersId(detail.getSingersId())
+                    .singersName(detail.getSingersName())
                     .albumId(detail.getAlbumId())
                     .albumName(detail.getAlbumName())
                     .quality(detail.getQuality())
