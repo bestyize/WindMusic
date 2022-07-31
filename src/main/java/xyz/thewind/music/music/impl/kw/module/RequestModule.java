@@ -1,90 +1,141 @@
 package xyz.thewind.music.music.impl.kw.module;
 
+import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
+import xyz.thewind.music.music.common.MusicCommonConfig;
+import xyz.thewind.music.music.impl.kw.bean.download.DownloadResp;
 import xyz.thewind.music.music.impl.kw.enc.KwEncrypt;
+import xyz.thewind.music.util.GsonUtil;
 import xyz.thewind.music.util.HttpUtil;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static xyz.thewind.music.music.common.MusicCommonConfig.*;
+import static xyz.thewind.music.music.common.MusicCommonConfig.USER_AGENT_ANDROID;
 
 
 public class RequestModule {
-    private static final Map<String, String> songQualityMap = new HashMap<>() {{
-        put(QUALITY_ZQ, "&br=4000&format=flac");
-        put(QUALITY_SQ, "&br=2000&format=flac");
-        put(QUALITY_HQ, "&br=320&format=mp3");
-        put(QUALITY_PQ, "&br=192&format=mp3");
-        put(QUALITY_LQ, "&br=128&format=mp3");
+    private static String baseUrl = "http://nmobi.kuwo.cn/mobi.s?f=kuwo&q=";
+
+    private static final Map<String, String> qualityMap = new HashMap<>() {{
+        put(MusicCommonConfig.QUALITY_ZQ, "4000kflac");
+        put(MusicCommonConfig.QUALITY_SQ, "2000kflac");
+        put(MusicCommonConfig.QUALITY_HQ, "320kmp3");
+        put(MusicCommonConfig.QUALITY_PQ, "192kmp3");
+        put(MusicCommonConfig.QUALITY_LQ, "128kmp3");
     }};
 
+    /**
+     *  支持hires音质
+     * @param songId
+     * @param quality
+     * @return
+     */
+    public static String getPlayUrl(String songId, String quality) {
+        String resp = HttpUtil.get(buildDownReqLink(songId, quality));
+        return parseDownloadLink(resp);
+    }
 
-    public static StringBuilder createCommonParams(String uid) {
+    private static String buildDownReqLink(String songId, String quality) {
+        String timeStamp = System.currentTimeMillis() + "";
+        String br = qualityMap.get(quality);
+        String format = "flac|mp3|aac";
+        String token = null;
+        StringBuilder reqParams = createCommonParams();
+        reqParams.append("type=convert_url_with_sign");
+        reqParams.append("&br=");
+        reqParams.append(br);
+        reqParams.append("&format=");
+        reqParams.append(format);
+        reqParams.append("&sig=");
+        reqParams.append("0");
+        reqParams.append("&rid=");
+        reqParams.append(songId);
+        reqParams.append("&priority=");
+        reqParams.append("bitrate");
+        reqParams.append("&loginUid=");
+        reqParams.append("0");
+        reqParams.append("&network=WIFI");
+        reqParams.append("&loginSid=");
+        reqParams.append("0");
+        reqParams.append("&localUid=");
+        reqParams.append(-1);
+        reqParams.append("&mode=audition");
+        reqParams.append("&token=");
+        reqParams.append(token);
+        reqParams.append("&timestamp=");
+        reqParams.append(timeStamp);
+        reqParams.append("&uid=");
+        reqParams.append("0");
+        return baseUrl + KwEncrypt.encrypt(reqParams.toString());
+    }
+
+    private static String parseDownloadLink(String resp){
+        if (resp == null) {
+            return null;
+        }
+        JSONObject obj;
+        try {
+            obj = new JSONObject(resp);
+        } catch (JSONException e) {
+            return null;
+        }
+        JSONObject data = obj.optJSONObject("data");
+        if (data == null) {
+            return null;
+        }
+        return data.optString("url");
+    }
+
+    private static StringBuilder createCommonParams() {
         StringBuilder sb = new StringBuilder();
         sb.append("user=");
-        sb.append(uid);
         sb.append("&android_id=");
-        sb.append("");
+        sb.append("0");
         sb.append("&prod=");
-        sb.append("");
+        sb.append("0");
         sb.append("&corp=kuwo");
-        sb.append("LONG_AUDIO_PARAM");
+        sb.append("&newver=3");
         sb.append("&vipver=");
-        sb.append("1");
-
+        sb.append("10.1.6.0");
+        sb.append("&source=");
+        sb.append("kwplayer_ar_10.1.6.0.apk");
+        sb.append("&p2p=1");
         sb.append("&q36=");
-        sb.append("&key_ostar_q36=f2ce3c2ef68ddfd1b2bea7ed00001f314716");
+        sb.append("0");
         sb.append("&loginUid=");
-        sb.append(uid);
+        sb.append("0");
         sb.append("&loginSid=");
         sb.append("0");
         sb.append("&notrace=");
-        sb.append("1");
+        sb.append(1);
         sb.append("&");
         return sb;
     }
 
-    public static void main(String[] args) {
-        System.out.println(getPlayUrl("226543302", QUALITY_PQ));
 
-        String link = "http://mobi.kuwo.cn/mobi.s?f=kwxs&q=";
+    /**
+     * 下面的接口是支持无损下载，且不需要加密的，mid为歌曲ID，br有四种选项 分别是:空出（aac）、128kmp3、320kmp3、2000kflac
+     * http://www.kuwo.cn/bd/search/getSongUrlByMid?mid=226543302&br=2000kflac&bdfrom=&c=nfmbhi6fxwaj
+     * 下面接口不支持hires音质
+     */
 
-        Map<String, String> headerMap = new HashMap<>();
-        headerMap.put("User-Agent", USER_AGENT_ANDROID);
-        String response = HttpUtil.get(getPlayUrl("226543302", QUALITY_ZQ), headerMap);
-        System.out.println(response);
+    public static String getDownloadLinkById(String songid, String quality) {
+        String downloadLink = null;
+        try {
+            String link = "https://nmobi.kuwo.cn/mobi.s?f=kuwo&q=";
+            String encParams = KwEncrypt.encrypt("&type=convert_url_with_sign" + qualityMap.get(quality) + "&sig=0&ss=ss&rid=" + songid + "&network=wifi");
+            Map<String, String> headerMap = new HashMap<>();
+            headerMap.put("User-Agent", USER_AGENT_ANDROID);
+            String response = HttpUtil.get(link + encParams, headerMap);
+            DownloadResp resp = GsonUtil.fromJson(response, DownloadResp.class);
+            if (resp == null) {
+                return null;
+            }
+            return resp.data.url;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return downloadLink;
     }
-
-    public static String getPlayUrl(String songId, String quality) {
-        String uid= "0";
-        String sign = "0";
-        String token = "";
-        StringBuilder createCommonParams = createCommonParams(uid);
-        createCommonParams.append("type=convert_url_with_sign");
-        createCommonParams.append(songQualityMap.get(quality));
-        createCommonParams.append("&sig=");
-        createCommonParams.append(sign);
-        createCommonParams.append("&rid=");
-        createCommonParams.append(songId);
-        createCommonParams.append("&priority=");
-        createCommonParams.append("1");
-        createCommonParams.append("&loginUid=");
-        createCommonParams.append(uid);
-        createCommonParams.append("&network=");
-        createCommonParams.append("wifi");
-        createCommonParams.append("&loginSid=");
-        createCommonParams.append("0");
-        createCommonParams.append("&localUid=");
-        createCommonParams.append(-1);
-        createCommonParams.append("&mode=audition");
-        createCommonParams.append("&from=scenemusic");
-        createCommonParams.append("&token=");
-        createCommonParams.append(token);
-        createCommonParams.append("&timestamp=");
-        createCommonParams.append(System.currentTimeMillis());
-        createCommonParams.append("&uid=");
-        createCommonParams.append(uid);
-        return "http://nmobi.kuwo.cn/mobi.s?f=kwxs&q="+KwEncrypt.encrypt(createCommonParams.toString());
-    }
-
 }
