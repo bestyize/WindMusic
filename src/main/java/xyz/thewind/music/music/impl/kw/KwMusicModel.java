@@ -4,10 +4,10 @@ import xyz.thewind.music.model.SongBean;
 import xyz.thewind.music.music.IMusicApiModel;
 import xyz.thewind.music.music.impl.kw.bean.LyricResponseBean;
 import xyz.thewind.music.music.impl.kw.bean.MusicDetail;
-import xyz.thewind.music.music.impl.kw.bean.download.DownloadResp;
 import xyz.thewind.music.music.impl.kw.bean.search.SongDetail;
 import xyz.thewind.music.music.impl.kw.bean.search.SearchResponse;
 import xyz.thewind.music.music.impl.kw.enc.KwEncrypt;
+import xyz.thewind.music.music.impl.kw.module.RequestModule;
 import xyz.thewind.music.util.GsonUtil;
 import xyz.thewind.music.util.HttpUtil;
 
@@ -19,21 +19,12 @@ import static xyz.thewind.music.music.common.MusicCommonConfig.*;
 
 
 public class KwMusicModel implements IMusicApiModel {
-    private static final HashMap<String, String> qualityMap;
-    private static final Map<String, String> mvQualityMap = new HashMap<>();
-
-    static {
-        qualityMap = new HashMap<>();
-        qualityMap.put(QUALITY_ZQ, "&br=4000&format=flac");
-        qualityMap.put(QUALITY_SQ, "&br=2000&format=flac");
-        qualityMap.put(QUALITY_HQ, "&br=320&format=mp3");
-        qualityMap.put(QUALITY_PQ, "&br=192&format=mp3");
-        qualityMap.put(QUALITY_LQ, "&br=128&format=mp3");
-        mvQualityMap.put(QUALITY_SQ, "MP4BD");
-        mvQualityMap.put(QUALITY_HQ, "MP4UL");
-        mvQualityMap.put(QUALITY_PQ, "MP4");
-        mvQualityMap.put(QUALITY_LQ, "MP4L");
-    }
+    private static final Map<String, String> mvQualityMap = new HashMap<>(){{
+        put(QUALITY_SQ, "MP4BD");
+        put(QUALITY_HQ, "MP4UL");
+        put(QUALITY_PQ, "MP4");
+        put(QUALITY_LQ, "MP4L");
+    }};
 
     @Override
     public List<SongBean> searchMusic(String keyword, int num) {
@@ -42,7 +33,7 @@ public class KwMusicModel implements IMusicApiModel {
 
     @Override
     public SongBean searchDownloadLink(SongBean songBean, String quality) {
-        String downloadLink = getDownloadLinkById(songBean.getSongId(), quality);
+        String downloadLink = RequestModule.getPlayUrl(songBean.getSongId(), quality);
         if (downloadLink == null) {
             return songBean;
         }
@@ -81,7 +72,7 @@ public class KwMusicModel implements IMusicApiModel {
         List<SongDetail> songDetailList = resp.songList;
         for (SongDetail detail : songDetailList) {
             SongBean song = new SongBean.Builder()
-                    .songSrc(SRC_MG)
+                    .songSrc(SRC_KW)
                     .songId(detail.getSongId())
                     .songName(detail.getSongName())
                     .singersId(detail.getSingersId())
@@ -94,29 +85,6 @@ public class KwMusicModel implements IMusicApiModel {
             list.add(song);
         }
         return list;
-    }
-
-    /**
-     * 下面的接口是支持无损下载，且不需要加密的，mid为歌曲ID，br有四种选项 分别是:空出（aac）、128kmp3、320kmp3、2000kflac
-     * http://www.kuwo.cn/bd/search/getSongUrlByMid?mid=226543302&br=2000kflac&bdfrom=&c=nfmbhi6fxwaj
-     */
-    private String getDownloadLinkById(String songid, String quality) {
-        String downloadLink = null;
-        try {
-            String link = "https://nmobi.kuwo.cn/mobi.s?f=kuwo&q=";
-            String encParams = KwEncrypt.encrypt("&type=convert_url_with_sign" + qualityMap.get(quality) + "&sig=0&ss=ss&rid=" + songid + "&network=wifi");
-            Map<String, String> headerMap = new HashMap<>();
-            headerMap.put("User-Agent", USER_AGENT_ANDROID);
-            String response = HttpUtil.get(link + encParams, headerMap);
-            DownloadResp resp = GsonUtil.fromJson(response, DownloadResp.class);
-            if (resp == null) {
-                return null;
-            }
-            return resp.data.url;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return downloadLink;
     }
 
     /**
