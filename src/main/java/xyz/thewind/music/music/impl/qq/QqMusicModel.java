@@ -18,7 +18,7 @@ import xyz.thewind.music.music.impl.qq.bean.search.Singer;
 import xyz.thewind.music.music.impl.qq.bean.search.SongDetail;
 import xyz.thewind.music.util.Base64Util;
 import xyz.thewind.music.util.GsonUtil;
-import xyz.thewind.music.util.HttpUtil;
+import xyz.thewind.music.network.util.HttpUtil;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;

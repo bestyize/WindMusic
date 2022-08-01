@@ -9,7 +9,7 @@ import xyz.thewind.music.music.impl.kw.bean.search.SearchResponse;
 import xyz.thewind.music.music.impl.kw.enc.KwEncrypt;
 import xyz.thewind.music.music.impl.kw.module.RequestModule;
 import xyz.thewind.music.util.GsonUtil;
-import xyz.thewind.music.util.HttpUtil;
+import xyz.thewind.music.network.util.HttpUtil;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;

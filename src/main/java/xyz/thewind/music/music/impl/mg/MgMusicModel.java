@@ -3,13 +3,12 @@ package xyz.thewind.music.music.impl.mg;
 import com.google.gson.Gson;
 import xyz.thewind.music.model.SongBean;
 import xyz.thewind.music.music.IMusicApiModel;
-import xyz.thewind.music.music.common.MusicCommonConfig;
 import xyz.thewind.music.music.impl.mg.bean.LyricResponseBean;
 import xyz.thewind.music.music.impl.mg.bean.MgDownloadBean;
 import xyz.thewind.music.music.impl.mg.bean.search.MgSearchResp;
 import xyz.thewind.music.music.impl.mg.bean.search.SongDetail;
 import xyz.thewind.music.util.GsonUtil;
-import xyz.thewind.music.util.HttpUtil;
+import xyz.thewind.music.network.util.HttpUtil;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;

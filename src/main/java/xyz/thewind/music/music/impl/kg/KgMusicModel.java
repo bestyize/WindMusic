@@ -14,7 +14,7 @@ import xyz.thewind.music.music.impl.kg.bean.search.SongDetail;
 import xyz.thewind.music.music.impl.kg.module.RequestModule;
 import xyz.thewind.music.util.Base64Util;
 import xyz.thewind.music.util.GsonUtil;
-import xyz.thewind.music.util.HttpUtil;
+import xyz.thewind.music.network.util.HttpUtil;
 
 import java.util.*;
 
@@ -23,6 +23,17 @@ import static xyz.thewind.music.music.common.MusicCommonConfig.*;
 
 public class KgMusicModel implements IMusicApiModel {
     private static final Logger logger = LogManager.getLogger(KgMusicModel.class);
+
+    public static void main(String[] args) {
+        Map<String, String> map = new HashMap<>();
+        String banIp = "43.155.99.113";
+        map.put("clientip", "43.155.99.113");
+        map.put("x-forwarded-for", banIp);
+        map.put("WL-Proxy-Client-IP", banIp);
+        map.put("X-Real-IP", banIp);
+        map.put("x-forwarded-for", banIp);
+        System.out.println(HttpUtil.get(RequestModule.buildSearchUrl("陈奕迅", 1), null));
+    }
 
     public static String searchRequest(String keyword, int num) {
         String response = "";

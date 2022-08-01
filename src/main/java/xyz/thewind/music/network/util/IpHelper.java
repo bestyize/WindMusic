@@ -1,4 +1,4 @@
-package xyz.thewind.music.util;
+package xyz.thewind.music.network.util;
 
 import java.util.Random;
 

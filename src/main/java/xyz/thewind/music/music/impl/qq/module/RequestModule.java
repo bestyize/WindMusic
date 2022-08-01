@@ -4,7 +4,7 @@ import xyz.thewind.music.music.impl.qq.bean.RequestTemplate;
 import xyz.thewind.music.music.impl.qq.bean.RequestTemplateBuilder;
 import xyz.thewind.music.music.impl.qq.bean.login.QQMusicLoginToken;
 import xyz.thewind.music.music.impl.qq.enc.QqEncrypt;
-import xyz.thewind.music.util.HttpUtil;
+import xyz.thewind.music.network.util.HttpUtil;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,8 +1,8 @@
 package xyz.thewind.music.music.impl.wy.module;
 
 import xyz.thewind.music.music.impl.wy.enc.WyEncrypt;
-import xyz.thewind.music.util.HttpUtil;
-import xyz.thewind.music.util.IpHelper;
+import xyz.thewind.music.network.util.HttpUtil;
+import xyz.thewind.music.network.util.IpHelper;
 import xyz.thewind.music.util.Md5Encrypt;
 
 import java.util.HashMap;

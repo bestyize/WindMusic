@@ -11,7 +11,7 @@ import xyz.thewind.music.music.impl.qq.QqMusicModel;
 import xyz.thewind.music.music.impl.wy.WyMusicModel;
 
 import xyz.thewind.music.util.GsonUtil;
-import xyz.thewind.music.util.HttpUtil;
+import xyz.thewind.music.network.util.HttpUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;

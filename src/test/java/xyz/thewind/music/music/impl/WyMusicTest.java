@@ -5,7 +5,7 @@ import org.junit.Test;
 import xyz.thewind.music.music.impl.wy.enc.CryptoUtil;
 import xyz.thewind.music.music.impl.wy.enc.WyEncrypt;
 import xyz.thewind.music.music.impl.wy.module.RequestModule;
-import xyz.thewind.music.util.HttpUtil;
+import xyz.thewind.music.network.util.HttpUtil;
 
 import java.util.HashMap;
 import java.util.Map;

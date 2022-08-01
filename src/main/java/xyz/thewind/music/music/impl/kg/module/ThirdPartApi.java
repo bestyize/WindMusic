@@ -1,6 +1,6 @@
 package xyz.thewind.music.music.impl.kg.module;
 
-import xyz.thewind.music.util.HttpUtil;
+import xyz.thewind.music.network.util.HttpUtil;
 
 public class ThirdPartApi {
     public static String getPlayUrl(String songId,String quality){

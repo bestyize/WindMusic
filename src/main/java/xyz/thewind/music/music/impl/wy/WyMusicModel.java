@@ -12,8 +12,8 @@ import xyz.thewind.music.music.impl.wy.bean.search.SearchResponse;
 import xyz.thewind.music.music.impl.wy.bean.search.Singer;
 import xyz.thewind.music.music.impl.wy.bean.search.SongDetail;
 import xyz.thewind.music.util.GsonUtil;
-import xyz.thewind.music.util.HttpUtil;
-import xyz.thewind.music.util.IpHelper;
+import xyz.thewind.music.network.util.HttpUtil;
+import xyz.thewind.music.network.util.IpHelper;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;

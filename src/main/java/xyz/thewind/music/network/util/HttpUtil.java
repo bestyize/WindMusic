@@ -1,10 +1,9 @@
-package xyz.thewind.music.util;
+package xyz.thewind.music.network.util;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
@@ -110,6 +109,35 @@ public class HttpUtil {
             e.printStackTrace();
         }
         return headerMap;
+    }
+
+    public static String get(String link, Map<String, String> headerMap, Proxy proxy) {
+        if (link == null || !link.startsWith("http")) {
+            return "";
+        }
+        StringBuilder sb = new StringBuilder();
+        try {
+            URL url = new URL(link);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection(proxy);
+            conn.setRequestMethod("GET");
+            conn.setReadTimeout(3000);
+            conn.setConnectTimeout(3000);
+            if (headerMap != null) {
+                for (String key : headerMap.keySet()) {
+                    conn.addRequestProperty(key, headerMap.get(key));
+                }
+            }
+            BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line);
+            }
+            reader.close();
+            conn.disconnect();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return sb.toString();
     }
     
     public static String buildGetUrl(String baseUrl, Map<String, Object> map) {

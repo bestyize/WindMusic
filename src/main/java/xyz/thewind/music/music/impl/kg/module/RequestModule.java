@@ -1,7 +1,7 @@
 package xyz.thewind.music.music.impl.kg.module;
 
 import xyz.thewind.music.music.impl.qq.module.ThirdPartApi;
-import xyz.thewind.music.util.HttpUtil;
+import xyz.thewind.music.network.util.HttpUtil;
 import xyz.thewind.music.util.Md5Encrypt;
 
 import java.util.*;
@@ -31,6 +31,7 @@ public class RequestModule {
         map.put("dfid", "0");
         map.put("clientver", "99999");
         map.put("platform", "AndroidFilter");
+        map.put("clientip", "43.155.99.113");
         map.put("signature", getSignature(appkey, map));
         return HttpUtil.buildGetUrl(searchUrl, map);
     }

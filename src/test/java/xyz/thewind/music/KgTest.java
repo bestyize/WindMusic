@@ -1,7 +1,7 @@
 package xyz.thewind.music;
 
 import org.junit.Test;
-import xyz.thewind.music.util.HttpUtil;
+import xyz.thewind.music.network.util.HttpUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.*;

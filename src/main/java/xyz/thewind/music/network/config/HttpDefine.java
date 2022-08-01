@@ -1,4 +1,4 @@
-package xyz.thewind.music.network;
+package xyz.thewind.music.network.config;
 
 public class HttpDefine {
 

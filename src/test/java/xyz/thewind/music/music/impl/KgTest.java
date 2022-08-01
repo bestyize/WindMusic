@@ -8,7 +8,7 @@ import org.junit.Test;
 import xyz.thewind.music.model.SongBean;
 import xyz.thewind.music.music.IMusicApiModel;
 import xyz.thewind.music.music.impl.kg.KgMusicModel;
-import xyz.thewind.music.util.HttpUtil;
+import xyz.thewind.music.network.util.HttpUtil;
 import xyz.thewind.music.util.Md5Encrypt;
 
 import java.net.URLEncoder;
