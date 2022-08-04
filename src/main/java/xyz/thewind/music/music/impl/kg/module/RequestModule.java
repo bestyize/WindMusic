@@ -12,7 +12,7 @@ public class RequestModule {
     }
 
     public static String buildSearchUrl(String keyword, int num) {
-        String searchUrl = "https://complexsearchretry.kugou.com/v2/search/song";
+        String searchUrl = "https://complexsearch.kugou.com/v2/search/song";
         String appkey = "OIlwieks28dk2k092lksi2UIkp";
         Map<String, Object> map = new HashMap<>();
         map.put("userid", "0");
@@ -31,7 +31,6 @@ public class RequestModule {
         map.put("dfid", "0");
         map.put("clientver", "99999");
         map.put("platform", "AndroidFilter");
-        map.put("clientip", "43.155.99.113");
         map.put("signature", getSignature(appkey, map));
         return HttpUtil.buildGetUrl(searchUrl, map);
     }
