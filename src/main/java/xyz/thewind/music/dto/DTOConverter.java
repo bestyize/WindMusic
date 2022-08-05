@@ -1,6 +1,6 @@
 package xyz.thewind.music.dto;
 
-import xyz.thewind.music.model.Article;
+
 import xyz.thewind.music.model.User;
 import xyz.thewind.music.util.GsonUtil;
 
@@ -23,20 +23,6 @@ public class DTOConverter {
 
     public static UserDTO defaultUserDTO(String userId, String password, String email, String userName) {
         return new UserDTO(userId, password, userName, email, null, new Date(), 1, 1, "/img/person.png");
-    }
-
-    public static Article convertArticleDtoToArticle(ArticleDTO articleDTO) {
-        String articleId = UUID.randomUUID().toString().replace("-", "");
-        Article article = new Article(articleId,
-                articleDTO.getArticleTitle(),
-                articleDTO.getArticleContent(),
-                articleId,
-                0,
-                new Date(),
-                articleDTO.getCoverUrl(),
-                articleDTO.getUserId(),
-                0);
-        return article;
     }
 
     public static ArticleDTO defaultArticleDTO(String data, String userId) {

@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 
+import java.lang.reflect.Type;
+
 public class GsonUtil {
     private static final Gson gson = new GsonBuilder().disableHtmlEscaping().create();
 
@@ -22,6 +24,20 @@ public class GsonUtil {
         T t = null;
         try {
             t = gson.fromJson(json, classOfT);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
+        return t;
+    }
+
+    public static <T> T fromJson(String json, Type type) {
+        if (type == null) {
+            return null;
+        }
+        T t = null;
+        try {
+            t = gson.fromJson(json, type);
         } catch (Exception e) {
             System.out.println(e);
         }

@@ -1,5 +1,6 @@
 package xyz.thewind.music.netool.censys.model;
 
+import xyz.thewind.music.netool.censys.bean.JBLicense;
 import xyz.thewind.music.netool.censys.bean.LicenseServer;
 import xyz.thewind.music.netool.censys.bean.search.HostInfo;
 import xyz.thewind.music.netool.censys.bean.search.HostService;
@@ -11,8 +12,7 @@ import xyz.thewind.music.util.GsonUtil;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class RequestModel {
 
@@ -27,16 +27,39 @@ public class RequestModel {
 
     }
 
-    public static List<String> searchJBLicenseServer() {
-        List<String> licenseServers = new ArrayList<>();
+    public static List<JBLicense> searchJBLicenseServer() {
+        List<JBLicense> licenseServers = new ArrayList<>();
         List<HostInfo> hostInfos = searchJBHost();
         for (HostInfo info : hostInfos) {
             String licenseServer = getValidLicenseServerUrl(info);
             if (licenseServer != null) {
-                licenseServers.add(licenseServer);
+                licenseServers.add(new JBLicense(licenseServer, true));
             }
         }
         return licenseServers;
+    }
+
+    public static List<JBLicense> verifyJBLicense(List<JBLicense> licenses, boolean verify) {
+        if (licenses == null) {
+            return new ArrayList<>();
+        }
+        HashMap<String, JBLicense> map = new HashMap<>();
+        Iterator<JBLicense> iterator = licenses.listIterator();
+        while (iterator.hasNext()) {
+            JBLicense license = iterator.next();
+            if (map.containsKey(license.serverUrl)) {
+                iterator.remove();
+            }
+            map.put(license.serverUrl, license);
+        }
+        if (!verify) {
+            return licenses;
+        }
+        for (JBLicense jbLicense : licenses) {
+            String response = HttpUtil.get(jbLicense.getServerUrl() + CensysConfig.JB_VERIFY);
+            jbLicense.isValid = response.contains("<responseCode>OK</responseCode>");
+        }
+        return licenses;
     }
 
     private static List<HostInfo> searchJBHost() {
@@ -58,7 +81,6 @@ public class RequestModel {
             }
         }
         return null;
-
     }
 
     private static boolean isValidLicenseServer(LicenseServer server) {
