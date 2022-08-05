@@ -25,8 +25,8 @@ public class HttpUtil {
             URL url = new URL(link);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
-            conn.setReadTimeout(5000);
-            conn.setConnectTimeout(5000);
+            conn.setReadTimeout(4000);
+            conn.setConnectTimeout(4000);
             if (headerMap != null) {
                 for (String key : headerMap.keySet()) {
                     conn.addRequestProperty(key, headerMap.get(key));
@@ -40,7 +40,7 @@ public class HttpUtil {
             reader.close();
             conn.disconnect();
         } catch (Exception e) {
-            System.out.println("url = " + link + ", errMsg = " + e.getMessage());
+            System.out.println("get, error , url = " + link + ", errMsg = " + e);
         }
         return sb.toString();
     }

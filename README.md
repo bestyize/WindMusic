@@ -394,3 +394,18 @@ shareId由平台和songid组成。例如：WY_65766
 |api|/api/queryalluser|请求地址|√|
 
 
+# 2、Jetbrain激活服务器
+
+1、激活服务器查询接口：[https://thewind.xyz/activate/api/jetbrain/getLicenseServers](https://thewind.xyz/activate/api/jetbrain/getLicenseServers)
+
+2、激活服务器添加接口：[https://thewind.xyz/activate/api/jetbrain/addLicenseServer](https://thewind.xyz/activate/api/jetbrain/addLicenseServer)
+
+3、激活服务器搜索接口: [https://thewind.xyz/activate/api/jetbrain/searchLicenseServer](https://thewind.xyz/activate/api/jetbrain/searchLicenseServer)
+
+4、激活服务器更新接口: [https://thewind.xyz/activate/api/jetbrain/updateLicenseServer?verify=false](https://thewind.xyz/activate/api/jetbrain/updateLicenseServer?verify=false)
+
+返回格式：
+
+```json
+{"code":0,"msg":"OK","obj":[{"serverUrl":"http://5.2.198.177:8001","valid":true},{"serverUrl":"http://43.138.69.54:8080","valid":true},{"serverUrl":"http://46.248.165.184:7777","valid":true},{"serverUrl":"http://52.137.14.60:80","valid":true},{"serverUrl":"http://52.143.165.82:80","valid":true},{"serverUrl":"http://80.169.232.216:8080","valid":true},{"serverUrl":"http://81.68.111.137:8000","valid":true},{"serverUrl":"http://81.68.147.56:8163","valid":true},{"serverUrl":"http://85.143.112.153:80","valid":true},{"serverUrl":"http://85.172.174.51:3333","valid":true},{"serverUrl":"http://85.214.165.249:8101","valid":true},{"serverUrl":"http://101.43.29.156:8282","valid":true},{"serverUrl":"http://134.53.225.196:80","valid":true},{"serverUrl":"http://147.102.58.185:8888","valid":true},{"serverUrl":"http://157.143.254.66:8080","valid":true},{"serverUrl":"http://165.22.249.172:8080","valid":true},{"serverUrl":"http://178.124.205.99:8090","valid":true},{"serverUrl":"http://178.172.195.18:10088","valid":true},{"serverUrl":"http://185.76.145.167:8080","valid":true},{"serverUrl":"http://186.211.99.100:80","valid":true},{"serverUrl":"http://193.242.170.12:8080","valid":true},{"serverUrl":"http://195.19.32.121:8787","valid":true},{"serverUrl":"http://200.13.89.3:8080","valid":true},{"serverUrl":"http://212.73.75.141:80","valid":true},{"serverUrl":"http://213.183.100.136:8080","valid":true},{"serverUrl":"http://200.17.85.220:80","valid":true}]}
+```

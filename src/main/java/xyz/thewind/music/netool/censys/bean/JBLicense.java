@@ -3,14 +3,14 @@ package xyz.thewind.music.netool.censys.bean;
 public class JBLicense {
 
     public String serverUrl;
-    public boolean isValid;
+    public boolean valid;
 
     public JBLicense() {
     }
 
-    public JBLicense(String serverUrl, boolean isValid) {
+    public JBLicense(String serverUrl, boolean valid) {
         this.serverUrl = serverUrl;
-        this.isValid = isValid;
+        this.valid = valid;
     }
 
     public String getServerUrl() {
@@ -22,10 +22,10 @@ public class JBLicense {
     }
 
     public boolean isValid() {
-        return isValid;
+        return valid;
     }
 
     public void setValid(boolean valid) {
-        isValid = valid;
+        this.valid = valid;
     }
 }

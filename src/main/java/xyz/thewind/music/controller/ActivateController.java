@@ -24,12 +24,13 @@ public class ActivateController {
     @RequestMapping("/activate/api/jetbrain/getLicenseServers")
     public ResponseEntity<CommonResp> requestJBLicenseServer() {
         CommonResp commonResp = new CommonResp();
+        commonResp.code(0).msg("OK");
         RedisService service = getRedisService();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         if (service != null){
             String licenses = service.get(REDIS_KEY_JB_SERVER_LIST);
-            Set<String> parseList = GsonUtil.fromJson(licenses, new TypeToken<HashSet<String>>(){}.getType());
+            List<JBLicense> parseList = GsonUtil.fromJson(licenses, new TypeToken<ArrayList<JBLicense>>(){}.getType());
             commonResp.obj = parseList == null?new ArrayList<>():parseList;
         }
         return new ResponseEntity<>(commonResp, headers, HttpStatus.OK);
@@ -39,16 +40,17 @@ public class ActivateController {
     @RequestMapping("/activate/api/jetbrain/addLicenseServer")
     public ResponseEntity<CommonResp> addJBLicenseServer(String serverUrl) {
         CommonResp commonResp = new CommonResp();
+        commonResp.code(0);
         RedisService service = getRedisService();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         if (service != null){
             String licenses = service.get(REDIS_KEY_JB_SERVER_LIST);
-            List<String> parseList = GsonUtil.fromJson(licenses, new TypeToken<ArrayList<String>>(){}.getType());
+            List<JBLicense> parseList = GsonUtil.fromJson(licenses, new TypeToken<ArrayList<JBLicense>>(){}.getType());
             if (parseList == null) {
                 parseList = new ArrayList<>();
             }
-            parseList.add(serverUrl);
+            parseList.add(new JBLicense(serverUrl, RequestModel.isJBLicenseValid(serverUrl)));
             service.set(REDIS_KEY_JB_SERVER_LIST, GsonUtil.toJson(parseList));
             commonResp.msg("add successful");
         }
@@ -62,10 +64,11 @@ public class ActivateController {
         RedisService service = getRedisService();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
+        commonResp.code(0).msg("OK");
         if (service != null){
             List<JBLicense> licenseServers = RequestModel.searchJBLicenseServer();
             String licenses = service.get(REDIS_KEY_JB_SERVER_LIST);
-            List<JBLicense> parseList = GsonUtil.fromJson(licenses, new TypeToken<HashSet<String>>(){}.getType());
+            List<JBLicense> parseList = GsonUtil.fromJson(licenses, new TypeToken<ArrayList<JBLicense>>(){}.getType());
             if (parseList == null) {
                 parseList = new ArrayList<>();
             }
@@ -81,11 +84,13 @@ public class ActivateController {
         RedisService service = getRedisService();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
+        commonResp.code(0);
         if (service != null){
             String licenses = service.get(REDIS_KEY_JB_SERVER_LIST);
             List<JBLicense> parseList = GsonUtil.fromJson(licenses, new TypeToken<ArrayList<JBLicense>>(){}.getType());
             parseList = RequestModel.verifyJBLicense(parseList, verify);
             service.set(REDIS_KEY_JB_SERVER_LIST, GsonUtil.toJson(parseList));
+            commonResp.obj = parseList;
         }
         return new ResponseEntity<>(commonResp, headers, HttpStatus.OK);
     }

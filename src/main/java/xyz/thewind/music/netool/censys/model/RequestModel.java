@@ -5,7 +5,6 @@ import xyz.thewind.music.netool.censys.bean.LicenseServer;
 import xyz.thewind.music.netool.censys.bean.search.HostInfo;
 import xyz.thewind.music.netool.censys.bean.search.HostService;
 import xyz.thewind.music.netool.censys.bean.search.SearchHostResponse;
-import xyz.thewind.music.netool.censys.bean.search.SearchHostResult;
 import xyz.thewind.music.netool.censys.config.CensysConfig;
 import xyz.thewind.music.network.util.HttpUtil;
 import xyz.thewind.music.util.GsonUtil;
@@ -57,9 +56,14 @@ public class RequestModel {
         }
         for (JBLicense jbLicense : licenses) {
             String response = HttpUtil.get(jbLicense.getServerUrl() + CensysConfig.JB_VERIFY);
-            jbLicense.isValid = response.contains("<responseCode>OK</responseCode>");
+            jbLicense.valid = response.contains("<responseCode>OK</responseCode>");
         }
         return licenses;
+    }
+
+    public static boolean isJBLicenseValid(String serverUrl) {
+        String response = HttpUtil.get(serverUrl + CensysConfig.JB_VERIFY);
+        return response.contains("<responseCode>OK</responseCode>");
     }
 
     private static List<HostInfo> searchJBHost() {
