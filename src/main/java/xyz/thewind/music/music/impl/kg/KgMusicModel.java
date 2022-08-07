@@ -12,10 +12,12 @@ import xyz.thewind.music.music.impl.kg.bean.search.MobSongDetail;
 import xyz.thewind.music.music.impl.kg.bean.search.SearchResponse;
 import xyz.thewind.music.music.impl.kg.bean.search.SongDetail;
 import xyz.thewind.music.music.impl.kg.module.RequestModule;
+import xyz.thewind.music.network.proxy.HttpProxy;
 import xyz.thewind.music.util.Base64Util;
 import xyz.thewind.music.util.GsonUtil;
 import xyz.thewind.music.network.util.HttpUtil;
 
+import java.net.Proxy;
 import java.util.*;
 
 import static xyz.thewind.music.music.common.MusicCommonConfig.*;
@@ -27,7 +29,17 @@ public class KgMusicModel implements IMusicApiModel {
     public static String searchRequest(String keyword, int num) {
         String response = "";
         try {
-            response = HttpUtil.get(RequestModule.buildSearchUrl(keyword, num), null);
+            response = HttpUtil.get(RequestModule.buildSearchUrl(keyword, num));
+        } catch (Exception e) {
+            logger.error(e.toString());
+        }
+        return response;
+    }
+
+    public static String searchMusicWithProxy(String keyword, int num, Proxy proxy) {
+        String response = "";
+        try {
+            response = HttpUtil.get(RequestModule.buildSearchUrl(keyword, num), null, proxy);
         } catch (Exception e) {
             logger.error(e.toString());
         }

@@ -1,5 +1,6 @@
 package xyz.thewind.music.network.util;
 
+import xyz.thewind.music.network.config.HttpDefine;
 import xyz.thewind.music.util.WLog;
 
 import java.io.BufferedReader;
@@ -138,9 +139,27 @@ public class HttpUtil {
             reader.close();
             conn.disconnect();
         } catch (Exception e) {
-            e.printStackTrace();
+            WLog.e(TAG, "get, error = " + e);
         }
         return sb.toString();
+    }
+
+    public static boolean isValidProxy(Proxy proxy) {
+        String link = "https://complexsearch.kugou.com/v2/search/song";
+
+        try {
+            URL url = new URL(link);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection(proxy);
+            conn.setRequestMethod("GET");
+            conn.setReadTimeout(3000);
+            conn.setConnectTimeout(3000);
+            int code = conn.getResponseCode();
+            conn.disconnect();
+            return code == HttpDefine.OK;
+        } catch (Exception e) {
+            WLog.e(TAG, "get, proxy = " + proxy + ", error = " + e);
+        }
+        return false;
     }
     
     public static String buildGetUrl(String baseUrl, Map<String, Object> map) {
