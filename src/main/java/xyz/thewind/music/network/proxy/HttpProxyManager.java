@@ -25,7 +25,7 @@ public class HttpProxyManager {
 
     public List<Proxy> getProxyList() {
         return new ArrayList<>() {{
-            add(getProxy("192.168.0.116", 8899));
+            add(getProxy("8.219.97.248", 80));
         }};
     }
 

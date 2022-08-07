@@ -8,18 +8,24 @@ import xyz.thewind.music.netool.censys.bean.search.SearchHostResponse;
 import xyz.thewind.music.netool.censys.config.CensysConfig;
 import xyz.thewind.music.network.util.HttpUtil;
 import xyz.thewind.music.util.GsonUtil;
+import xyz.thewind.music.util.WLog;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class RequestModel {
+
+    private static final String TAG = "[censys]RequestModel";
 
     public static void main(String[] args) {
         System.out.println(GsonUtil.toJson(searchJBLicenseServer()));
     }
 
-    public static List<HostInfo>  searchHost(String keyword, int num) {
+    public static List<HostInfo> searchHost(String keyword, int num) {
         String url = CensysConfig.SEARCH_HOST_API.replace("_keyword_", URLEncoder.encode(keyword, StandardCharsets.UTF_8)).replace("_num_", num + "");
         String response = HttpUtil.get(url, CensysConfig.headerMap);
         return parseSearchHostResult(response);
@@ -27,18 +33,10 @@ public class RequestModel {
     }
 
     public static List<JBLicense> searchJBLicenseServer() {
-        List<JBLicense> licenseServers = new ArrayList<>();
-        List<HostInfo> hostInfos = searchJBHost();
-        for (HostInfo info : hostInfos) {
-            String licenseServer = getValidLicenseServerUrl(info);
-            if (licenseServer != null) {
-                licenseServers.add(new JBLicense(licenseServer, true));
-            }
-        }
-        return licenseServers;
+        return parseValidSearchResult(searchJBHost());
     }
 
-    public static List<JBLicense> verifyJBLicense(List<JBLicense> licenses, boolean verify) {
+    public static List<JBLicense> filterDupJBLicense(List<JBLicense> licenses) {
         if (licenses == null) {
             return new ArrayList<>();
         }
@@ -51,14 +49,58 @@ public class RequestModel {
             }
             map.put(license.serverUrl, license);
         }
+        return licenses;
+    }
+
+    public static List<JBLicense> verifyJBLicense(List<JBLicense> licenses, boolean verify) {
+        if (licenses == null) {
+            return new ArrayList<>();
+        }
+        licenses = filterDupJBLicense(licenses);
         if (!verify) {
             return licenses;
         }
-        for (JBLicense jbLicense : licenses) {
-            String response = HttpUtil.get(jbLicense.getServerUrl() + CensysConfig.JB_VERIFY);
-            jbLicense.valid = response.contains("<responseCode>OK</responseCode>");
+        final CountDownLatch latch = new CountDownLatch(licenses.size());
+        ExecutorService service = Executors.newCachedThreadPool();
+        for (final JBLicense jbLicense : licenses) {
+            service.submit(() -> {
+                String response = HttpUtil.get(jbLicense.getServerUrl() + CensysConfig.JB_VERIFY);
+                jbLicense.valid = response.contains("<responseCode>OK</responseCode>");
+                latch.countDown();
+            });
+        }
+        try {
+            latch.await();
+        } catch (Exception e) {
+            WLog.e(TAG, "verifyJBLicense, error, e = " + e);
         }
         return licenses;
+    }
+
+    public static List<JBLicense> parseValidSearchResult(List<HostInfo> hostInfos) {
+        WLog.d(TAG, "parseValidSearchResult,start");
+        final List<JBLicense> licenseServers = new Vector<>();
+        if (hostInfos == null) {
+            return new ArrayList<>();
+        }
+        final CountDownLatch latch = new CountDownLatch(hostInfos.size());
+        ExecutorService service = Executors.newCachedThreadPool();
+        for (HostInfo info : hostInfos) {
+            service.submit(() -> {
+                String licenseServer = getValidLicenseServerUrl(info);
+                if (licenseServer != null) {
+                    licenseServers.add(new JBLicense(licenseServer, true));
+                }
+                latch.countDown();
+            });
+        }
+        try {
+            latch.await();
+        } catch (Exception e) {
+            WLog.e(TAG, "parseValidSearchResult,error, e = " + e);
+        }
+        WLog.d(TAG, "parseValidSearchResult,end");
+        return filterDupJBLicense(licenseServers);
     }
 
     public static boolean isJBLicenseValid(String serverUrl) {
@@ -88,9 +130,7 @@ public class RequestModel {
     }
 
     private static boolean isValidLicenseServer(LicenseServer server) {
-        System.out.println("valid start");
         String response = HttpUtil.get(server.getLicenseServer() + CensysConfig.JB_VERIFY);
-        System.out.println("valid finish");
         return response.contains("<responseCode>OK</responseCode>");
 
     }

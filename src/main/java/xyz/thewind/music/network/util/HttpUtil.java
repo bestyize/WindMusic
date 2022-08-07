@@ -1,5 +1,7 @@
 package xyz.thewind.music.network.util;
 
+import xyz.thewind.music.util.WLog;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -11,6 +13,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class HttpUtil {
+    private static final String TAG = "HttpUtil";
 
     public static String get(String link) {
         return get(link, null);
@@ -40,7 +43,7 @@ public class HttpUtil {
             reader.close();
             conn.disconnect();
         } catch (Exception e) {
-            System.out.println("get, error , url = " + link + ", errMsg = " + e);
+            WLog.e(TAG, "get, error , url = " + link + ", errMsg = " + e);
         }
         return sb.toString();
     }

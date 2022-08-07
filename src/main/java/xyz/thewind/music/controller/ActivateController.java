@@ -12,9 +12,9 @@ import xyz.thewind.music.netool.censys.model.RequestModel;
 import xyz.thewind.music.service.RedisService;
 import xyz.thewind.music.util.ApplicationUtils;
 import xyz.thewind.music.util.GsonUtil;
-import xyz.thewind.music.util.PropertyReader;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 public class ActivateController {
@@ -28,10 +28,11 @@ public class ActivateController {
         RedisService service = getRedisService();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
-        if (service != null){
+        if (service != null) {
             String licenses = service.get(REDIS_KEY_JB_SERVER_LIST);
-            List<JBLicense> parseList = GsonUtil.fromJson(licenses, new TypeToken<ArrayList<JBLicense>>(){}.getType());
-            commonResp.obj = parseList == null?new ArrayList<>():parseList;
+            List<JBLicense> parseList = GsonUtil.fromJson(licenses, new TypeToken<ArrayList<JBLicense>>() {
+            }.getType());
+            commonResp.obj = parseList == null ? new ArrayList<>() : parseList;
         }
         return new ResponseEntity<>(commonResp, headers, HttpStatus.OK);
 
@@ -44,15 +45,28 @@ public class ActivateController {
         RedisService service = getRedisService();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
-        if (service != null){
+        if (service != null) {
             String licenses = service.get(REDIS_KEY_JB_SERVER_LIST);
-            List<JBLicense> parseList = GsonUtil.fromJson(licenses, new TypeToken<ArrayList<JBLicense>>(){}.getType());
+            List<JBLicense> parseList = GsonUtil.fromJson(licenses, new TypeToken<ArrayList<JBLicense>>() {
+            }.getType());
             if (parseList == null) {
                 parseList = new ArrayList<>();
             }
-            parseList.add(new JBLicense(serverUrl, RequestModel.isJBLicenseValid(serverUrl)));
-            service.set(REDIS_KEY_JB_SERVER_LIST, GsonUtil.toJson(parseList));
+            boolean isExist = false;
+            for (JBLicense license : parseList) {
+                if (license.serverUrl.equals(serverUrl)) {
+                    isExist = true;
+                    license.valid = RequestModel.isJBLicenseValid(serverUrl);
+                    break;
+                }
+            }
             commonResp.msg("add successful");
+            if (!isExist) {
+                parseList.add(new JBLicense(serverUrl, RequestModel.isJBLicenseValid(serverUrl)));
+                commonResp.msg("already exists");
+            }
+            service.set(REDIS_KEY_JB_SERVER_LIST, GsonUtil.toJson(parseList));
+
         }
         return new ResponseEntity<>(commonResp, headers, HttpStatus.OK);
 
@@ -65,15 +79,18 @@ public class ActivateController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         commonResp.code(0).msg("OK");
-        if (service != null){
+        if (service != null) {
             List<JBLicense> licenseServers = RequestModel.searchJBLicenseServer();
             String licenses = service.get(REDIS_KEY_JB_SERVER_LIST);
-            List<JBLicense> parseList = GsonUtil.fromJson(licenses, new TypeToken<ArrayList<JBLicense>>(){}.getType());
+            List<JBLicense> parseList = GsonUtil.fromJson(licenses, new TypeToken<ArrayList<JBLicense>>() {
+            }.getType());
             if (parseList == null) {
                 parseList = new ArrayList<>();
             }
             parseList.addAll(licenseServers);
+            parseList = RequestModel.filterDupJBLicense(parseList);
             service.set(REDIS_KEY_JB_SERVER_LIST, GsonUtil.toJson(parseList));
+            commonResp.obj(parseList);
         }
         return new ResponseEntity<>(commonResp, headers, HttpStatus.OK);
     }
@@ -85,9 +102,10 @@ public class ActivateController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         commonResp.code(0);
-        if (service != null){
+        if (service != null) {
             String licenses = service.get(REDIS_KEY_JB_SERVER_LIST);
-            List<JBLicense> parseList = GsonUtil.fromJson(licenses, new TypeToken<ArrayList<JBLicense>>(){}.getType());
+            List<JBLicense> parseList = GsonUtil.fromJson(licenses, new TypeToken<ArrayList<JBLicense>>() {
+            }.getType());
             parseList = RequestModel.verifyJBLicense(parseList, verify);
             service.set(REDIS_KEY_JB_SERVER_LIST, GsonUtil.toJson(parseList));
             commonResp.obj = parseList;
