@@ -27,8 +27,8 @@ public class KwMusicModel implements IMusicApiModel {
     }};
 
     @Override
-    public List<SongBean> searchMusic(String keyword, int num) {
-        return parseSearchResult(doSearchMusic(keyword, num));
+    public List<SongBean> searchMusic(String keyword, int num, int page) {
+        return parseSearchResult(doSearchMusic(keyword, num, page));
     }
 
     @Override
@@ -44,7 +44,7 @@ public class KwMusicModel implements IMusicApiModel {
 
     @Override
     public List<SongBean> searchWithDownload(String keyword, int num) {
-        List<SongBean> songBeanList = searchMusic(keyword, num);
+        List<SongBean> songBeanList = searchMusic(keyword, num, 0);
         for (SongBean bean : songBeanList) {
             searchDownloadLink(bean, QUALITY_ZQ);
             searchDownloadLink(bean, QUALITY_SQ);
@@ -55,8 +55,8 @@ public class KwMusicModel implements IMusicApiModel {
         return songBeanList;
     }
 
-    private String doSearchMusic(String keyword, int num) {
-        String reqLink = "http://search.kuwo.cn/r.s?user=0&all=" + URLEncoder.encode(keyword, StandardCharsets.UTF_8) + "&pn=0&rn=" + num + "&uid=0&ver=kwplayer_ar_10.1.5.0&vipver=1&newver=3&correct=1&ft=music&cluster=0&strategy=2012&encoding=utf8&rformat=json&vermerge=1&mobi=1&searchapi=5";
+    private String doSearchMusic(String keyword, int num, int page) {
+        String reqLink = "http://search.kuwo.cn/r.s?user=0&all=" + URLEncoder.encode(keyword, StandardCharsets.UTF_8) + "&pn="+page+"&rn=" + num + "&uid=0&ver=kwplayer_ar_10.1.5.0&vipver=1&newver=3&correct=1&ft=music&cluster=0&strategy=2012&encoding=utf8&rformat=json&vermerge=1&mobi=1&searchapi=5";
         return HttpUtil.get(reqLink);
     }
 

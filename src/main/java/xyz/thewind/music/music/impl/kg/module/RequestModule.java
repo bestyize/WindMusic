@@ -14,9 +14,9 @@ public class RequestModule {
     }
 
     public static void main(String[] args) {
-        String url = buildWebSearchUrl("周杰伦", 10);
+        String url = buildWebSearchUrl("周杰伦", 10, 0);
         url = url.replace("周杰伦", URLEncoder.encode("周杰伦"));
-        WLog.i("", url);
+        WLog.i("", url + "\n" + HttpUtil.get(url));
     }
     public static String buildSearchUrl(String keyword, int num) {
         String searchUrl = "https://complexsearch.kugou.com/v2/search/song";
@@ -31,7 +31,7 @@ public class RequestModule {
         map.put("requestid", UUID.randomUUID());
         map.put("pagesize", num + "");
         map.put("clienttime", System.currentTimeMillis() / 1000);
-        map.put("iscorrection", "0");
+        map.put("iscorrection", "1");
         map.put("uuid", "0");
         map.put("keyword", keyword);
         map.put("mid", "0");
@@ -42,20 +42,20 @@ public class RequestModule {
         return HttpUtil.buildGetUrl(searchUrl, map);
     }
 
-    public static String buildWebSearchUrl(String keyword, int num) {
+    public static String buildWebSearchUrl(String keyword, int num, int page) {
         String searchUrl = "https://complexsearch.kugou.com/v2/search/song";
         String appkey = "NVPh5oo715z5DIWAeQlhMDsWXXQV4hwt";
         Map<String, Object> map = new HashMap<>();
         map.put("userid", "0");
         map.put("area_code", "0");
         map.put("srcappid", "2919");
-        map.put("page", "1");
+        map.put("page", (page + 1) + "");
         map.put("token", "");
         map.put("privilegefilter", "0");
         map.put("requestid", UUID.randomUUID());
         map.put("pagesize", num + "");
         map.put("clienttime", System.currentTimeMillis());
-        map.put("iscorrection", "0");
+        map.put("iscorrection", "1");
         map.put("uuid", "0");
         map.put("keyword", keyword);
         map.put("mid", "0");

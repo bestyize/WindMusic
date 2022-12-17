@@ -26,10 +26,10 @@ import static xyz.thewind.music.music.common.MusicCommonConfig.*;
 public class KgMusicModel implements IMusicApiModel {
     private static final Logger logger = LogManager.getLogger(KgMusicModel.class);
 
-    public static String searchRequest(String keyword, int num) {
+    public static String searchRequest(String keyword, int num, int page) {
         String response = "";
         try {
-            response = HttpUtil.get(RequestModule.buildSearchUrl(keyword, num));
+            response = HttpUtil.get(RequestModule.buildWebSearchUrl(keyword, num, page));
         } catch (Exception e) {
             logger.error(e.toString());
         }
@@ -68,8 +68,8 @@ public class KgMusicModel implements IMusicApiModel {
     }
 
     @Override
-    public List<SongBean> searchMusic(String keyword, int num) {
-        String response = searchRequest(keyword, num);
+    public List<SongBean> searchMusic(String keyword, int num, int page) {
+        String response = searchRequest(keyword, num, page);
         return parseSearchResult(response);
     }
 
@@ -96,7 +96,7 @@ public class KgMusicModel implements IMusicApiModel {
 
     @Override
     public List<SongBean> searchWithDownload(String keyword, int num) {
-        List<SongBean> songBeanList = searchMusic(keyword, num);
+        List<SongBean> songBeanList = searchMusic(keyword, num, 0);
         for (SongBean bean : songBeanList) {
             String[] hashArr = bean.getSongId().split("-");
             String[] qualitys = {QUALITY_PQ, QUALITY_HQ, QUALITY_SQ, QUALITY_ZQ};

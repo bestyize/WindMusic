@@ -45,13 +45,13 @@ public class MusicController {
     }
 
     @RequestMapping("/api/new/search")
-    public ResponseEntity<List<SongBean>> search(String keyword, String num, String src) {
+    public ResponseEntity<List<SongBean>> search(String keyword, String num, String page, String src) {
         String songSrc = MusicConfigManager.getInstance().getSongSrc();
         if (songSrc != null && songSrc.length() > 0) {
             src = songSrc;
         }
 
-        return new ResponseEntity<>(musicDispatcher.searchDispatcher(src, keyword, NumberHelper.parseNumber(num, 10)), HttpStatus.OK);
+        return new ResponseEntity<>(musicDispatcher.searchDispatcher(src, keyword, NumberHelper.parseNumber(num, 10), NumberHelper.parseNumber(page, 0)), HttpStatus.OK);
     }
 
     @RequestMapping("/api/new/searchdown")

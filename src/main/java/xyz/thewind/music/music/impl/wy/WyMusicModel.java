@@ -41,11 +41,10 @@ public class WyMusicModel implements IMusicApiModel {
     }
 
     @Override
-    public List<SongBean> searchMusic(String keyword, int num) {
-        int page = 1;
+    public List<SongBean> searchMusic(String keyword, int num, int page) {
         String searchLink = null;
         try {
-            searchLink = "http://music.163.com/api/cloudsearch/get/web?s=" + URLEncoder.encode(keyword, "UTF-8") + "&type=1&offset=" + (page - 1) * num + "&limit=" + num + "&total=true";
+            searchLink = "http://music.163.com/api/cloudsearch/get/web?s=" + URLEncoder.encode(keyword, "UTF-8") + "&type=1&offset=" + page * num + "&limit=" + num + "&total=true";
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -70,7 +69,7 @@ public class WyMusicModel implements IMusicApiModel {
 
     @Override
     public List<SongBean> searchWithDownload(String keyword, int num) {
-        List<SongBean> songBeanList = searchMusic(keyword, num);
+        List<SongBean> songBeanList = searchMusic(keyword, num, 0);
         for (SongBean bean : songBeanList) {
             searchDownloadLink(bean, QUALITY_ZQ);
             searchDownloadLink(bean, QUALITY_SQ);

@@ -15,7 +15,7 @@ public interface IMusicApiModel {
      * @param num     数量
      * @return 搜到的歌曲列表
      */
-    List<SongBean> searchMusic(String keyword, int num);
+    List<SongBean> searchMusic(String keyword, int num, int page);
 
     /**
      * 至少应该有个songid信息，获取全部链接

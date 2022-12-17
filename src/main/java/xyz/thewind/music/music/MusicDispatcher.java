@@ -31,13 +31,13 @@ public class MusicDispatcher {
     }
 
     //关键词搜索
-    public List<SongBean> searchDispatcher(String songSrc, String keyword, int num) {
+    public List<SongBean> searchDispatcher(String songSrc, String keyword, int num, int page) {
         List<SongBean> songList = new LinkedList<>();
         if (!srcMap.containsKey(songSrc)) {
             return songList;
         }
         IMusicApiModel IMusicApiModel = srcMap.get(songSrc);
-        songList = IMusicApiModel.searchMusic(keyword, num);
+        songList = IMusicApiModel.searchMusic(keyword, num, page);
         return songList;
     }
 

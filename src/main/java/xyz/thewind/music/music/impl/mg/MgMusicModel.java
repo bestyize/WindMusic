@@ -22,8 +22,8 @@ public class MgMusicModel implements IMusicApiModel {
     private static final String baseContentLink = "https://c.musicapp.migu.cn/MIGUM3.0/v1.0/content/resourceinfo.do?ua=Android_migu&version=5.0&resourceType=2&copyrightId=";
 
     @Override
-    public List<SongBean> searchMusic(String keyword, int num) {
-        return parseSearchResult(doSearchMusic(keyword, num));
+    public List<SongBean> searchMusic(String keyword, int num, int page) {
+        return parseSearchResult(doSearchMusic(keyword, num, page));
     }
 
     @Override
@@ -39,17 +39,17 @@ public class MgMusicModel implements IMusicApiModel {
 
     @Override
     public List<SongBean> searchWithDownload(String keyword, int num) {
-        List<SongBean> songBeanList = searchMusic(keyword, num);
+        List<SongBean> songBeanList = searchMusic(keyword, num, 0);
         for (SongBean bean : songBeanList) {
             searchDownloadLink(bean, "HQ");
         }
         return songBeanList;
     }
 
-    private String doSearchMusic(String keyword, int num) {
+    private String doSearchMusic(String keyword, int num, int page) {
         String key = null;
         key = URLEncoder.encode(keyword, StandardCharsets.UTF_8);
-        String api = "https://app.c.nf.migu.cn/MIGUM3.0/v1.0/content/search_all.do?isCopyright=1&isCorrect=1&pageNo=1&pageSize=" + num + "&sort=0&text=" + key + "&searchSwitch={\"song\":1}";
+        String api = "https://app.c.nf.migu.cn/MIGUM3.0/v1.0/content/search_all.do?isCopyright=1&isCorrect=1&pageNo="+(page + 1)+"&pageSize=" + num + "&sort=0&text=" + key + "&searchSwitch={\"song\":1}";
         return HttpUtil.get(api, null);
     }
 
