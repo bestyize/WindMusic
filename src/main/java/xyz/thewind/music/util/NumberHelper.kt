@@ -1,13 +1,17 @@
-package xyz.thewind.music.util;
+package xyz.thewind.music.util
 
-public class NumberHelper {
-    public static int parseNumber(String num, int defaultVal) {
-        int realNum = defaultVal;
-        try {
-            realNum = Integer.parseInt(num);
-        } catch (Exception e) {
-            e.printStackTrace();
+object NumberHelper {
+    @JvmStatic
+    fun parseNumber(num: String?, defaultVal: Int): Int {
+        var realNum = defaultVal
+        if (num.isNullOrBlank())  {
+            return defaultVal
         }
-        return realNum;
+        try {
+            realNum = num.toInt()
+        } catch (e: Exception) {
+            println(e.cause)
+        }
+        return realNum
     }
 }

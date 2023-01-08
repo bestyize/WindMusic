@@ -34,7 +34,7 @@ public class MgDownloadBean {
         this.resource = resource;
     }
 
-    public class MgMusicDetail {
+    public static class MgMusicDetail {
         String songName;
         String singerId;
         @SerializedName("singer")

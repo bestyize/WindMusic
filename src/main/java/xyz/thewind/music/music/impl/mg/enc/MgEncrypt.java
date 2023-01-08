@@ -1,6 +1,7 @@
 package xyz.thewind.music.music.impl.mg.enc;
 
 import xyz.thewind.music.network.util.HttpUtil;
+import xyz.thewind.music.util.Base64Util;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -22,7 +23,6 @@ public class MgEncrypt {
         }
         return "";
     }
-
     public static Map<String, String> requestHeader(String keyword, String msiDn) {
         String deviceId = genDeviceId(32);
         HashMap<String, String> hashMap = new HashMap<>();
@@ -30,8 +30,9 @@ public class MgEncrypt {
         hashMap.put("appId", "yyapp2");
         hashMap.put("android_id", "afad815163f1d394");
         hashMap.put("ua", "Android_migu");
-        hashMap.put("version", "7.0.7");
-        hashMap.put("uiVersion", "A_music_3.4.0");
+        hashMap.put("version", "7.21.0");
+        hashMap.put("uiVersion", "A_music_3.12.4");
+        hashMap.put("ip", Base64Util.encode("114.88.161.51"));
         //hashMap.put("channel", "0146951");
         String timestamp = System.currentTimeMillis() + "";
         String sig = "6cdc72a439cef99a3418d2a78aa28c73";//咪咕签名的MD5
@@ -39,6 +40,9 @@ public class MgEncrypt {
         hashMap.put("sign", sign);
         hashMap.put("timestamp", timestamp);
         hashMap.put("msisdn", msiDn);
+        hashMap.put("os", "android 12");
+        hashMap.put("mgm-Network-type", "04");
+        hashMap.put("mode", "android");
         return hashMap;
     }
 
@@ -48,17 +52,10 @@ public class MgEncrypt {
         hashMap.put("pageNo", page + "");
         hashMap.put("pageSize", num + "");
         hashMap.put("sort", "0");
-        try {
-            hashMap.put("text", URLEncoder.encode(keyword, "UTF-8"));
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
+        hashMap.put("text", URLEncoder.encode(keyword, StandardCharsets.UTF_8));
         String searchSwitch = null;
-        try {
-            searchSwitch = URLEncoder.encode("{\"song\":1,\"album\":0,\"singer\":0,\"tagSong\":0,\"mvSong\":0,\"bestShow\":0,\"songlist\":0,\"lyricSong\":1}", "utf-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
+        // {"song":1,"album":0,"singer":0,"tagSong":1,"mvSong":0,"bestShow":1,"songlist":0,"lyricSong":0}
+        searchSwitch = URLEncoder.encode("{\"song\":1,\"album\":0,\"singer\":0,\"tagSong\":1,\"mvSong\":0,\"bestShow\":0,\"songlist\":0,\"lyricSong\":0}", StandardCharsets.UTF_8);
         hashMap.put("searchSwitch", searchSwitch);
         hashMap.put("sid", getSid());
         hashMap.put("isCopyright", "1");
@@ -67,7 +64,7 @@ public class MgEncrypt {
         for (String key : hashMap.keySet()) {
             sb.append(key).append("=").append(hashMap.get(key)).append("&");
         }
-        return "https://jadeite.migu.cn/music_search/v2/search/searchAll?" + sb;
+        return "https://jadeite.migu.cn/music_search/v3/search/searchAll?" + sb;
     }
 
     public static String getSid() {
