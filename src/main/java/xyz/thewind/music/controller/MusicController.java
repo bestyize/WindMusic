@@ -21,7 +21,7 @@ import java.util.List;
 public class MusicController {
 
     private static final MusicDispatcher musicDispatcher = new MusicDispatcher();
-//    public static List<String> configItemList = new ArrayList<>();
+    //    public static List<String> configItemList = new ArrayList<>();
     @Autowired
     private RedisService redisService;
 
@@ -46,6 +46,7 @@ public class MusicController {
 
     @RequestMapping("/api/new/search")
     public ResponseEntity<List<SongBean>> search(String keyword, String num, String page, String src) {
+        redisService.increment(DataUtils.getTodayStr(), 1);
         String songSrc = MusicConfigManager.getInstance().getSongSrc();
         if (songSrc != null && songSrc.length() > 0) {
             src = songSrc;
