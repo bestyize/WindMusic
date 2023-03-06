@@ -7,4 +7,7 @@ public class MusicRedisConfig {
     public static final String REDIS_KGMUSIC_TOKEN = "kg_token";
 
     public static final String REDIS_MUSIC_SRC = "songSrc";
+
+    public static final String REDIS_KW_UID = "kw_uid";
+    public static final String REDIS_KW_SID = "kw_sid";
 }

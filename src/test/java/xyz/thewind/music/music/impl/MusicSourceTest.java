@@ -37,7 +37,7 @@ public class MusicSourceTest {
     @Test
     public void test() {
 
-        List<SongBean> songBeanList = dispatcher.searchDownDispatcher("WY", "蔡徐坤", 5);
+        List<SongBean> songBeanList = dispatcher.searchDownDispatcher("KW", "周杰伦", 5);
         System.out.println(GsonUtil.toJson(songBeanList));
     }
 

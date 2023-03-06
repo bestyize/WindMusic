@@ -1,10 +1,11 @@
 package xyz.thewind.music.music.impl.kw.module;
 
 import xyz.thewind.music.music.common.MusicCommonConfig;
+import xyz.thewind.music.music.common.MusicConfigManager;
 import xyz.thewind.music.music.impl.kw.bean.download.DownloadResp;
 import xyz.thewind.music.music.impl.kw.enc.KwEncrypt;
-import xyz.thewind.music.util.GsonUtil;
 import xyz.thewind.music.network.util.HttpUtil;
+import xyz.thewind.music.util.GsonUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,7 +25,8 @@ public class RequestModule {
     }};
 
     /**
-     *  支持hires音质
+     * 支持hires音质
+     *
      * @param songId
      * @param quality
      * @return
@@ -35,40 +37,28 @@ public class RequestModule {
     }
 
     private static String buildDownReqLink(String songId, String quality) {
-        String timeStamp = System.currentTimeMillis() + "";
+        String timeStamp = System.currentTimeMillis() / 1000 + "";
         String br = qualityMap.get(quality);
-        String format = "flac|mp3|aac";
-        String token = null;
-        StringBuilder reqParams = createCommonParams();
-        reqParams.append("type=convert_url_with_sign");
-        reqParams.append("&br=");
-        reqParams.append(br);
-        reqParams.append("&format=");
-        reqParams.append(format);
-        reqParams.append("&sig=");
-        reqParams.append("0");
-        reqParams.append("&rid=");
-        reqParams.append(songId);
-        reqParams.append("&priority=");
-        reqParams.append("bitrate");
-        reqParams.append("&loginUid=");
-        reqParams.append("0");
-        reqParams.append("&network=WIFI");
-        reqParams.append("&loginSid=");
-        reqParams.append("0");
-        reqParams.append("&localUid=");
-        reqParams.append(-1);
-        reqParams.append("&mode=audition");
-        reqParams.append("&token=");
-        reqParams.append(token);
-        reqParams.append("&timestamp=");
-        reqParams.append(timeStamp);
-        reqParams.append("&uid=");
-        reqParams.append("0");
-        return baseUrl + KwEncrypt.encrypt(reqParams.toString());
+        String req = "prod=kwplayer_ar_10.3.6.3" +
+                "&corp=kuwo" +
+                "&newver=3" +
+                "&vipver=10.3.6.3" +
+                "&source=kwplayer_ar_10.3.6.3_40.apk" +
+                "&loginUid=" + MusicConfigManager.getInstance().getKwUid() +
+                "&notrace=1" +
+                "&type=convert_url_with_sign" +
+                "&br=" + br +
+                "&format=flac|mp3|aac" +
+                "&rid=" + songId +
+                "&priority=bitrate" +
+                "&loginSid=" + MusicConfigManager.getInstance().getKwSid() +
+                "&mode=audition" +
+                "&timestamp=" + timeStamp +
+                "&isstar=false";
+        return baseUrl + KwEncrypt.encrypt(req);
     }
 
-    private static String parseDownloadLink(String resp){
+    private static String parseDownloadLink(String resp) {
         DownloadResp downloadResp = GsonUtil.fromJson(resp, DownloadResp.class);
         if (downloadResp == null) {
             return null;
@@ -93,9 +83,9 @@ public class RequestModule {
         sb.append("&q36=");
         sb.append("0");
         sb.append("&loginUid=");
-        sb.append("0");
+        sb.append("582482400");
         sb.append("&loginSid=");
-        sb.append("0");
+        sb.append("1162595426");
         sb.append("&notrace=");
         sb.append(1);
         sb.append("&");

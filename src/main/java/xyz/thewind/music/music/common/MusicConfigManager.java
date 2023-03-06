@@ -18,6 +18,8 @@ public class MusicConfigManager {
         add(MusicRedisConfig.REDIS_WYMUSIC_TOKEN_KEY);
         add(MusicRedisConfig.REDIS_MUSIC_SRC);
         add(MusicRedisConfig.REDIS_QQMUSIC_WX_LOGIN_INFO);
+        add(MusicRedisConfig.REDIS_KW_UID);
+        add(MusicRedisConfig.REDIS_KW_SID);
     }}
 ;
 
@@ -40,6 +42,14 @@ public class MusicConfigManager {
         return GsonUtil.fromJson(
                 service.get(MusicRedisConfig.REDIS_QQMUSIC_WX_LOGIN_INFO),
                 QQMusicLoginToken.class);
+    }
+
+    public String getKwUid() {
+        return getConfigStr(MusicRedisConfig.REDIS_KW_UID);
+    }
+
+    public String getKwSid() {
+        return getConfigStr(MusicRedisConfig.REDIS_KW_SID);
     }
 
     public String getWyMusicToken() {
