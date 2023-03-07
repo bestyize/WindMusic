@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import xyz.thewind.music.interceptor.AccessLimit;
 import xyz.thewind.music.model.CommonResp;
 import xyz.thewind.music.model.PlayerBean;
 import xyz.thewind.music.model.SongBean;
@@ -25,7 +26,8 @@ public class MusicController {
     @Autowired
     private RedisService redisService;
 
-    @RequestMapping("/api/new/download")
+    @AccessLimit(hours = 12, maxCount = 20)
+    @RequestMapping("/api/next/download")
     public ResponseEntity<String> download(String songid, String quality, String src, String batch) {
         String response;
         HttpHeaders headers = new HttpHeaders();
@@ -44,7 +46,8 @@ public class MusicController {
         return new ResponseEntity<>(response, headers, HttpStatus.OK);
     }
 
-    @RequestMapping("/api/new/search")
+    @AccessLimit(hours = 12, maxCount = 20)
+    @RequestMapping("/api/next/search")
     public ResponseEntity<List<SongBean>> search(String keyword, String num, String page, String src) {
         redisService.increment(DataUtils.getTodayStr(), 1);
         String songSrc = MusicConfigManager.getInstance().getSongSrc();
@@ -55,7 +58,8 @@ public class MusicController {
         return new ResponseEntity<>(musicDispatcher.searchDispatcher(src, keyword, NumberHelper.parseNumber(num, 10), NumberHelper.parseNumber(page, 0)), HttpStatus.OK);
     }
 
-    @RequestMapping("/api/new/searchdown")
+    @AccessLimit(hours = 12, maxCount = 5)
+    @RequestMapping("/api/next/searchdown")
     public ResponseEntity<List<SongBean>> searchDown(String keyword, String num, String src) {
         String songSrc = MusicConfigManager.getInstance().getSongSrc();
         if (songSrc != null && songSrc.length() > 0) {
@@ -65,6 +69,7 @@ public class MusicController {
         return new ResponseEntity<>(songBeanList, HttpStatus.OK);
     }
 
+    @AccessLimit(hours = 12, maxCount = 20)
     @RequestMapping("/api/getlyric")
     public ResponseEntity<String> searchLyric(String songid, String src) {
         String songSrc = MusicConfigManager.getInstance().getSongSrc();
@@ -74,7 +79,8 @@ public class MusicController {
         return new ResponseEntity<>(musicDispatcher.searchLyricDispatcher(src, songid), HttpStatus.OK);
     }
 
-    @RequestMapping("/api/new/player")
+    @AccessLimit(hours = 12, maxCount = 20)
+    @RequestMapping("/api/next/player")
     public ResponseEntity<List<PlayerBean>> player(String shareId) {
         List<PlayerBean> playerBeanList = new ArrayList<>();
         if (shareId == null) {
@@ -119,6 +125,7 @@ public class MusicController {
         return new ResponseEntity<>(playerBeanList, HttpStatus.OK);
     }
 
+    @AccessLimit(hours = 12, maxCount = 50)
     @RequestMapping("/api/songdetail")
     public ResponseEntity<SongBean> getSongDetail(String src, String songid) {
         SongBean bean = musicDispatcher.songDetailDispatcher(src, songid);

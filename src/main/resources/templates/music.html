@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta content="无名音乐官网" name="keywords"/>
     <meta content="免费下载无损音乐" name="description"/>
+    <meta content="微信公众号:从来不想" name="description">
     <title>无名音乐-在线版</title>
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/wind.css" rel="stylesheet">
@@ -198,7 +199,7 @@
         formData.append('src', songSrc);
         formData.append('quality', quality);
         $.ajax({
-            url: '/api/new/download',
+            url: '/api/next/download',
             type: 'POST',
             cache: false,
             data: formData,
@@ -217,7 +218,7 @@
         formData.append('src', songSrc);
         formData.append('quality', quality);
         $.ajax({
-            url: '/api/new/download',
+            url: '/api/next/download',
             type: 'POST',
             cache: false,
             data: formData,
@@ -259,7 +260,7 @@
     function parseDownloadInfo(params, quality) {
         let downloadLink = params.downloadLinkMap[quality];
         if (downloadLink == null || (downloadLink.indexOf("flac") === -1 && downloadLink.indexOf("mp3") === -1)) {
-            alert("暂无音源，请关注公众号查看最新动态")
+            alert("暂无音源，或触发12小时访问限制，请关注公众号查看最新动态")
             div_user_wx.click()
             return
         }
@@ -288,7 +289,7 @@
         formData.append('keyword', keyword);
         formData.append('num', num);
         $.ajax({
-            url: '/api/new/search',
+            url: '/api/next/search',
             type: 'POST',
             cache: false,
             data: formData,
@@ -303,7 +304,7 @@
 
     function parseSearchInfo(params) {
         if (params.length === 0) {
-            alert("暂无搜索结果，请关注公众号查看最新动态")
+            alert("暂无搜索结果,或触发12小时访问次数上限，请关注公众号查看最新动态")
             div_user_wx.click()
             return
         }
