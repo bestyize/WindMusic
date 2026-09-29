@@ -1,411 +1,151 @@
-#TheWind服务端
+# 无名音乐服务端
 
+解析 QQ、网易云、咪咕、酷我、酷狗五个平台的音乐：搜索、获取各音质下载链接、歌词、歌曲详情，附带一个搜索下载页面和分享播放页。
 
+技术栈：后端 Kotlin 2.3 + Spring Boot 4.1（Spring MVC），JDK 21，Gradle Kotlin DSL，Redis 可选；前端 Vue 3 + TypeScript + Vite，构建时打进 jar。构建需要 JDK 21 和 Node.js 22+。
 
-# 1 无名音乐服务端
+| 音质\平台 | KW | WY | MG | QQ | KG |
+|---|---|---|---|---|---|
+| LQ / PQ / HQ / SQ | √ | √ | √ | √ | √ |
+| ZQ（Hi-Res） | √ | √ | √ | √ | √ |
+| EQ（杜比/Z3D） | × | × | √ | × | × |
+| VIP 资源需 Cookie | √ | √ | × | √ | √ |
 
-## 1.1 功能介绍
-
-无名音乐服务端可以解析多个音乐平台的音乐源，平台，格式如下
-
-| 音质\平台      |xm|kw|wy|mg|qq|kg|
-|------------|---|---|---|---|---|---|
-| LQ         |√|√|√|√|√|√|
-| PQ         |√|√|√|√|√|√|
-| HQ         |√|√|√|√|√|√|
-| SQ         |√|√|√|√|√|√|
-| ZQ         |×|×|√|√|√|√|
-| EQ         |×|×|×|√|×|×|
-| VIP资源      |√|√|√|√|√|√|
-| VIP需Cookie |×|×|√|×|√|√|
-
-## 1.2 使用方式
-
-### 1.2.1 配置工作模式
-
-#### 1.2.1.1 Cookie配置
-
-不需要经过Cookie配置也可获取普通音质的下载链接，所有接口都支持下载非VIP的各种音质音乐。
-
-下表是不设置Cookie时，对VIP资源（可试听）的支持能力，对于不支持试听的资源，或者需要付费的专辑，所有下载接口都不支持
-
-|音质\平台|xm|kw|wy|mg|qq|kg|
-|---|---|---|---|---|---|---|
-|LQ|√|√|√|√|√|√|
-|PQ|√|√|√|√|√|√|
-|HQ|√|√|×|√|×|×|
-|SQ|√|√|×|√|×|×|
-| ZQ|×|×|×|√|√|√|
-| EQ|×|×|×|×|×|×|
-
-WY、KG、QQ三家的VIP音乐资源需要开通了VIP的帐号的cookie作为Cookie, 在无名音乐服务端，使用Redis存储这些Cookie，因此需要安装Redis。
-
-三家需要的Cookie可以通过登录VIP后抓包获取，分别是
-
-|项目\平台|WY|QQ|KG|
-|---|---|---|---|
-|需要的Cookie|MUSIC_U|qqmusic_key、qqmusic_uin|userid、token|
-|对应的代号|wy_music_u|qqmusic_key、qqmusic_uin|kg_uid、kg_token|
-
-获取cookie后，可以单独提交或者批量提交，提交之前的数据应该是这样的
+## 运行
 
 ```bash
-qqmusic_uin=12345678;qqmusic_key=12345678;kg_uid=12345678;kg_token=12345678;kg_pid_secret=12345678;wy_music_u=12345678
-```
-为了提交不出问题，需要对上面给的字串BASE64编码
-
-```html
-cXFtdXNpY191aW49MTIzNDU2Nzg7cXFtdXNpY19rZXk9MTIzNDU2Nzg7a2dfdWlkPTEyMzQ1Njc4O2tnX3Rva2VuPTEyMzQ1Njc4O2tnX3BpZF9zZWNyZXQ9MTIzNDU2Nzg7d3lfbXVzaWNfdT0xMjM0NTY3OA==
+./gradlew bootRun
 ```
 
-|名称|内容|备注|是否必须|
-|---|---|---|---|
-|api|https://www.thewind.xyz/api/configupdate|请求地址|√|
-|params|BASE64编码后的cookie|请求参数|√|
+默认监听 8080，打开 http://localhost:8080 即可使用。Gradle 会自动执行 `npm ci` 和前端构建。
 
-一个完整的请求示例
+只改前端时可以开 Vite 开发服务器（热更新，`/api` 转发到 8080 上的后端）：
 
-```html
-https://www.thewind.xyz/api/configupdate?params=cXFtdXNpY191aW49MTIzNDU2Nzg7cXFtdXNpY19rZXk9MTIzNDU2Nzg7a2dfdWlkPTEyMzQ1Njc4O2tnX3Rva2VuPTEyMzQ1Njc4O2tnX3BpZF9zZWNyZXQ9MTIzNDU2Nzg7d3lfbXVzaWNfdT0xMjM0NTY3OA==
+```bash
+cd frontend && npm run dev
 ```
 
-#### 1.2.1.2 获取现有配置
+| 环境变量 | 说明 | 默认值 |
+|---|---|---|
+| `PORT` | 监听端口 | 8080 |
+| `SERVER_ADDRESS` | 监听地址，放在 nginx 后面时建议设为 `127.0.0.1` | 所有网卡 |
+| `REDIS_HOST` / `REDIS_PORT` / `REDIS_PASSWORD` | Redis 连接 | localhost / 6379 / 空 |
+| `WIND_ADMIN_TOKEN` | 配置接口的访问口令，设置后 `/api/configupdate`、`/api/getconfig`、`/api/updatetoken` 需带 `token` 参数 | 空（不校验） |
 
-|名称|内容|备注|是否必须|
-|---|---|---|---|
-|api|/api/getconfig|请求地址|√|
+Redis 用于保存 VIP Cookie、强制音源和访问频率计数。Redis 不可用时服务照常运行，只是这几项功能失效。
 
-#### 1.2.1.3 音乐源配置
+### 部署（nginx 负责 HTTPS）
 
-如果配置了服务端音乐源，那么普通请求的音乐源将不会生效，而是采用服务端的音乐源。与上述配置采用一个接口
-
-|名称|内容|备注|是否必须|
-|---|---|---|---|
-|api|/api/configupdate|请求地址|√|
-|params|配置的音乐源|请求参数|√|
-
-实际上，上面可选的一共有六种,分别是
-
-|可选参数|xm|kw|wy|mg|qq|kg|
-|---|---|---|---|---|---|---|
-|源码|songSrc=XM|songSrc=KW|songSrc=WY|songSrc=MG|songSrc=QQ|songSrc=KG|
-|base64编码后|c29uZ1NyYz1YTQ==|c29uZ1NyYz1LVw==|c29uZ1NyYz1XWQ==|c29uZ1NyYz1NRw==|c29uZ1NyYz1RUQ==|c29uZ1NyYz1LRw==|
-
-一个完整的请求示例
-
-```html
-<!--请求将音乐源改成WY-->
-https://www.thewind.xyz/api/configupdate?params=c29uZ1NyYz1XWQ==
+```bash
+./gradlew bootJar
+SERVER_ADDRESS=127.0.0.1 java -jar build/libs/wind-music-1.0.0.jar
 ```
 
-### 1.2.2 搜索API介绍
+```nginx
+server {
+    listen 80;
+    server_name example.com;
+    return 301 https://$host$request_uri;
+}
 
-|名称|内容|备注|是否必须|
-|---|---|---|---|
-|api|/api/search|请求地址|√|
-|src|XM、KW、WY、MG、QQ、KG|请求平台|√|
-|num|整数即可，默认20个|最大请求数量|√|
-|keyword|关键词|搜索的关键词|√|
+server {
+    listen 443 ssl;
+    server_name example.com;
+    ssl_certificate     /etc/nginx/cert/example.com.pem;
+    ssl_certificate_key /etc/nginx/cert/example.com.key;
 
-一个完整请求举例
-
-```html
-https://www.thewind.xyz/api/search?src=MG&num=3&keyword=%E8%AF%B4%E5%A5%BD%E4%B8%8D%E5%93%AD
-```
-
-返回一段json
-
-```json
-[
-    {
-        "songSrc": "MG",
-        "songId": "60069101277",
-        "songName": "说好不哭(电视剧《两生花》插曲)",
-        "singersName": [
-            "多亮"
-        ],
-        "albumName": "多原话",
-        "picUrl": "https://mcontent.migu.cn/newlv2/new/album/20190520/1000018430/s_KseIpqJgeWAiF4Sk.jpg",
-        "lrcUrl": "http://218.200.230.40:18089/files/lyric/2020-06-15/79f843c61e1e45d9887127da7251b7f7.lrc",
-        "mvUrl": "",
-        "quality": "SQ"
-    },
-    {
-        "songSrc": "MG",
-        "songId": "69906701361",
-        "songName": "说好不哭",
-        "singersName": [
-            "廖羽涵"
-        ],
-        "albumName": "爱的旅程",
-        "picUrl": "https://mcontent.migu.cn/newlv2/new/album/20191031/1106922315/s_whUYKDqGusyWtvr2.jpg",
-        "lrcUrl": "http://218.200.230.40:18089/files/lyric/2016-09-12/1609121509117509.lrc",
-        "mvUrl": "",
-        "quality": "SQ"
-    },
-    {
-        "songSrc": "MG",
-        "songId": "60070861278",
-        "songName": "说好不哭",
-        "singersName": [
-            "尼夫特"
-        ],
-        "albumName": "",
-        "lrcUrl": "http://218.200.230.40:18089/files/lyric/2016-09-26/1609260912331774.lrc",
-        "mvUrl": ""
-    }
-]
-```
-
-### 1.2.3 下载API介绍
-
-|名称|内容|备注|是否必须|
-|---|---|---|---|
-|api|/api/download|请求地址|√|
-|src|XM、KW、WY、MG、QQ、KG|请求平台|√|
-|songid|音乐ID|音乐ID|√|
-|quality|SQ、HQ、PQ、LQ|音乐质量|√|
-|batch|一段json代码|json| |
-
-batch格式如下,注意没有空格,作为参数前还需要经过BASE64编码(base64编码后不容易出错)
-
-```json
-[
-    {
-        "songSrc": "MG",
-        "songId": "60069101277",
-        "quality": "SQ"
-    },
-    {
-        "songSrc": "MG",
-        "songId": "69906701361",
-        "quality": "SQ"
-    },
-    {
-        "songSrc": "MG",
-        "songId": "60069101277",
-        "quality": "HQ"
-    }
-]
-```
-
-假如需要下载某单个歌曲，那么请求格式如下
-
-```html
-https://www.thewind.xyz/api/download?songid=60069101277&quality=HQ&src=MG
-```
-
-返回的数据是这样的
-
-```json
-{
-    "songSrc": "MG",
-    "songId": "60069101277",
-    "downloadLinkMap": {
-        "HQ": "http://freetyst.nf.migu.cn/public/ringmaker01/n4/xlwh/2013/01/2012年12月27日当然文化内容准入6首/全曲下载/MP3_320_16_Stero/说好不哭-多亮.mp3"
+    location / {
+        proxy_pass http://127.0.0.1:8080;
+        proxy_set_header Host              $host;
+        proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
     }
 }
 ```
 
-假如需要批量下载，那么请求格式如下
+应用只采信来自本机或内网地址（127.x、10.x、192.168.x、172.16-31.x）的 `X-Forwarded-For`，按 IP 限流依赖这个头拿到真实客户端地址。nginx 如果不在本机或内网，需要配置 `server.tomcat.remoteip.internal-proxies`。
+
+## 代码结构
+
+```
+src/main/kotlin/xyz/thewind/music
+├── MusicApplication.kt
+├── web/            # HTTP 层：MusicController（音乐接口）、SettingsController（配置接口）、AccessLimit 限流、WebConfig
+├── service/        # MusicService：按 src 把请求分发给对应平台；组装分享播放页数据
+├── provider/       # 平台接入，每个平台一个 MusicProvider Bean
+│   ├── MusicProvider.kt   # 平台接口：search / resolveDownloadLink / getLyric / getSongDetail ...
+│   └── kg kw mg qq wy/    # XxMusicProvider（入口） + XxApi（请求构造/签名） + 加密/解析 + dto/
+├── store/          # KeyValueStore（Redis 实现）与 MusicSettings（各平台 Cookie、强制音源）
+├── model/          # SongBean、音源/音质常量、接口响应模型
+└── common/         # HttpUtil、GsonUtil、Codec（MD5/Base64）等工具
+
+frontend/src        # 单页应用，/ 是搜索下载页，/player?shareId=KW_228908 是分享播放页
+├── api/music.ts    # 后端接口调用和数据类型
+├── domain/         # 音质档位、LRC 歌词解析等纯逻辑（有单元测试）
+├── player/         # usePlayer：全局唯一的播放器状态，切换页面不断播
+├── components/     # SongRow、QualityMeter（音质条）、PlayerDeck（底部播放条）、LyricView 等
+├── views/          # SearchView、ShareView
+└── styles/base.css # 配色、字体、字号等全局变量
+```
+
+新增平台只需实现 `MusicProvider` 并标注 `@Component`，`MusicService` 会自动按 `source` 注册。
+
+## 测试
+
+```bash
+./gradlew check                                           # 后端和前端的全部单元测试，不访问网络
+./gradlew test -Dlive=true --tests '*LiveProviderTest*'   # 访问真实平台的冒烟测试
+```
+
+各平台的签名、加密、请求拼接、响应解析都有单元测试，期望值来自旧版 Java 实现的实际运行结果。
+
+## 接口
+
+所有接口同时支持 GET 查询参数和 POST 表单。`src` 取值为 `KW`、`WY`、`MG`、`QQ`、`KG`，服务端设置了强制音源时搜索、下载、歌词接口忽略 `src`。
+
+| 接口 | 参数 | 说明 |
+|---|---|---|
+| `/api/next/search` | `src`、`keyword`、`num`（默认 10）、`page`（从 0 开始） | 搜索，返回 SongBean 数组 |
+| `/api/next/download` | `src`、`songid`、`quality` | 解析单曲某音质的链接，结果在 `downloadLinkMap` |
+| `/api/next/download` | `src`、`batch` | 批量解析，`batch` 为 Base64 编码的 `[{"songId":"..","quality":"SQ"}]` |
+| `/api/next/searchdown` | `src`、`keyword`、`num` | 搜索并解析所有音质链接 |
+| `/api/getlyric` | `src`、`songid` | LRC 歌词文本 |
+| `/api/songdetail` | `src`、`songid` | 歌曲详情 |
+| `/api/next/player` | `shareId`（`平台_歌曲ID`，如 `KW_228908`） | 分享播放页数据 |
+| `/api/configupdate` | `params` | 写入配置，见下文 |
+| `/api/getconfig` | - | 查看当前配置 |
+| `/api/updatetoken` | - | 立即刷新 QQ 音乐登录态（另有每 9.6 小时一次的定时刷新） |
+
+音乐接口按 IP 限流（12 小时内 20 次，`searchdown` 5 次，`songdetail` 50 次），超限返回 `{"status":-1,"msg":"访问量过大，请12小时后重试"}`。
+
+下载示例：
+
+```
+/api/next/download?src=KW&songid=228908&quality=HQ
+```
 
 ```json
-[
-    {
-        "songSrc": "QQ",
-        "songId": "001OyHbk2MSIi4",
-        "quality": "SQ"
-    },
-    {
-        "songSrc": "QQ",
-        "songId": "001OyHbk2MSIi4",
-        "quality": "HQ"
-    },
-    {
-        "songSrc": "QQ",
-        "songId": "001OyHbk2MSIi4",
-        "quality": "PQ"
-    },
-    {
-        "songSrc": "QQ",
-        "songId": "001OyHbk2MSIi4",
-        "quality": "LQ"
-    },
-    {
-        "songSrc": "QQ",
-        "songId": "003e4b5o0jOMXV",
-        "quality": "SQ"
-    },
-    {
-        "songSrc": "QQ",
-        "songId": "000PkZXC11iZUC",
-        "quality": "HQ"
-    }
-]
+{
+  "songSrc": "KW",
+  "songId": "228908",
+  "downloadLinkMap": { "HQ": "http://..." }
+}
 ```
 
-```html
-http://thewind.xyz/api/download?src=QQ&batch=W3sic29uZ1NyYyI6IlFRIiwic29uZ0lkIjoiMDAxT3lIYmsyTVNJaTQiLCJxdWFsaXR5IjoiU1EifSx7InNvbmdTcmMiOiJRUSIsInNvbmdJZCI6IjAwMU95SGJrMk1TSWk0IiwicXVhbGl0eSI6IkhRIn0seyJzb25nU3JjIjoiUVEiLCJzb25nSWQiOiIwMDFPeUhiazJNU0lpNCIsInF1YWxpdHkiOiJQUSJ9LHsic29uZ1NyYyI6IlFRIiwic29uZ0lkIjoiMDAxT3lIYmsyTVNJaTQiLCJxdWFsaXR5IjoiTFEifSx7InNvbmdTcmMiOiJRUSIsInNvbmdJZCI6IjAwM2U0YjVvMGpPTVhWIiwicXVhbGl0eSI6IlNRIn0seyJzb25nU3JjIjoiUVEiLCJzb25nSWQiOiIwMDBQa1pYQzExaVpVQyIsInF1YWxpdHkiOiJIUSJ9XQ==
+### 配置 VIP Cookie 与强制音源
+
+把 `key=value` 用 `;` 拼接后整体 Base64 编码，作为 `params` 传给 `/api/configupdate`：
+
+```
+kg_uid=123;kg_token=abc;wy_music_u=xxx;kw_uid=1;kw_sid=2;songSrc=WY
 ```
 
-返回的数据是这样的
+| key | 含义 |
+|---|---|
+| `wy_music_u` | 网易云 Cookie `MUSIC_U` |
+| `kg_uid`、`kg_token` | 酷狗 Cookie `userid`、`token` |
+| `kw_uid`、`kw_sid` | 酷我登录 uid / sid |
+| `qqmusic_wx_login_info` | QQ 音乐登录信息 JSON（musicid、musickey、refresh_token 等），之后由服务端自动续期 |
+| `songSrc` | 强制音源，设置后所有请求都走该平台 |
 
-```json
-[
-    {
-        "songSrc": "QQ",
-        "songId": "001OyHbk2MSIi4",
-        "quality": "SQ",
-        "downloadLinkMap": {
-            "SQ": "http://ws.stream.qqmusic.qq.com/F000001OyHbk2MSIi4.flac?guid=0&vkey=0D3D3999927DBB78281F7377835E2C7A76AAC0B177EA89DFC59F0001D4C212E1C62CEE2FDC5ADD7E478A4D9DE82F241EDE3D2E274DAF16C5&uin=1496&fromtag=999"
-        }
-    },
-    {
-        "songSrc": "QQ",
-        "songId": "001OyHbk2MSIi4",
-        "quality": "HQ",
-        "downloadLinkMap": {
-            "HQ": "http://ws.stream.qqmusic.qq.com/M800001OyHbk2MSIi4.mp3?guid=0&vkey=355F09128E3B6533433EFDB67D9A6EBFD3278FED8E97B778BC341F110AF3800FAF2463C8E8A298694C68E838E3BD1ED6A841E827DB0A9B18&uin=1496&fromtag=999"
-        }
-    },
-    {
-        "songSrc": "QQ",
-        "songId": "001OyHbk2MSIi4",
-        "quality": "PQ",
-        "downloadLinkMap": {
-            "PQ": "http://ws.stream.qqmusic.qq.com/M500001OyHbk2MSIi4.mp3?guid=0&vkey=F5FA87B695FF2B17FA0C96D2D21EF3B813E9D2DAF4866631E568B1475408FA45C24EEC94561AF66F01C40CC2F73D677D1109BA94FCB936FC&uin=1496&fromtag=999"
-        }
-    },
-    {
-        "songSrc": "QQ",
-        "songId": "001OyHbk2MSIi4",
-        "quality": "LQ",
-        "downloadLinkMap": {
-            "LQ": "http://ws.stream.qqmusic.qq.com/C400001OyHbk2MSIi4.m4a?guid=0&vkey=9CCC87A2A8115CC5E2FF700A8E5C5C8F52FE3C239CB150FD0FC541A3388D77EE17E8DDDC58D714F2EF57BD6A871236AE6BC0397470AA01B5&uin=1496&fromtag=999"
-        }
-    },
-    {
-        "songSrc": "QQ",
-        "songId": "003e4b5o0jOMXV",
-        "quality": "SQ",
-        "downloadLinkMap": {
-            "SQ": "http://ws.stream.qqmusic.qq.com/F000003e4b5o0jOMXV.flac?guid=0&vkey=5ABA827A7A239E8EAE6F27E045AEE28C9F9C7B03ED9C1986400BD6D510F13C29C20129009FA366C0ACA7EDCD0906CA924042014D984C9D4B&uin=1496&fromtag=999"
-        }
-    },
-    {
-        "songSrc": "QQ",
-        "songId": "000PkZXC11iZUC",
-        "quality": "HQ",
-        "downloadLinkMap": {
-            "HQ": "http://ws.stream.qqmusic.qq.com/"
-        }
-    }
-]
-```
-
-### 1.2.4 歌词搜索能力
-
-|名称|内容|备注|是否必须|
-|---|---|---|---|
-|api|https://www.thewind.xyz/api/getlyric|请求地址|√|
-|src|XM、KW、WY、MG、QQ、KG|请求平台|√|
-|songid|音乐ID|音乐ID|√|
-
-### 1.2.5 播放支持
-
-|名称|内容|备注|是否必须|
-|---|---|---|---|
-|api|/api/player|请求地址|√|
-|shareId|分享ID|格式为平台 "ID_歌曲ID" |√|
-
-shareId由平台和songid组成。例如：WY_65766
-
-### 1.2.6 歌曲详情
-|名称|内容|备注|是否必须|
-|---|---|---|---|
-|api|/api/songdetail|请求地址|√|
-|src|KW、KG、QQ、WY、MG、XM|平台ID |√|
-|songid|歌曲ID|歌曲ID |√|
-
-### 1.2.7 更新QQ音乐Cookie
-
-|名称|内容|备注|是否必须|
-|---|---|---|---|
-|api|/api/tokenrefresh|请求地址|√|
-|force|不为空即可|是否强制更新Cookie（不强制的话50000s才能进行下一次更新） |×|
-
-# 2 用户管理模块
-
-## 2.1 功能介绍
-
-为了实现网站的访问控制，需要实现用户模块
-
-## 2.2 使用方式
-
-### 2.2.1 用户注册
-
-|名称|内容|备注|是否必须|
-|---|---|---|---|
-|api|/api/reg|请求地址|√|
-|userId|长度>=6、以字母开头的，且所有字符为字母和数字组合(大小写不敏感)|用户ID|√|
-|password|长度>=6，且所有字符为字母和数字组合(大小写敏感)|密码|√|
-|email|符合邮箱格式|邮箱|√|
-|userName|字符，汉字均可|用户昵称|√|
-
-返回一段Cookie，表明用户身份
-
-### 2.2.2 用户登录
-
-|名称|内容|备注|是否必须|
-|---|---|---|---|
-|api|/api/login|请求地址|√|
-|userId|长度>=6、以字母开头的，且所有字符为字母和数字组合(大小写不敏感)|用户ID|√|
-|password|长度>=6，且所有字符为字母和数字组合(大小写敏感)|密码|√|
-
-返回一段Cookie，表明用户身份
-
-### 2.2.3 发送验证码
-
-发送验证码。本项目用的网易邮箱，可以根据实际自行配置
-
-|名称|内容|备注|是否必须|
-|---|---|---|---|
-|api|/api/mail|请求地址|√|
-|userId|长度>=6、以字母开头的，且所有字符为字母和数字组合(大小写不敏感)|用户ID|√|
-|email|符合邮箱格式|邮件地址|√|
-
-### 2.2.3 修改用户状态
-
-发送验证码。本项目用的网易邮箱，可以根据实际自行配置
-
-|名称|内容|备注|是否必须|
-|---|---|---|---|
-|api|/api/verifycode|请求地址|√|
-|userId|长度>=6、以字母开头的，且所有字符为字母和数字组合(大小写不敏感)|用户ID|√|
-|email|符合邮箱格式|邮件地址|√|
-|code|收到的验证码|验证码|√|
-
-### 2.2.4 查询所有用户
-
-后台管理需要。使用时附带Cookie,用户的等级要>=7
-
-|名称|内容|备注|是否必须|
-|---|---|---|---|
-|api|/api/queryalluser|请求地址|√|
-
-
-# 2、Jetbrain激活服务器
-
-1、激活服务器查询接口：[https://thewind.xyz/activate/api/jetbrain/getLicenseServers](https://thewind.xyz/activate/api/jetbrain/getLicenseServers)
-
-2、激活服务器添加接口：[https://thewind.xyz/activate/api/jetbrain/addLicenseServer](https://thewind.xyz/activate/api/jetbrain/addLicenseServer)
-
-3、激活服务器搜索接口: [https://thewind.xyz/activate/api/jetbrain/searchLicenseServer](https://thewind.xyz/activate/api/jetbrain/searchLicenseServer)
-
-4、激活服务器更新接口: [https://thewind.xyz/activate/api/jetbrain/updateLicenseServer?verify=false](https://thewind.xyz/activate/api/jetbrain/updateLicenseServer?verify=false)
-
-返回格式：
-
-```json
-{"code":0,"msg":"OK","obj":[{"serverUrl":"http://5.2.198.177:8001","valid":true},{"serverUrl":"http://43.138.69.54:8080","valid":true},{"serverUrl":"http://46.248.165.184:7777","valid":true},{"serverUrl":"http://52.137.14.60:80","valid":true},{"serverUrl":"http://52.143.165.82:80","valid":true},{"serverUrl":"http://80.169.232.216:8080","valid":true},{"serverUrl":"http://81.68.111.137:8000","valid":true},{"serverUrl":"http://81.68.147.56:8163","valid":true},{"serverUrl":"http://85.143.112.153:80","valid":true},{"serverUrl":"http://85.172.174.51:3333","valid":true},{"serverUrl":"http://85.214.165.249:8101","valid":true},{"serverUrl":"http://101.43.29.156:8282","valid":true},{"serverUrl":"http://134.53.225.196:80","valid":true},{"serverUrl":"http://147.102.58.185:8888","valid":true},{"serverUrl":"http://157.143.254.66:8080","valid":true},{"serverUrl":"http://165.22.249.172:8080","valid":true},{"serverUrl":"http://178.124.205.99:8090","valid":true},{"serverUrl":"http://178.172.195.18:10088","valid":true},{"serverUrl":"http://185.76.145.167:8080","valid":true},{"serverUrl":"http://186.211.99.100:80","valid":true},{"serverUrl":"http://193.242.170.12:8080","valid":true},{"serverUrl":"http://195.19.32.121:8787","valid":true},{"serverUrl":"http://200.13.89.3:8080","valid":true},{"serverUrl":"http://212.73.75.141:80","valid":true},{"serverUrl":"http://213.183.100.136:8080","valid":true},{"serverUrl":"http://200.17.85.220:80","valid":true}]}
-```
+注意：值里不能包含 `=` 或 `;`。
