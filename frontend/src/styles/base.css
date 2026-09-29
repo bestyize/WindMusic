@@ -1,0 +1,119 @@
+@import '@fontsource/barlow-condensed/latin-500.css';
+@import '@fontsource/barlow-condensed/latin-700.css';
+@import '@fontsource/barlow-condensed/latin-800.css';
+
+:root {
+  /* 页面：带一点杏色的暖白 */
+  --bg: #fdf6f0;
+  --surface: #ffffff;
+  --line: #f1e3d8;
+  /* 文字：浓缩咖啡色 */
+  --ink: #2b1a14;
+  --ink-soft: #7a5b4c;
+  --ink-faint: #a88c7e;
+  /* 主色：柿子橙，按钮、选中态、链接 */
+  --accent: #cc3f0c;
+  --accent-hover: #b0340a;
+  --accent-ink: #ffffff;
+  --accent-tint: rgb(204 63 12 / 0.07);
+  /* 播放条和分享页：深咖啡色 */
+  --deck: #2b1712;
+  --deck-ink: #fff4ec;
+  --deck-soft: #c9a898;
+  --deck-line: rgb(255 236 222 / 0.18);
+  --accent-on-dark: #ff8f57;
+  /* 音质条：黄油黄到浆果红，越高越浓 */
+  --lv-lq: #f7d98f;
+  --lv-pq: #f3b845;
+  --lv-hq: #f08c25;
+  --lv-sq: #e4561f;
+  --lv-zq: #c9263f;
+  --lv-eq: #951d5c;
+  --lv-off: #f3e9e1;
+  --lv-off-ink: #cdb8ab;
+  --danger: #c2332f;
+  --danger-soft: #ffb4a3;
+  --shadow: rgb(43 26 20 / 0.08);
+  --overlay: rgb(43 23 18 / 0.55);
+  --focus: var(--accent);
+
+  --font-cjk: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans SC', 'Source Han Sans SC', system-ui, sans-serif;
+  --font-label: 'Barlow Condensed', 'DIN Alternate', 'Arial Narrow', var(--font-cjk);
+
+  /* 字号：1.2 比例 */
+  --fs-xs: 0.75rem;
+  --fs-sm: 0.875rem;
+  --fs-md: 1rem;
+  --fs-lg: 1.2rem;
+  --fs-xl: 1.728rem;
+  --fs-2xl: 2.488rem;
+
+  --page-max: 60rem;
+  --gutter: clamp(1rem, 4vw, 2rem);
+  --deck-height: 4.75rem;
+  --radius: 12px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-cjk);
+  font-size: var(--fs-md);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+button,
+input {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

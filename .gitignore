@@ -34,3 +34,6 @@ build/
 
 # Project exclude paths
 /out/
+### Gradle / Kotlin ###
+.gradle/
+.kotlin/
